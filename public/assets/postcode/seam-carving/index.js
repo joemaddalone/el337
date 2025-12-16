@@ -22,7 +22,7 @@ runAstroScript(() => {
 		container: null,
 		init() {
 			this.info = document.getElementById("info");
-			this.container = document.querySelector(".image-container");
+			this.container = document.querySelector(".image-seam-carving-container");
 			CONFIG.BUTTON_IDS.forEach((id) => {
 				this.buttons[id] = document.getElementById(id);
 			});
@@ -87,12 +87,23 @@ runAstroScript(() => {
 			}
 		};
 
+
 		img.onload = function () {
-			imageWidth = img.width;
-			imageHeight = img.height;
+
+			const maxWidth = Math.min(DOM.container.clientWidth, img.width);
+
+
+			// Calculate scaling factor
+			const scale_factor = maxWidth / img.width;
+
+			const newWidth = img.width * scale_factor;
+			const newHeight = img.height * scale_factor;
+
+			imageWidth = newWidth;
+			imageHeight = newHeight;
 			canvas.width = imageWidth;
 			canvas.height = imageHeight;
-			ctx.drawImage(img, 0, 0);
+			ctx.drawImage(img, 0, 0, imageWidth, imageHeight);
 
 			// Store original image data
 			originalImageData = ctx.getImageData(

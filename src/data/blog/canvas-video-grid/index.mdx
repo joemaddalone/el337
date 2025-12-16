@@ -7,7 +7,7 @@ excerpt: 'Where I split one video into smaller videos'
 
 <script src="https://unpkg.com/gridset@1.1.1/dist/bundle.js"></script>
 
-	<div class="content-container">
+	<div class="content-container hidden md:block">
 			<div class="flex w-[33%]">
 					<div class="mr-2">
 							<label for="buffer-h" class="text-black dark:text-white">X Space</label>
@@ -39,11 +39,15 @@ excerpt: 'Where I split one video into smaller videos'
 							</div>
 					</div>
 			</div>
-			<div id="container"></div>
+			<div id="canvas-video-grid-container"></div>
 
 			<p>Explanation: </p>
 			<p>With a mouse when you hover over the video you will see it is colorized.  By adjusting the sliders you can split the video into 5 columns, 5 rows, or both resulting in 25 smaller videos. In each of these states the segmented part of the video will act as one and hovering it will colorize that segment.</p>
 
+	</div>
+
+	<div class="block md:hidden">
+		<p class="text-red-500">At this screen width this content sucks so I have opted not to show it.  :( </p>
 	</div>
 
 	<script src="/assets/postcode/canvas-video-grid/index.js"></script>

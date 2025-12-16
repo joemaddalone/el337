@@ -55,7 +55,7 @@ runAstroScript(() => {
 
 	const makePlayer = () => {
 		const video = createVideo("/assets/postcode/canvas-video-grid/ddd.mp4");
-		const container = $("#container");
+		const container = $("#canvas-video-grid-container");
 		if (!container || !ctx) return;
 
 		container.appendChild(video);
@@ -76,6 +76,16 @@ runAstroScript(() => {
 		video.addEventListener(
 			"loadedmetadata",
 			() => {
+
+				// const maxWidth = Math.min(container.clientWidth, video.videoWidth);
+
+
+				// // Calculate scaling factor
+				// const scale_factor = maxWidth / video.videoWidth;
+
+				// const newWidth = video.videoWidth * scale_factor;
+				// const newHeight = video.videoHeight * scale_factor;
+
 				// Fix canvas size once (avoids resetting context state each frame)
 				canvas.width = 800;
 				canvas.height = 480;

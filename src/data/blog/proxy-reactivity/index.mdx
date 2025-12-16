@@ -351,11 +351,15 @@ By no means is this a production-ready solution, but it's a fun way to learn abo
 
 <hr />
 
+<div class="hidden md:block">
+
 ### TKAdjustableNumber (just for fun)
 
 <p class="select-none">When you eat <span id="cookies" class=" text-blue-500 font-bold underline decoration-dotted cursor-col-resize">3 cookies</span>,
 you consume <span id="calories" class="font-bold">150</span> calories. That's <span id="percentage" class="font-bold">7</span>%
 of your recommended daily calories.</p>
+
+</div>
 
 <script>
 {`
@@ -382,10 +386,10 @@ const mover = (e) => {
   }
 };
 
-cookie.addEventListener('mousedown', (e) => {
-  document.addEventListener('mousemove', mover);
-  document.addEventListener('mouseup', (e) => {
-    document.removeEventListener('mousemove', mover);
+cookie.addEventListener('pointerdown', (e) => {
+  document.addEventListener('pointermove', mover);
+  document.addEventListener('pointerup', (e) => {
+    document.removeEventListener('pointermove', mover);
   });
 });
 

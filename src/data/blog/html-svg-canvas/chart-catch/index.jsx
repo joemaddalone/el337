@@ -1,7 +1,8 @@
-import { useRef, useState, useLayoutEffect } from "react";
+import { useRef, useState, useLayoutEffect, useEffect } from "react";
 import { Svg, Rect } from "react-svg-path";
 import "./index.css";
 import CharSpinner from "./CharSpinner";
+
 
 const random = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -17,11 +18,11 @@ const CharSpinners = ({ str, color }) => (
 
 export const ChartCatch = () => {
   const canvas = {
-    width: 650,
+    width: Math.min(700, window.innerWidth - 50),
     height: 300,
   };
 
-  const data = Array.from({ length: canvas.width / 6 - 1 }, () =>
+  const data = Array.from({ length: canvas.width / 5 }, () =>
     random(100, 999)
   ).sort((a, b) => a - b);
 
@@ -122,6 +123,33 @@ export const ChartCatch = () => {
       );
     }
   };
+
+  useEffect(() => {
+    let startX;
+    const setX = e => {
+      startX = e.touches[0].clientX;
+    };
+
+
+    const preventScrolling = e => {
+      // prevent x scroll
+      const currentX = e.touches[0].clientX;
+      const dx = Math.abs(currentX - startX);
+      if (canvasRef.current && dx > 10 && e.cancelable) {
+        e.preventDefault();
+      }
+    };
+
+    document.addEventListener('touchstart', setX);
+
+    document.addEventListener('touchmove', preventScrolling, {
+      passive: false,
+    });
+    return () => {
+      document.removeEventListener('touchmove', preventScrolling);
+      document.removeEventListener('touchstart', setX);
+    };
+  }, []);
 
   return (
     <div
