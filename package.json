@@ -25,6 +25,7 @@
     "gh-pages": "^6.3.0",
     "gridset": "^1.0.5",
     "lodash.kebabcase": "^4.1.1",
+    "motion": "^12.23.26",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "react-svg-path": "^2.0.0",

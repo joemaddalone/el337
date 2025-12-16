@@ -1,0 +1,22 @@
+---
+title: "Canvas video masking"
+date: 2024-04-16
+tags: ["code", "canvas", "svg", "video"]
+excerpt: "Playing videos in canvas in svg shapes"
+---
+
+<script src="https://unpkg.com/@joemaddalone/path@1.4.0/dist/index.js"></script>
+
+  <div class="mx-auto mt-6">
+	<div class="row flex">
+      <button data-shape="star" class="shape-button rounded-r-none border border-r-0 border-slate-300 py-2 px-4 text-center text-sm " type="button">star</button>
+      <button data-shape="ellipse" class="shape-button rounded-none border border-r-0 border-slate-300 py-2 px-4 text-center text-sm " type="button">ellipse</button>
+      <button data-shape="regPolygon" class="shape-button rounded-none border border-r-0 border-slate-300 py-2 px-4 text-center text-sm " type="button" >polygon</button>
+      <button data-shape="x" class="shape-button rounded-l-none border border-r-0 border-slate-300 py-2 px-4 text-center text-sm " type="button">x</button>
+    </div>
+    <input type="hidden" id="shape" value="star" />
+    <div id="container" class="mx-auto mt-6 border"></div>
+
+  </div>
+
+    <script src="/assets/postcode/canvas-video-mask/index.js"></script>
