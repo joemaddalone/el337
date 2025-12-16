@@ -1,0 +1,153 @@
+runAstroScript(() => {
+
+	// DOM helpers
+	const $ = document.querySelector.bind(document);
+	const dce = document.createElement.bind(document);
+
+	// Constants
+	const MAX_PARTICLES = 10000;
+	const CANVAS_HEIGHT = 500;
+	const BACKGROUND_COLOR = "#eee";
+	const SIZE_DECAY_PER_FRAME = 0.12;
+	const SPEED_MIN = -5;
+	const SPEED_MAX = 5;
+	const SIZE_MIN = 10;
+	const SIZE_MAX = 40;
+	const BLUR_FILTER = "blur(4px)";
+	let SHOW_PATH = false;
+
+	const COLOR = "#222";
+
+	// Utils
+	const randomRange = (min, max) => min + Math.random() * (max - min);
+
+	// Canvas setup (DPR-aware for crisp rendering)
+	const canvas = dce("canvas");
+	canvas.id = "c";
+	const container = $("#container");
+	const codeEl = document.getElementById("code");
+	const showPathEl = document.getElementById("showPath");
+
+	if (showPathEl) {
+		showPathEl.addEventListener("change", (e) => {
+			SHOW_PATH = (e.target).checked;
+		});
+	}
+	const clientWidth = document.body.clientWidth;
+	const clientHeight = CANVAS_HEIGHT;
+	const dpr = window.devicePixelRatio || 1;
+	canvas.style.width = clientWidth + "px";
+	canvas.style.height = clientHeight + "px";
+	canvas.width = Math.floor(clientWidth * dpr);
+	canvas.height = Math.floor(clientHeight * dpr);
+
+	const ctx = canvas.getContext("2d");
+	if (ctx && dpr !== 1) {
+		ctx.scale(dpr, dpr);
+	}
+
+	if (container) {
+		container.appendChild(canvas);
+	}
+
+	// Particle store
+	let parts = [];
+
+	function createParticles() {
+		if (parts.length < MAX_PARTICLES) {
+			parts.push({
+				x: clientWidth / 2,
+				y: clientHeight / 2,
+				xspeed: randomRange(SPEED_MIN, SPEED_MAX),
+				yspeed: randomRange(SPEED_MIN, SPEED_MAX),
+				size: randomRange(SIZE_MIN, SIZE_MAX),
+				shape: "circle",
+				color: COLOR,
+			});
+		}
+	}
+
+	function updateParticles() {
+		for (let i = 0; i < parts.length; i++) {
+			const part = parts[i];
+			part.y += part.yspeed;
+			part.x += part.xspeed;
+			part.size -= SIZE_DECAY_PER_FRAME;
+		}
+	}
+
+	// In-place compaction to avoid per-frame array allocations
+	function compactParticles() {
+		let writeIndex = 0;
+		for (let i = 0; i < parts.length; i++) {
+			const part = parts[i];
+			if (part.size > 0) {
+				if (writeIndex !== i) parts[writeIndex] = part;
+				writeIndex++;
+			}
+		}
+		parts.length = writeIndex;
+	}
+
+	function drawParticles() {
+		if (!ctx || parts.length === 0) return;
+
+		const p = new path();
+		const l = new path();
+		for (let i = 0; i < parts.length; i++) {
+			const part = parts[i];
+			p[part.shape](part.size, part.x, part.y);
+			if (i !== parts.length - 1 && SHOW_PATH) {
+				l.moveTo(part.x, part.y);
+				l.lineTo(parts[i + 1].x, parts[i + 1].y);
+			}
+		}
+
+		const str = p.toString(); // this is the svg path definition string
+		if (codeEl) codeEl.textContent = str;
+
+		const r1 = new Path2D(str);
+		if (!SHOW_PATH) {
+			ctx.filter = BLUR_FILTER;
+		} else {
+			ctx.filter = "none";
+		}
+		ctx.fillStyle = COLOR;
+
+		if (SHOW_PATH) {
+			ctx.strokeStyle = "#222";
+			ctx.lineWidth = 1.5;
+			ctx.stroke(r1);
+			ctx.strokeStyle = "#ccc";
+			ctx.lineWidth = 0.5;
+			ctx.stroke(new Path2D(l.toString()));
+		} else {
+			ctx.fill(r1);
+		}
+		// ctx.filter = "none";
+	}
+
+	let animationId;
+
+	const animate = () => {
+		if (!ctx) return;
+
+		ctx.clearRect(0, 0, clientWidth, clientHeight);
+		ctx.fillStyle = BACKGROUND_COLOR;
+		// Use CSS pixel dimensions since context is scaled for DPR
+		ctx.fillRect(0, 0, clientWidth, clientHeight);
+		createParticles();
+		drawParticles();
+		updateParticles();
+		compactParticles();
+		animationId = requestAnimationFrame(animate);
+	};
+
+	animate();
+	const cleanup = () => {
+		if (animationId) {
+			cancelAnimationFrame(animationId);
+		}
+	};
+	return cleanup;
+});
