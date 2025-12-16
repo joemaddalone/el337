@@ -1,17 +1,27 @@
 <!DOCTYPE html><html dir="ltr" lang="en" class="scroll-smooth" data-astro-cid-sckkx6r4> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="canonical" href="https://el337.com/posts/svg-path-data-in-canvas/"><meta name="generator" content="Astro v5.16.5"><!-- General Meta Tags --><title>Svg Path Data in Canvas | el337</title><meta name="title" content="Svg Path Data in Canvas | el337"><meta name="description" content="Joe Maddalone's talks about software, books, and movies."><meta name="author" content="Joe Maddalone"><link rel="sitemap" href="/sitemap-index.xml"><!-- Open Graph / Facebook --><meta property="og:title" content="Svg Path Data in Canvas | el337"><meta property="og:description" content="Joe Maddalone's talks about software, books, and movies."><meta property="og:url" content="https://el337.com/posts/svg-path-data-in-canvas/"><meta property="og:image" content="https://el337.com/posts/svg-path-data-in-canvas/index.png"><!-- Article Published/Modified time --><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://el337.com/posts/svg-path-data-in-canvas/"><meta property="twitter:title" content="Svg Path Data in Canvas | el337"><meta property="twitter:description" content="Joe Maddalone's talks about software, books, and movies."><meta property="twitter:image" content="https://el337.com/posts/svg-path-data-in-canvas/index.png"><!-- Google JSON-LD Structured data --><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Svg Path Data in Canvas | el337","image":"https://el337.com/posts/svg-path-data-in-canvas/index.png","datePublished":"undefined","author":[{"@type":"Person","name":"Joe Maddalone","url":"https://joemaddalone.com/"}]}</script><!-- Enable RSS feed auto-discovery  --><!-- https://docs.astro.build/en/recipes/rss/#enabling-rss-feed-auto-discovery --><link rel="alternate" type="application/rss+xml" title="el337" href="https://el337.com/rss.xml"><meta name="theme-color" content=""><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.QW52Ox2j.js"></script><script>
       window.runAstroScript = start => {
         let cleanup = null;
+        const route = window.location.pathname;
+
         const run = () => {
-          if (cleanup) cleanup();
-          cleanup = start();
+          if (window.location.pathname === route) {
+            if (cleanup) cleanup();
+            cleanup = start();
+          }
         };
+
         run();
+
         document.addEventListener("astro:after-swap", run);
+
         document.addEventListener("astro:before-swap", () => {
-          if (cleanup) cleanup();
+          if (cleanup) {
+            cleanup();
+            cleanup = null;
+          }
         });
       };
-    </script><script src="/toggle-theme.js"></script><link rel="stylesheet" href="/_astro/about.LSOwzoe5.css">
+    </script><script src="/toggle-theme.js"></script><link rel="stylesheet" href="/_astro/about.lQ3mqVyB.css">
 <style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media(prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}[data-astro-transition-scope]{animation:none!important}}
 </style><style>[data-astro-transition-scope="astro-fam6wyqg-1"] { view-transition-name: svg-path-data-in-canvas; }@layer astro { ::view-transition-old(svg-path-data-in-canvas) { 
 	animation-duration: 180ms;
@@ -174,7 +184,7 @@ About
 <span class="line"><span style="--shiki-light:#1976D2;--shiki-light-font-style:inherit;--shiki-dark:#7FDBCA;--shiki-dark-font-style:italic">ctx</span><span style="--shiki-light:#6F42C1;--shiki-light-font-style:inherit;--shiki-dark:#C792EA;--shiki-dark-font-style:italic">.</span><span style="--shiki-light:#6F42C1;--shiki-light-font-style:inherit;--shiki-dark:#82AAFF;--shiki-dark-font-style:italic">closePath</span><span style="--shiki-light:#24292EFF;--shiki-dark:#D6DEEB">();</span></span>
 <span class="line"><span style="--shiki-light:#1976D2;--shiki-light-font-style:inherit;--shiki-dark:#7FDBCA;--shiki-dark-font-style:italic">ctx</span><span style="--shiki-light:#6F42C1;--shiki-light-font-style:inherit;--shiki-dark:#C792EA;--shiki-dark-font-style:italic">.</span><span style="--shiki-light:#6F42C1;--shiki-light-font-style:inherit;--shiki-dark:#82AAFF;--shiki-dark-font-style:italic">stroke</span><span style="--shiki-light:#24292EFF;--shiki-dark:#D6DEEB">();</span></span></code></pre>
 <p>This gives us a triangle.</p>
-<canvas width="300" height="80" id="ex1" class="bg-white border border-gray-200"></canvas>
+<canvas width="300" height="80" id="canvas-path-data" class="bg-white border border-gray-200"></canvas>
 <p>However,using <code>Path2D</code> we can utilize the common svg path data commands to accomplish this. In my opinion this is much more simple.</p>
 <pre class="astro-code astro-code-themes min-light night-owl" style="--shiki-light:#24292eff;--shiki-dark:#d6deeb;--shiki-light-bg:#ffffff;--shiki-dark-bg:#011627;overflow-x:auto" tabindex="0" data-language="js"><code><span class="line"><span style="--shiki-light:#D32F2F;--shiki-dark:#C792EA">const</span><span style="--shiki-light:#1976D2;--shiki-light-font-style:inherit;--shiki-dark:#82AAFF;--shiki-dark-font-style:italic"> p</span><span style="--shiki-light:#D32F2F;--shiki-dark:#C792EA"> =</span><span style="--shiki-light:#D32F2F;--shiki-dark:#7FDBCA"> new</span><span style="--shiki-light:#6F42C1;--shiki-light-font-style:inherit;--shiki-dark:#82AAFF;--shiki-dark-font-style:italic"> Path2D</span><span style="--shiki-light:#24292EFF;--shiki-dark:#D6DEEB">(</span><span style="--shiki-light:#22863A;--shiki-dark:#D9F5DD">&#39;</span><span style="--shiki-light:#22863A;--shiki-dark:#ECC48D">M150 10 L115 70 L185 70 Z</span><span style="--shiki-light:#22863A;--shiki-dark:#D9F5DD">&#39;</span><span style="--shiki-light:#24292EFF;--shiki-dark:#D6DEEB">);</span></span>
 <span class="line"><span style="--shiki-light:#1976D2;--shiki-light-font-style:inherit;--shiki-dark:#7FDBCA;--shiki-dark-font-style:italic">ctx1</span><span style="--shiki-light:#6F42C1;--shiki-light-font-style:inherit;--shiki-dark:#C792EA;--shiki-dark-font-style:italic">.</span><span style="--shiki-light:#6F42C1;--shiki-light-font-style:inherit;--shiki-dark:#82AAFF;--shiki-dark-font-style:italic">stroke</span><span style="--shiki-light:#24292EFF;--shiki-dark:#D6DEEB">(</span><span style="--shiki-light:#24292EFF;--shiki-dark:#D7DBE0">p</span><span style="--shiki-light:#24292EFF;--shiki-dark:#D6DEEB">);</span></span></code></pre>

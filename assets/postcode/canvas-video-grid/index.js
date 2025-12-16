@@ -1,0 +1,251 @@
+runAstroScript(() => {
+	const $ = document.querySelector.bind(document);
+	const dce = document.createElement.bind(document);
+
+	// Elements and contexts
+	const canvas = dce("canvas");
+	canvas.id = "canvas-video-grid-element";
+	const ctx = canvas.getContext("2d");
+
+	// State
+	let mouseX = 0;
+	let mouseY = 0;
+	let isMouseOverCanvas = false;
+	let bufferH = 0;
+	let bufferV = 0;
+
+	// Video/grid precomputed data
+	const segments = 5;
+	let cellWidth = 0;
+	let cellHeight = 0;
+	let baseCells = [];
+	let videoEl = null;
+
+	let animationFrameId = null;
+
+
+	// Cache inputs once
+	const bufferHInput = document.getElementById("buffer-h");
+	const bufferVInput = document.getElementById("buffer-v");
+
+	if (bufferHInput) {
+		bufferH = bufferHInput.valueAsNumber || 0;
+		bufferHInput.addEventListener("input", () => {
+			bufferH = bufferHInput.valueAsNumber || 0;
+		});
+	}
+	if (bufferVInput) {
+		bufferV = bufferVInput.valueAsNumber || 0;
+		bufferVInput.addEventListener("input", () => {
+			bufferV = bufferVInput.valueAsNumber || 0;
+		});
+	}
+
+	const createVideo = (src) => {
+		const video = dce("video");
+		video.id = "player";
+		video.muted = true;
+		video.setAttribute("loop", "true");
+		video.setAttribute("playsinline", "true");
+		video.setAttribute("autoplay", "true");
+		video.style.display = "none";
+		video.innerHTML = `<source src="${src}" type="video/mp4" />`;
+		return video;
+	};
+
+	const makePlayer = () => {
+		const video = createVideo("/assets/postcode/canvas-video-grid/ddd.mp4");
+		const container = $("#container");
+		if (!container || !ctx) return;
+
+		container.appendChild(video);
+		container.appendChild(canvas);
+		videoEl = video;
+
+		// Mouse listeners
+		canvas.addEventListener("mousemove", (e) => {
+			const rect = canvas.getBoundingClientRect();
+			mouseX = e.clientX - rect.left;
+			mouseY = e.clientY - rect.top;
+			isMouseOverCanvas = true;
+		});
+		canvas.addEventListener("mouseleave", () => {
+			isMouseOverCanvas = false;
+		});
+
+		video.addEventListener(
+			"loadedmetadata",
+			() => {
+				// Fix canvas size once (avoids resetting context state each frame)
+				canvas.width = 800;
+				canvas.height = 480;
+
+				const w = video.videoWidth;
+				const h = video.videoHeight;
+
+				cellWidth = Math.floor(w / segments);
+				cellHeight = Math.floor(h / segments);
+
+				const g = new gridset({
+					width: w,
+					height: h,
+					rows: segments,
+					cols: segments,
+					cellSize: cellWidth,
+				});
+				baseCells = g.flatCells;
+
+				const useVideoFrameCb = typeof video.requestVideoFrameCallback === "function";
+				if (useVideoFrameCb) {
+					const onFrame = () => {
+						draw();
+						animationFrameId = video.requestVideoFrameCallback(onFrame);
+					};
+					animationFrameId = video.requestVideoFrameCallback(onFrame);
+				} else {
+					const render = () => {
+						draw();
+						animationFrameId = requestAnimationFrame(render);
+					};
+					animationFrameId = requestAnimationFrame(render);
+				}
+			},
+			{ once: true },
+		);
+
+		video.play();
+	};
+
+	const draw = () => {
+		if (!ctx || !videoEl) return;
+
+
+		// Compute grid offsets for current buffers
+		const gridWidth =
+			cellWidth * segments + bufferH * (segments - 1) + bufferH / 2;
+		const startX = (canvas.width - gridWidth) / 2;
+		const gridHeight =
+			cellHeight * segments + bufferV * (segments - 1) + bufferV / 2;
+		const startY = (canvas.height - gridHeight) / 2;
+
+		// Hover mapping (buffer-aware)
+		const gridVisualWidth =
+			cellWidth * segments + bufferH * (segments - 1);
+		const gridVisualHeight =
+			cellHeight * segments + bufferV * (segments - 1);
+
+		let hoveredCol = -1;
+		let hoveredRow = -1;
+		let hoverWholeGrid = false;
+		if (isMouseOverCanvas) {
+			const relX = mouseX - startX;
+			const relY = mouseY - startY;
+			const insideGrid =
+				relX >= 0 &&
+				relX <= gridVisualWidth &&
+				relY >= 0 &&
+				relY <= gridVisualHeight;
+			if (insideGrid) {
+				if (bufferH === 0 && bufferV === 0) {
+					hoverWholeGrid = true;
+				} else {
+					hoveredCol = Math.min(
+						Math.max(Math.floor(relX / (cellWidth + bufferH)), 0),
+						segments - 1,
+					);
+					hoveredRow = Math.min(
+						Math.max(Math.floor(relY / (cellHeight + bufferV)), 0),
+						segments - 1,
+					);
+				}
+			}
+		}
+
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+		// First pass: draw everything grayscale (minimizes filter toggles)
+		if (!hoverWholeGrid) {
+			ctx.filter = "grayscale(1)";
+			for (let i = 0; i < baseCells.length; i++) {
+				const cell = baseCells[i];
+				const sx = cell.x;
+				const sy = cell.y;
+				const dx = cell.x + startX + bufferH * cell.ci;
+				const dy = cell.y + startY + bufferV * cell.ri;
+				const dw = cell.w;
+				const dh = cell.h;
+				ctx.drawImage(videoEl, sx, sy, dw, dh, dx, dy, dw, dh);
+			}
+		}
+
+		// Second pass: draw hovered tiles in color and compute union box
+		let hasHover = false;
+		let minX = Infinity,
+			minY = Infinity,
+			maxX = -Infinity,
+			maxY = -Infinity;
+
+		if (hoverWholeGrid) {
+			ctx.filter = "none";
+			for (let i = 0; i < baseCells.length; i++) {
+				const cell = baseCells[i];
+				const sx = cell.x;
+				const sy = cell.y;
+				const dx = cell.x + startX + bufferH * cell.ci;
+				const dy = cell.y + startY + bufferV * cell.ri;
+				const dw = cell.w;
+				const dh = cell.h;
+				ctx.drawImage(videoEl, sx, sy, dw, dh, dx, dy, dw, dh);
+			}
+			// Outline around whole grid
+			hasHover = true;
+			minX = startX;
+			minY = startY;
+			maxX = startX + gridVisualWidth;
+			maxY = startY + gridVisualHeight;
+		} else if (isMouseOverCanvas && hoveredRow !== -1 && hoveredCol !== -1) {
+			ctx.filter = "none";
+			for (let i = 0; i < baseCells.length; i++) {
+				const cell = baseCells[i];
+				const sameCell = cell.ri === hoveredRow && cell.ci === hoveredCol;
+				const sameRowConnected = bufferH === 0 && cell.ri === hoveredRow;
+				const sameColConnected = bufferV === 0 && cell.ci === hoveredCol;
+				const isHovered = sameCell || sameRowConnected || sameColConnected;
+				if (!isHovered) continue;
+				const sx = cell.x;
+				const sy = cell.y;
+				const dx = cell.x + startX + bufferH * cell.ci;
+				const dy = cell.y + startY + bufferV * cell.ri;
+				const dw = cell.w;
+				const dh = cell.h;
+				ctx.drawImage(videoEl, sx, sy, dw, dh, dx, dy, dw, dh);
+				hasHover = true;
+				if (dx < minX) minX = dx;
+				if (dy < minY) minY = dy;
+				if (dx + dw > maxX) maxX = dx + dw;
+				if (dy + dh > maxY) maxY = dy + dh;
+			}
+		}
+
+		// Outline
+		if (hasHover) {
+			ctx.beginPath();
+			ctx.rect(minX - 3, minY - 3, maxX - minX + 6, maxY - minY + 6);
+			ctx.strokeStyle = "#e81";
+			ctx.lineWidth = 3;
+			ctx.stroke();
+			ctx.closePath();
+		}
+		ctx.filter = "none";
+	};
+
+	const cancelAnimation = () => {
+		if (animationFrameId) {
+			cancelAnimationFrame(animationFrameId);
+			animationFrameId = null;
+		}
+	};
+
+	makePlayer();
+	return cancelAnimation;
+});
