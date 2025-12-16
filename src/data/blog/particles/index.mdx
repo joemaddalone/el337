@@ -1,0 +1,36 @@
+---
+title: "Particles"
+date: 2024-06-05
+tags: ['code', 'svg', 'canvas']
+excerpt: 'Building particles in canvas with svg path data'
+short: 'SVG + Canvas'
+---
+
+<script src="https://unpkg.com/@joemaddalone/path@1.4.0/dist/index.js"></script>
+
+<div class="w-full flex flex-col justify-center items-center">
+	<div id="container"></div>
+	<div class="mt-6 flex flex-col justify-center items-center">
+		<div class="">
+			<label for="showPath" class="inline-flex items-center gap-3">
+				<input type="checkbox" class="size-5 rounded border-gray-300 shadow-sm" id="showPath" />
+				<span class="text-black dark:text-white"> show path </span>
+			</label>
+		</div>
+		<div class="container mx-auto max-w-2xl mt-6 prose">
+		<p class="m-4">
+			The experiment here is not the particle emitter itself, but the method
+			for rendering the particles. All particles are drawn at the same time
+			using a single svg path definition string.  Is it performant?  I don't know.  Was it fun to write?  Yes.
+		</p>
+		</div>
+		<div style="overflow-y: auto;">
+			<pre
+				style="margin: 0; white-space: pre-wrap; overflow-x: auto; height: 250px;"
+				id="code">
+			</pre>
+		</div>
+	</div>
+</div>
+
+<script src="/assets/postcode/particles/index.js"></script>
