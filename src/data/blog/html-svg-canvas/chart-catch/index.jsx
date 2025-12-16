@@ -28,9 +28,7 @@ export const ChartCatch = () => {
 
   const canvasRef = useRef(null);
 
-  const [mouse, setMouse] = useState({ x: 0, y: 0 });
-  const [gridset, setGridset] = useState(null);
-  const [offScreenImage, setOffScreenImage] = useState(null);
+
   const [hitBoxes, setHitBoxes] = useState([]);
   const [highlightPath, setHighlightPath] = useState("");
   const [infoBox, setInfoBox] = useState("");
@@ -61,7 +59,6 @@ export const ChartCatch = () => {
       offscreenCtx.fillRect(hb.x, hb.y, hb.w, hb.h);
       setHitBoxes((prev) => [...prev, hb]);
     });
-    setOffScreenImage(offscreenCanvas);
     canvasRef.current
       .getContext("2d")
       .drawImage(
