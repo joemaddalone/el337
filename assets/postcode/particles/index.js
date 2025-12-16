@@ -91,7 +91,7 @@ runAstroScript(() => {
 
 	function drawParticles() {
 		if (!ctx || parts.length === 0) return;
-
+		if (typeof path === 'undefined') return;
 		const p = new path();
 		const l = new path();
 		for (let i = 0; i < parts.length; i++) {
