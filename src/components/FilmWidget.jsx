@@ -60,7 +60,7 @@ const FilmWidget = ({ filmData, posterPath = null, compact = false, className = 
 
   // Full mode render
   return (
-    <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden ${className} not-prose`}>
+    <div className={`max-w-[75vw] bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden ${className} not-prose`}>
       {/* Poster Section */}
       <div className="relative group cursor-pointer overflow-hidden">
         <a
@@ -74,7 +74,7 @@ const FilmWidget = ({ filmData, posterPath = null, compact = false, className = 
             alt={`${filmData.title} poster`}
             width={500}
             height={750}
-            className="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-105"
+            className="w-full max-w-[75vw] h-auto object-cover transition-transform duration-300 group-hover:scale-105"
           />
         </a>
 

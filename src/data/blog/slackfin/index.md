@@ -75,9 +75,9 @@ export default class Api {
 
   async balances() {
     const accounts = this.config.accounts;
-    const accountBalances = Object.keys(accounts).map(async (key) => {
+    const accountBalances = Object.keys(accounts).map(async key => {
       const acc = await this.balance(accounts[key]);
-      return acc.data.accounts.map((a) => ({ ...a, key }));
+      return acc.data.accounts.map(a => ({ ...a, key }));
     });
     return Promise.allSettled(accountBalances);
   }
@@ -86,10 +86,10 @@ export default class Api {
   async formattedBalances() {
     const accountBalances = await this.balances();
     const payload = accountBalances
-      .filter((o) => o.status === "fulfilled")
-      .map((o) => o.value)
+      .filter(o => o.status === "fulfilled")
+      .map(o => o.value)
       .flat(Infinity)
-      .map((a) => {
+      .map(a => {
         return {
           title: `${a.key} (${a.name})`,
           value:
@@ -146,13 +146,13 @@ Having the data in JSON is fine and all, but I kinda want something I can scan q
 
 ```js
 /// formatPlaid.mjs
-const formatPlaid = (data) => {
+const formatPlaid = data => {
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
   });
 
-  const fields = data.map((d) => ({
+  const fields = data.map(d => ({
     ...d,
     value: formatter.format(d.value),
   }));
@@ -227,9 +227,9 @@ function sendSlackMessage(fields) {
       },
     };
 
-    const req = https.request(hookUrl, requestOptions, (res) => {
+    const req = https.request(hookUrl, requestOptions, res => {
       let response = "";
-      res.on("data", (d) => {
+      res.on("data", d => {
         response += d;
       });
       res.on("end", () => {
@@ -237,7 +237,7 @@ function sendSlackMessage(fields) {
       });
     });
 
-    req.on("error", (e) => {
+    req.on("error", e => {
       reject(e);
     });
 
@@ -276,4 +276,4 @@ try {
 
 ## Next up
 
-I got this running on a cron schedule in [OliveTin](https://github.com/OliveTin/OliveTin). I explain it a bit [here](/posts/olivetin-node/):
+I got this running on a cron schedule in [OliveTin](https://github.com/OliveTin/OliveTin). I explain it a bit [here](/posts/olive-tin-node/):

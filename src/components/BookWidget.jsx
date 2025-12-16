@@ -8,7 +8,7 @@ const BookWidget = ({ bookData, compact = false, className = '' }) => {
   // Compact mode render
   if (compact) {
     return (
-      <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden ${className} not-prose`}>
+      <div className={`max-w-[200px] bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden ${className} not-prose`}>
         <div className="relative group cursor-pointer overflow-hidden">
           <img
             src={`/assets/books/${bookData.isbn}.jpg`}

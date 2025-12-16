@@ -3,9 +3,7 @@ layout: ../layouts/AboutLayout.astro
 title: "About el337.com"
 ---
 
-My name is Joe Maddalone
-
-I build write things on el337.com.
+My name is <a href="https://joemaddalone.com">Joe Maddalone</a>. I write things on el337.com.
 
 ## You can also find me in these places
 
