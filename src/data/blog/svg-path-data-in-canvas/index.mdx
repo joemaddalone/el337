@@ -6,8 +6,6 @@ excerpt: 'Building canvas shapes with svg path data'
 short: 'SVG + Canvas'
 ---
 
-import ScriptWrapper from "../../../components/ScriptWrapper.astro"
-
 Typically most canvas drawing requires a series of commands. Something like this.
 
 <script src="https://unpkg.com/@joemaddalone/path@1.4.0/dist/index.js"></script>
@@ -23,7 +21,7 @@ ctx.stroke();
 ```
 This gives us a triangle.
 
-<canvas width="300" height="80" id="ex1" class="bg-white border border-gray-200"></canvas>
+<canvas width="300" height="80" id="canvas-path-data" class="bg-white border border-gray-200"></canvas>
 
 
 However,using `Path2D` we can utilize the common svg path data commands to accomplish this. In my opinion this is much more simple.

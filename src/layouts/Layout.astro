@@ -121,14 +121,24 @@ const structuredData = {
     <script is:inline>
       window.runAstroScript = start => {
         let cleanup = null;
+        const route = window.location.pathname;
+
         const run = () => {
-          if (cleanup) cleanup();
-          cleanup = start();
+          if (window.location.pathname === route) {
+            if (cleanup) cleanup();
+            cleanup = start();
+          }
         };
+
         run();
+
         document.addEventListener("astro:after-swap", run);
+
         document.addEventListener("astro:before-swap", () => {
-          if (cleanup) cleanup();
+          if (cleanup) {
+            cleanup();
+            cleanup = null;
+          }
         });
       };
     </script>

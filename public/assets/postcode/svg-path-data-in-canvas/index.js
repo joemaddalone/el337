@@ -1,5 +1,5 @@
 runAstroScript(() => {
-	const c0 = document.getElementById("ex1");
+	const c0 = document.getElementById("canvas-path-data");
 	if (!c0) return; // Exit if elements aren't found (e.g. on other pages)
 
 	const ctx0 = c0.getContext('2d');

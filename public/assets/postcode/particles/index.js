@@ -23,7 +23,7 @@ runAstroScript(() => {
 
 	// Canvas setup (DPR-aware for crisp rendering)
 	const canvas = dce("canvas");
-	canvas.id = "c";
+	canvas.id = "canvas-particles-element";
 	const container = $("#container");
 	const codeEl = document.getElementById("code");
 	const showPathEl = document.getElementById("showPath");
