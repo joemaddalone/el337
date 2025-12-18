@@ -1,15 +1,16 @@
 ---
-title: '2022 in the Books'
-date: 2022-11-29
+title: '2025 in the Books'
+date: 2025-12-31
 tags: ['books']
-excerpt: 'A bunch of things I read.'
-short: '2022 Books'
+excerpt: 'A bunch of things I read in 2025.'
+short: '2025 Books'
+draft: true
 ---
-import data from './2022-books.11tydata.json';
 import BookWidget from '../../../components/BookWidget.jsx';
+import data from './2025-books.11tydata.json';
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto mt-6">
-{data.books2022.map((book) => (
+{data.books2025.map((book) => (
 	<div key={book.isbn} className="flex justify-center items-center w-full">
 	<BookWidget bookData={book} compact />
 	</div>

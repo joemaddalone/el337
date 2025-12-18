@@ -73,13 +73,26 @@ As an interviewer I always have a range of challenges and I suggest you do as we
 
 I have an internal document explaining each challenge; structured like this.
 
-```html
-🤔 Challenge #3 Fix the bug: Summary statement in plain english about a bug in
-the code. - key symptom of the bug - key symptom of the bug 👉 Potential
-Guidance * Doing X produces Y, why? * Reminder: you may want to look into key
-symptom #2. * The core of this problem is solving key symptom #1 & #2 ✅
-Solution #3 ... code ... ✅ Alternative Solution #3 ... code ... 🎯 Potential
-refactoring questions ... ...
-```
+---
 
-I attempt to identify probable solutions to the challenge, usually referencing any known caveats to a likely solution. I also identify helpful guidance for the candidate. This helps both the interviewer to assist without giving away the solution and can give the candidate both a nudge in the right direction and a reassurance that the interview is here to help.
+🤔 Challenge #3: Fix the bug
+
+Summary statement in plain english about a bug in the code.
+
+- key symptom of the bug
+- key symptom of the bug
+
+👉 Potential Guidance
+* Doing X produces Y, why?
+* Reminder: you may want to look into key symptom #2.
+* The core of this problem is solving key symptom #1 & #2
+
+✅ Solution #3 ... code ...
+
+✅ Alternative Solution #3 ... code ...
+
+🎯 Potential refactoring questions ... ...
+
+---
+
+I attempt to identify probable solutions to the challenge, usually referencing any known caveats to a likely solution. I also identify helpful guidance for the candidate. This helps the interviewer assist without giving away the solution and can give the candidate both a nudge in the right direction and a reassurance that the interviewer is here to help.

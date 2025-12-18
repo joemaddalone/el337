@@ -23,7 +23,10 @@ const {
 } = Astro.props;
 
 /* ========== Formatted Datetime ========== */
-const datetime = dayjs(date).tz(postTimezone || SITE.timezone);
+const datetime = dayjs.tz(
+  date instanceof Date ? dayjs(date).utc().format("YYYY-MM-DD") : date,
+  postTimezone || SITE.timezone
+);
 
 const formattedDate = datetime.format("MMM D, YYYY"); // e.g., '22 Mar, 2025'
 ---
