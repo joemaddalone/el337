@@ -12,18 +12,24 @@
       "isbn": "9781534330153"
     },
     {
+      "title": "Disenlightenment",
+      "subtitle": "Politics, Horror, and Entertainment",
+      "author": "David Mamet",
+      "isbn": "9780063455092"
+    },
+    {
       "title": "Ghost in the wires",
       "subtitle": "my adventures as the world's most wanted hacker",
       "author": "Kevin D. Mitnick",
       "isbn": "9780316037709"
     },
     {
-      "title": "The invisible man",
+      "title": "The Invisible Man",
       "author": "H. G. Wells",
       "isbn": "9780451528520"
     },
     {
-      "title": "It's Always Sunny in Philadelphia",
+      "title": "It's (Almost) Always Sunny in Philadelphia",
       "author": "Kimberly Potts",
       "isbn": "9781668008508"
     },
@@ -39,18 +45,17 @@
       "isbn": "9780553239454"
     },
     {
-      "title": "Teenage Mutant Ninja Turtles",
-      "subtitle": "The Last Ronin",
+      "title": "The Last Ronin",
       "isbn": "9781684058419"
     },
     {
-      "title": "Unworthy",
+      "title": "The Unworthy",
       "subtitle": "A Novel",
       "author": "Agustina Bazterrica",
       "isbn": "9781668051887"
     },
     {
-      "title": "Warriors",
+      "title": "The Warriors",
       "author": "Sol Yurick",
       "isbn": "9781788164337"
     },
@@ -67,7 +72,8 @@
       "isbn": "9780060589462"
     },
     {
-      "title": "Zero to One: Notes on Startups, or How to Build the Future",
+      "title": "Zero to One",
+      "subtitle": "Notes on Startups, or How to Build the Future",
       "author": "Peter A. Thiel",
       "isbn": "9780804139298"
     }
