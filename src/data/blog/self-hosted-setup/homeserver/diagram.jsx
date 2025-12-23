@@ -27,9 +27,9 @@ const graph = {
         },
         rtorrent: {
             props: {
-                cx: grid.col(4).cx - 100,
+                cx: grid.col(4).cx - 135,
                 cy: grid.row(0).cy,
-                width: 200,
+                width: 135,
                 height: 100,
             },
             shape: Rect,
@@ -37,18 +37,28 @@ const graph = {
         },
         jackett: {
             props: {
-                cx: grid.col(4).cx + 100,
+                cx: grid.col(4).cx,
                 cy: grid.row(0).cy,
-                width: 200,
+                width: 135,
                 height: 100,
             },
             shape: Rect,
             text: 'jackett',
         },
+        prowlarr: {
+            props: {
+                cx: grid.col(4).cx + 135,
+                cy: grid.row(0).cy,
+                width: 135,
+                height: 100,
+            },
+            shape: Rect,
+            text: 'prowlarr',
+        },
         bazarr: {
             props: {
                 cx: grid.col(0).r + 50,
-                cy: grid.row(6).cy,
+                cy: grid.row(5).cy,
                 width: 200,
                 height: 100,
             },
@@ -68,7 +78,7 @@ const graph = {
         tautulli: {
             props: {
                 cx: grid.col(7).cx,
-                cy: grid.row(6).cy,
+                cy: grid.row(5).cy,
                 width: 200,
                 height: 100,
             },
@@ -88,7 +98,7 @@ const graph = {
         media: {
             props: {
                 cx: grid.col(4).cx,
-                cy: grid.row(6).cy,
+                cy: grid.row(4).cy,
                 width: 400,
                 height: 100,
             },
@@ -105,7 +115,7 @@ const graph = {
             shape: Rect,
             text: 'overseerr',
         },
-        reseed: {
+        storage: {
             props: {
                 cx: grid.col(4).cx,
                 cy: grid.row(3).cy,
@@ -113,18 +123,27 @@ const graph = {
                 height: 100,
             },
             shape: Rect,
-            text: 'reseed (8TB)',
-            to: ['storage'],
+            text: 'storage (64TB)',
         },
-        storage: {
+        snapraid: {
             props: {
-                cx: grid.col(4).cx,
-                cy: grid.row(4).cy,
-                width: 400,
+                cx: grid.col(7).cx,
+                cy: grid.row(3).cy,
+                width: 200,
                 height: 100,
             },
             shape: Rect,
-            text: 'storage (56TB)',
+            text: 'snapraid',
+        },
+        mergerfs: {
+            props: {
+                cx: grid.col(0).r + 50,
+                cy: grid.row(3).cy,
+                width: 200,
+                height: 100,
+            },
+            shape: Rect,
+            text: 'MergerFS',
         },
         unpackerr: {
             props: {
@@ -136,7 +155,7 @@ const graph = {
             shape: Rect,
             text: 'unpackerr',
         },
-        tmm: {
+        vogon: {
             props: {
                 cx: grid.col(4).cx,
                 cy: grid.row(5).cy,
@@ -144,7 +163,7 @@ const graph = {
                 height: 100,
             },
             shape: Rect,
-            text: 'tiny media manager',
+            text: 'vogon',
         },
     },
 };
@@ -159,11 +178,6 @@ const Node = (el) => {
     );
 };
 
-// Node.propTypes = {
-//     shape: propTypes.any,
-//     props: propTypes.object,
-// };
-
 export default function App() {
     return (
         <Svg
@@ -177,15 +191,17 @@ export default function App() {
             </Text>
             <Node {...graph.elements.rtorrent} />
             <Node {...graph.elements.jackett} />
+            <Node {...graph.elements.prowlarr} />
             <Node {...graph.elements.pvr} />
             <Node {...graph.elements.overseerr} />
-            <Node {...graph.elements.reseed} />
             <Node {...graph.elements.unpackerr} />
             <Node {...graph.elements.storage} />
+            <Node {...graph.elements.snapraid} />
+            <Node {...graph.elements.mergerfs} />
             <Node {...graph.elements.media} />
             <Node {...graph.elements.bazarr} />
             <Node {...graph.elements.tautulli} />
-            <Node {...graph.elements.tmm} />
+            <Node {...graph.elements.vogon} />
         </Svg>
     );
 }

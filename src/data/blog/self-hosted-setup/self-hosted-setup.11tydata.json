@@ -24,7 +24,9 @@
         },
         { "app": "Deemix", "url": "https://deemix.app/", "description": "Get music." },
         { "app": "Filebrowser", "url": "https://filebrowser.org/", "description": "For easy manual file needs." },
+        { "app": "Gitea", "url": "https://about.gitea.com/", "description": "My own github|lab" },
         { "app": "Heimdall", "url": "https://heimdall.site/", "description": "Clean dashboard" },
+        { "app": "Home Assistant", "url": "https://www.home-assistant.io/", "description": "home automation"},
         {
             "app": "Jackett",
             "url": "https://github.com/Jackett/Jackett",
@@ -37,18 +39,12 @@
             "url": "https://github.com/trapexit/mergerfs",
             "description": "A dead simple union filesystem"
         },
-        { "app": "NextcloudPi", "url": "https://nextcloudpi.com/", "description": "Keep your data close" },
         {
             "app": "Nginx Proxy Manager",
             "url": "https://nginxproxymanager.com/",
             "description": "Local domains instead of ip addresses and ports"
         },
         { "app": "OliveTin", "url": "https://www.olivetin.app/", "description": "simple access to predefined shell commands from a web interface" },
-        {
-            "app": "Ouroboros",
-            "url": "https://github.com/pyouroboros/ouroboros",
-            "description": "Update containers automatically"
-        },
         { "app": "Overseerr", "url": "https://overseerr.dev/", "description": "Media request system" },
         {
             "app": "Paperless-ng",
@@ -63,8 +59,8 @@
         },
         { "app": "Plex", "url": "https://www.plex.tv/", "description": "Media server. Movies, TV, Music, Audio books" },
         { "app": "Portainer", "url": "https://www.portainer.io/", "description": "Easy container management" },
+        { "app": "Prowlarr", "url": "https://prowlarr.com/", "description": "Add feeds to various *-Arr apps." },
         { "app": "Radarr", "url": "https://radarr.video/", "description": "Movie collection manager" },
-        { "app": "Readarr", "url": "https://readarr.com/", "description": "ebook collection manager " },
         {
             "app": "ruTorrent",
             "url": "https://github.com/Novik/ruTorrent",
@@ -77,7 +73,7 @@
             "url": "https://tautulli.com/",
             "description": "Plex monitoring, but mostly using it for notifications. Every time something is added or removed from Plex this will ping a slack channel."
         },
-        { "app": "Tinymediamanager", "url": "https://www.tinymediamanager.org/", "description": "Media file renaming" },
+        { "app": "Vogon", "url": "https://github.com/joemaddalone/vogon", "description": "Media art management" },
         {
             "app": "Unpackerr",
             "url": "https://github.com/davidnewhall/unpackerr",
