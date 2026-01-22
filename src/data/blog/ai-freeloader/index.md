@@ -49,6 +49,45 @@ I invented neither of these ideas. I don't have a particular source to reference
 3. Run `node scripts/sync-ai.mjs` to sync all the environments.
 4. Start using the whatever CLI or IDE you want to use.
 
+```bash
+➜  demo-ai-sync node scripts/sync-ai.mjs
+
+=== Results ===
+
+  ✅ GitHub Copilot: .github/copilot-instructions.md
+  ✅ Windsurf: .windsurf/rules/instructions.md
+  ✅ Anti Gravity: .agent/rules/instructions.md
+  ✅ Claude Code: CLAUDE.MD
+  ✅ Cursor: .cursor/rules/instructions.md
+  ✅ OpenCode: AGENTS.MD
+
+Synced to 6/6 platform(s)
+```
+
+```bash
+➜  demo-ai-sync tree -L 3 -a
+.
+├── .agent
+│   └── rules
+│       └── instructions.md
+├── .cursor
+│   └── rules
+│       └── instructions.md
+├── .github
+│   └── copilot-instructions.md
+├── .windsurf
+│   └── rules
+│       └── instructions.md
+├── AGENTS.MD
+├── CLAUDE.MD
+├── prompts
+│   └── instructions.md
+└── scripts
+    └── sync-ai.mjs
+
+10 directories, 8 files
+```
+
 ## The snags
 
 Sometimes the AI's need to be reminded of the instructions. I usually just start a new chat session with @instructions.md (or whatever the equivalent is for the tool). And after a completing a task if the AI has not update the memory bank I simply type "update memory bank" and it will update it. When I hit a limit the next AI will pick up where the previous one left off.
