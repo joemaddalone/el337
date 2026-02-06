@@ -99,3 +99,7 @@ This is all free. I am not paying for any of these services. I am using the free
 ## The results
 
 I am able to use all of these tools and get a good sense of what they can do. I am not locked into any one ecosystem. I can switch between them as needed. And I am not paying for any of them. It is a win win win.
+
+## Addendum
+
+I tuned this into an npm package so I can use it across all my projects even more easily. Check it out here: [fenchurch](https://github.com/joemaddalone/fenchurch)
