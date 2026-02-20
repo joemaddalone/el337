@@ -15,7 +15,7 @@ excerpt: "pi coding agent + ollama"
 
 ## Install Ollama
 
-[This post](/posts/ollama) has instructions for installing and using Ollama. The short version is:
+[This post](/posts/ollama) has instructions for installing and using Ollama.
 
 
 ## Let's Go!
