@@ -99,7 +99,7 @@ console.log(res);
 
 This should result in something along the lines of:
 
-<div class="message success">
+<div class="text text-green-500 font-mono">
 The color of the house at 6353 Juan Tabo Blvd ... would depend
 on the specific property and its owners. There are no records to
 indicate the color of this particular house...
@@ -136,7 +136,7 @@ console.log(res.text);
 
 ### result:
 
-<div class="message success">
+<div class="text text-green-500 font-mono">
 The color of the house at 6353 Juan Tabo is blue.
 </div>
 
@@ -171,7 +171,7 @@ console.log(res.text);
 
 ### result:
 
-<div class="message success">
+<div class="text text-green-500 font-mono">
 The house at 6353 on Juan Tabo Blvd has a red address because it is an odd number. According to the context given, houses on Juan Tabo Blvd with odd numbered addresses are red.
 </div>
 
@@ -207,7 +207,7 @@ console.log(res.text);
 
 ### result
 
-<div class="message success">
+<div class="text text-green-500 font-mono">
 To determine the color of the house at 6353 Juan Tabo Blvd, we need to look at the address and see if it is an odd number. Since 6353 is an odd number, according to the information given, the house should be red. Therefore, the house at 6353 on Juan Tabo Blvd is red.
 </div>
 
@@ -253,6 +253,6 @@ console.log(res.text);
 
 ### result
 
-<div class="message success">
+<div class="text-sm text-success">
 The house at 1901 on Juan Tabo Blvd is blue.
 </div>
