@@ -109,4 +109,23 @@ The directory appears to contain a TypeScript project with standard files, along
 
 The agent used the Ollama API to query the Qwen model, which generated a response based on the prompt. The response was streamed back and printed to the console in real time.  The agent had access to the file system and could see the files in the current directory.  That's called using tools y'all.
 
+## pi-coding-agent built-in tools
+
+pi-coding-agent comes with tools grouped into two presets.
+
+### codingTools
+  - read
+  - bash
+  - edit
+  - write
+
+### readOnlyTools
+  - grep
+  - find
+  - ls
+
+
+
+
+
 
