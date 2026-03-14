@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Track 3 – Garkbit Examples</title>
+<meta name="description" content="Detailed view of Track 3: concept art for the gadget, scientific measurements and notation, pencil and watercolor on paper"/>
+<!-- highlight.js for JSON formatting -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0e0e12;
+  --surface:#16161d;
+  --surface2:#1e1e28;
+  --border:#2a2a3a;
+  --text:#e2e2ee;
+  --text-muted:#8888a0;
+  --accent:#7c6aef;
+  --accent2:#a78bfa;
+  --gradient:linear-gradient(135deg,#7c6aef 0%,#a78bfa 50%,#c084fc 100%);
+  --radius:12px;
+  --font:'Inter',system-ui,-apple-system,sans-serif;
+}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font);
+  line-height:1.7;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent2);text-decoration:none;transition:color .2s}
+a:hover{color:#c084fc}
+
+.topbar{
+  position:sticky;top:0;z-index:100;
+  padding:.75rem 2rem;
+  background:rgba(14,14,18,.85);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.topbar a{font-weight:500}
+.topbar .title{font-weight:600;font-size:1.05rem}
+.container{max-width:900px;margin:0 auto;padding:2rem}
+
+/* ── Hero banner ── */
+.track-hero{
+  text-align:center;
+  padding:4rem 2rem 3rem;
+  background:radial-gradient(ellipse at 50% 0%,rgba(124,106,239,.12) 0%,transparent 55%);
+}
+.track-hero h1{
+  font-size:clamp(1.6rem,4vw,2.6rem);
+  font-weight:700;
+  background:var(--gradient);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  margin-bottom:.25rem;
+}
+.track-hero .subtitle{color:var(--text-muted);font-size:.95rem}
+
+/* ── Blocks ── */
+.block{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:1.25rem 1.5rem;
+  margin-bottom:1.25rem;
+}
+.block h3{
+  font-size:.75rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:var(--accent2);
+  margin-bottom:.65rem;
+  font-weight:600;
+}
+.block pre{
+  white-space:pre-wrap;
+  word-break:break-word;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.82rem;
+  line-height:1.65;
+  color:var(--text);
+}
+
+/* ── Image ── */
+.image-wrap{
+  border-radius:var(--radius);
+  overflow:hidden;
+  border:1px solid var(--border);
+  margin-bottom:2.5rem;
+}
+.image-wrap img{
+  width:100%;
+  display:block;
+}
+
+/* ── Cycles ── */
+.cycle{margin-bottom:1rem}
+.cycle-header{margin-bottom:1rem;display:flex;align-items:center;gap:.75rem}
+.cycle-badge{
+  display:inline-block;
+  padding:.3rem .9rem;
+  background:var(--gradient);
+  color:#fff;
+  border-radius:999px;
+  font-size:.75rem;
+  font-weight:700;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+
+/* ── Divider ── */
+.divider{
+  border:none;
+  height:1px;
+  background:var(--border);
+  margin:2.5rem 0;
+}
+
+/* ── Cycle nav ── */
+.cycle-nav{
+  display:flex;flex-wrap:wrap;gap:.5rem;
+  margin-bottom:2rem;
+}
+.cycle-nav a{
+  padding:.35rem .85rem;
+  border:1px solid var(--border);
+  border-radius:999px;
+  font-size:.78rem;
+  font-weight:500;
+  transition:background .2s,border-color .2s;
+}
+.cycle-nav a:hover{
+  background:var(--surface2);
+  border-color:var(--accent);
+}
+
+footer{
+  text-align:center;
+  padding:3rem 1rem;
+  color:var(--text-muted);
+  font-size:.8rem;
+  border-top:1px solid var(--border);
+  margin-top:2rem;
+}
+</style>
+</head>
+<body>
+<nav class="topbar">
+  <a href="index.html">← All Tracks</a>
+  <span class="title">Track 3</span>
+</nav>
+
+<div class="track-hero">
+  <h1>Track 3</h1>
+  <p class="subtitle">3 cycles of iterative reinterpretation</p>
+  <p class="subtitle" style="font-size:.8rem;font-weight:600;">All images resampled from hi-res png to mozjpeg encoded jpg</p>
+</div>
+
+<div class="container">
+
+  <!-- Cycle navigation -->
+  <div class="cycle-nav">
+    <a href="#initial">Initial</a>
+    <a href="#cycle-1">Cycle 1</a>
+    <a href="#cycle-2">Cycle 2</a>
+    <a href="#cycle-3">Cycle 3</a>
+  </div>
+
+  <!-- Initial prompt & image -->
+  <section id="initial">
+    <div class="cycle-header">
+      <span class="cycle-badge">Initial</span>
+    </div>
+
+    <div class="block">
+      <h3>Initial Prompt</h3>
+      <pre><code class="language-plaintext hjs">concept art for the gadget, scientific measurements and notation, pencil and watercolor on paper</code></pre>
+    </div>
+
+    <div class="block">
+      <h3>Enhanced Prompt</h3>
+      <pre><code class="language-plaintext hjs">Concept art for a precision scientific gadget rendered in pencil and watercolor on high-quality cotton rag paper. The central object is a multi-layered mechanical device with intricate gearwork, micro-sensors, and a translucent crystal core, its surface textured with fine pencil lines showing precise engineering. Surrounding it are scientific measurements in clear, legible notation, including pressure readings, temperature gradients, and spectral data, all rendered with crisp black ink. The background is a soft, muted watercolor wash of warm browns and pale blues that gently recedes into atmospheric haze, emphasizing depth without distraction. Light is diffused and even, casting subtle highlights on metallic components and creating a luminous glow around the crystal. The brushwork combines delicate pencil strokes for technical accuracy with fluid watercolor washes that soften edges and add organic warmth to the cold geometry. The overall mood is one of meticulous scientific curiosity, where technical precision meets artistic elegance through the interplay of line, color, and light.</code></pre>
+    </div>
+
+    <div class="image-wrap">
+      <img src="/garkbit/track_3/_0.jpg" alt="Initial image" loading="lazy"/>
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- Cycles -->
+  
+    <section class="cycle" id="cycle-1">
+      <div class="cycle-header">
+        <span class="cycle-badge">Cycle 1</span>
+      </div>
+
+      <div class="block description-block">
+        <h3>Description</h3>
+        <pre><code class="language-json">{
+  &quot;subject&quot;: &quot;a mechanical device with a transparent dome revealing intricate internal mechanisms&quot;,
+  &quot;description&quot;: &quot;The artwork depicts a complex, steampunk-inspired device with a transparent dome that allows a view into its intricate inner workings. The device appears to be made of metal with various gears, wires, and mechanical parts visible through the glass. The surrounding area is filled with sketches and diagrams, suggesting a scientific or engineering context.&quot;,
+  &quot;tone&quot;: &quot;The tone is intricate and detailed, with a sense of complexity and precision.&quot;,
+  &quot;medium&quot;: &quot;The medium appears to be a combination of illustration and digital art, with detailed line work and a blend of colors that give it a three-dimensional effect.&quot;,
+  &quot;surface&quot;: &quot;The artwork is set against a neutral background, which helps the device and its details stand out.&quot;,
+  &quot;artisticStyle&quot;: &quot;The artistic style is reminiscent of steampunk, with a focus on mechanical and industrial aesthetics. The use of line work and shading adds depth and dimension to the image.&quot;,
+  &quot;brushworkOrDetail&quot;: &quot;The brushwork is precise and detailed, with a focus on the intricate mechanisms within the device. The use of light and shadow enhances the three-dimensional appearance of the object.&quot;,
+  &quot;composition&quot;: &quot;The composition is centered around the device, with the transparent dome drawing the viewer's attention to its inner workings. The surrounding sketches and diagrams add context and depth to the scene.&quot;,
+  &quot;lighting&quot;: &quot;The lighting is subtle, with a soft glow emanating from within the device, highlighting its intricate details and giving it a sense of life.&quot;,
+  &quot;colorPalette&quot;: &quot;The color palette is muted, with shades of silver, blue, and gold dominating the scene. The use of these colors adds to the steampunk aesthetic and creates a sense of metallic sheen.&quot;,
+  &quot;notableTraits&quot;: &quot;Notable traits include the transparent dome, the detailed mechanical components, and the surrounding sketches and diagrams. These elements work together to create a cohesive and immersive visual experience.&quot;,
+  &quot;overallFeeling&quot;: &quot;The overall feeling is one of fascination and intrigue, as the viewer is drawn into the intricate world of the mechanical device and its inner workings.&quot;
+}</code></pre>
+      </div>
+
+      <div class="block prompt-block">
+        <h3>Prompt</h3>
+        <pre><code class="language-plaintext">A intricate steampunk-inspired mechanical device with a transparent dome reveals its inner workings through detailed brass gears, copper wires, and polished metal components. The artwork combines detailed line work and digital art techniques, creating a three-dimensional effect with precise brushwork and subtle shading. Set against a neutral gray background, the device is centered as the focal point, drawing the eye through its transparent dome to the complex network of gears and pistons below. Surrounding sketches and engineering diagrams add context, enhancing the scene’s depth and technical precision. Soft, warm light emanates from within the device, highlighting its metallic sheen and creating a luminous glow that emphasizes texture and form. The muted color palette of silver, deep blue, and golden brass evokes a timeless industrial aesthetic, while the intricate design and thoughtful composition convey a sense of fascination, curiosity, and mechanical wonder.</code></pre>
+      </div>
+
+      <div class="image-wrap">
+        <img src="/garkbit/track_3/_1.jpg" alt="Cycle 1 result" loading="lazy"/>
+      </div>
+    </section>
+
+    <section class="cycle" id="cycle-2">
+      <div class="cycle-header">
+        <span class="cycle-badge">Cycle 2</span>
+      </div>
+
+      <div class="block description-block">
+        <h3>Description</h3>
+        <pre><code class="language-json">{
+  &quot;subject&quot;: &quot;A steampunk-style mechanical device&quot;,
+  &quot;description&quot;: &quot;A spherical mechanical contraption with intricate gears, brass components, and wires, encased in a glass dome with a metallic base and intricate designs.&quot;,
+  &quot;tone&quot;: &quot;Mystical and industrial&quot;,
+  &quot;medium&quot;: &quot;Digital illustration&quot;,
+  &quot;surface&quot;: &quot;Smooth digital rendering&quot;,
+  &quot;artisticStyle&quot;: &quot;Steampunk&quot;,
+  &quot;brushworkOrDetail&quot;: &quot;Highly detailed, with precise lines and shading&quot;,
+  &quot;composition&quot;: &quot;Centrally positioned with sketches of similar designs surrounding the main image&quot;,
+  &quot;lighting&quot;: &quot;Subtle, with highlights on the metallic parts and a warm glow from within the device&quot;,
+  &quot;colorPalette&quot;: &quot;Gold, Bronze, Blue, Black, Gray&quot;,
+  &quot;notableTraits&quot;: &quot;Complex mechanical design, Glass dome enclosing the mechanism, Metallic and brass components, Industrial aesthetic, Precision and craftsmanship&quot;,
+  &quot;overallFeeling&quot;: &quot;Mysterious and intricate, evoking a sense of wonder and complexity&quot;
+}</code></pre>
+      </div>
+
+      <div class="block prompt-block">
+        <h3>Prompt</h3>
+        <pre><code class="language-plaintext">A meticulously detailed steampunk mechanical device encased in a luminous glass dome, its spherical form radiating intricate gears, brass components, and delicate copper wiring suspended within. The metallic base features ornate engravings and glowing blue filaments that pulse softly, casting a warm inner light on the device's surface. Surrounding the central mechanism are hand-drawn sketches of similar mechanical designs in sepia tones, adding depth and context to the composition. The scene is rendered in smooth digital illustration with a high-definition surface, where every gear tooth, rivet, and wire is precisely defined through fine brushwork and layered shading. Subtle lighting from within the dome creates soft highlights on polished brass and glass, while a gentle ambient glow enhances the mystical atmosphere. The color palette is rich with gold and bronze accents, deep blue filaments, deep black outlines, and muted grays that unify the industrial aesthetic. The overall feeling is one of quiet wonder—mysterious, intricate, and imbued with a sense of timeless craftsmanship.</code></pre>
+      </div>
+
+      <div class="image-wrap">
+        <img src="/garkbit/track_3/_2.jpg" alt="Cycle 2 result" loading="lazy"/>
+      </div>
+    </section>
+
+    <section class="cycle" id="cycle-3">
+      <div class="cycle-header">
+        <span class="cycle-badge">Cycle 3</span>
+      </div>
+
+      <div class="block description-block">
+        <h3>Description</h3>
+        <pre><code class="language-json">{
+  &quot;subject&quot;: &quot;Steampunk-style mechanical device&quot;,
+  &quot;description&quot;: &quot;A detailed, intricate steampunk-style mechanical device encased in a glass globe, featuring brass gears, intricate mechanisms, and blue glowing elements.&quot;,
+  &quot;tone&quot;: &quot;Mystical and mechanical&quot;,
+  &quot;medium&quot;: &quot;Digital art&quot;,
+  &quot;surface&quot;: &quot;Glass globe&quot;,
+  &quot;artisticStyle&quot;: &quot;Steampunk&quot;,
+  &quot;brushworkOrDetail&quot;: &quot;Highly detailed with a focus on mechanical precision&quot;,
+  &quot;composition&quot;: &quot;The device is centrally placed, with sketches of similar designs in the background, creating depth and context.&quot;,
+  &quot;lighting&quot;: &quot;The device is illuminated from within, casting a glowing blue light that highlights its intricate details.&quot;,
+  &quot;colorPalette&quot;: &quot;Primarily metallic (brass) with blue glowing accents and a muted background&quot;,
+  &quot;notableTraits&quot;: &quot;Intricate mechanical design, Glass enclosure, Blue glowing elements, Detailed sketches in the background&quot;,
+  &quot;overallFeeling&quot;: &quot;Enigmatic and sophisticated&quot;
+}</code></pre>
+      </div>
+
+      <div class="block prompt-block">
+        <h3>Prompt</h3>
+        <pre><code class="language-plaintext">A meticulously detailed steampunk-style mechanical device encased in a smooth, polished glass globe, rendered in high-resolution digital art. The device features intricate brass gears, cogs, and pistons arranged with mechanical precision, their surfaces catching light to reveal fine textures of polished metal and riveted edges. A soft, glowing blue light emanates from within the globe, illuminating the inner workings and casting an ethereal radiance that highlights every component. The glass globe, with its reflective surface, acts as a lens through which the mechanical world is viewed, creating a sense of wonder and intimacy. The composition centers the device in the foreground, while layered sketches of similar mechanical designs appear subtly in the midground and background, adding depth and context to its function. The background is a muted, atmospheric haze of deep charcoal and soft indigo, enhancing the mystical atmosphere. The color palette consists of rich metallic brass tones with vibrant blue accents that contrast against the warm, reflective glass. The artistic style is classical steampunk, blending ornate craftsmanship with futuristic innovation. The brushwork is rendered with digital precision, emphasizing sharp lines, detailed textures, and a luminous glow that enhances the enigmatic and sophisticated mood of the piece.</code></pre>
+      </div>
+
+      <div class="image-wrap">
+        <img src="/garkbit/track_3/_3.jpg" alt="Cycle 3 result" loading="lazy"/>
+      </div>
+    </section>
+
+</div>
+<footer>Generated by Garkbit Examples</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script>hljs.highlightAll();</script>
+</body>
+</html>

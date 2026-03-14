@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Track 9 – Garkbit Examples</title>
+<meta name="description" content="Detailed view of Track 9: A complex, symbolic illustration filled with organic sacred symbols (Chaos, Gaia, Eros), mingled with symbols representi"/>
+<!-- highlight.js for JSON formatting -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0e0e12;
+  --surface:#16161d;
+  --surface2:#1e1e28;
+  --border:#2a2a3a;
+  --text:#e2e2ee;
+  --text-muted:#8888a0;
+  --accent:#7c6aef;
+  --accent2:#a78bfa;
+  --gradient:linear-gradient(135deg,#7c6aef 0%,#a78bfa 50%,#c084fc 100%);
+  --radius:12px;
+  --font:'Inter',system-ui,-apple-system,sans-serif;
+}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font);
+  line-height:1.7;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent2);text-decoration:none;transition:color .2s}
+a:hover{color:#c084fc}
+
+.topbar{
+  position:sticky;top:0;z-index:100;
+  padding:.75rem 2rem;
+  background:rgba(14,14,18,.85);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.topbar a{font-weight:500}
+.topbar .title{font-weight:600;font-size:1.05rem}
+.container{max-width:900px;margin:0 auto;padding:2rem}
+
+/* ── Hero banner ── */
+.track-hero{
+  text-align:center;
+  padding:4rem 2rem 3rem;
+  background:radial-gradient(ellipse at 50% 0%,rgba(124,106,239,.12) 0%,transparent 55%);
+}
+.track-hero h1{
+  font-size:clamp(1.6rem,4vw,2.6rem);
+  font-weight:700;
+  background:var(--gradient);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  margin-bottom:.25rem;
+}
+.track-hero .subtitle{color:var(--text-muted);font-size:.95rem}
+
+/* ── Blocks ── */
+.block{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:1.25rem 1.5rem;
+  margin-bottom:1.25rem;
+}
+.block h3{
+  font-size:.75rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:var(--accent2);
+  margin-bottom:.65rem;
+  font-weight:600;
+}
+.block pre{
+  white-space:pre-wrap;
+  word-break:break-word;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.82rem;
+  line-height:1.65;
+  color:var(--text);
+}
+
+/* ── Image ── */
+.image-wrap{
+  border-radius:var(--radius);
+  overflow:hidden;
+  border:1px solid var(--border);
+  margin-bottom:2.5rem;
+}
+.image-wrap img{
+  width:100%;
+  display:block;
+}
+
+/* ── Cycles ── */
+.cycle{margin-bottom:1rem}
+.cycle-header{margin-bottom:1rem;display:flex;align-items:center;gap:.75rem}
+.cycle-badge{
+  display:inline-block;
+  padding:.3rem .9rem;
+  background:var(--gradient);
+  color:#fff;
+  border-radius:999px;
+  font-size:.75rem;
+  font-weight:700;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+
+/* ── Divider ── */
+.divider{
+  border:none;
+  height:1px;
+  background:var(--border);
+  margin:2.5rem 0;
+}
+
+/* ── Cycle nav ── */
+.cycle-nav{
+  display:flex;flex-wrap:wrap;gap:.5rem;
+  margin-bottom:2rem;
+}
+.cycle-nav a{
+  padding:.35rem .85rem;
+  border:1px solid var(--border);
+  border-radius:999px;
+  font-size:.78rem;
+  font-weight:500;
+  transition:background .2s,border-color .2s;
+}
+.cycle-nav a:hover{
+  background:var(--surface2);
+  border-color:var(--accent);
+}
+
+footer{
+  text-align:center;
+  padding:3rem 1rem;
+  color:var(--text-muted);
+  font-size:.8rem;
+  border-top:1px solid var(--border);
+  margin-top:2rem;
+}
+</style>
+</head>
+<body>
+<nav class="topbar">
+  <a href="index.html">← All Tracks</a>
+  <span class="title">Track 9</span>
+</nav>
+
+<div class="track-hero">
+  <h1>Track 9</h1>
+  <p class="subtitle">4 cycles of iterative reinterpretation</p>
+  <p class="subtitle" style="font-size:.8rem;font-weight:600;">All images resampled from hi-res png to mozjpeg encoded jpg</p>
+</div>
+
+<div class="container">
+
+  <!-- Cycle navigation -->
+  <div class="cycle-nav">
+    <a href="#initial">Initial</a>
+    <a href="#cycle-1">Cycle 1</a>
+    <a href="#cycle-2">Cycle 2</a>
+    <a href="#cycle-3">Cycle 3</a>
+    <a href="#cycle-4">Cycle 4</a>
+  </div>
+
+  <!-- Initial prompt & image -->
+  <section id="initial">
+    <div class="cycle-header">
+      <span class="cycle-badge">Initial</span>
+    </div>
+
+    <div class="block">
+      <h3>Initial Prompt</h3>
+      <pre><code class="language-plaintext hjs">A complex, symbolic illustration filled with organic sacred symbols (Chaos, Gaia, Eros), mingled with symbols representing modern science (AI, Cybernetics, Quantum Physics), dynamic black ink strokes on paper, symmetrical composition</code></pre>
+    </div>
+
+    <div class="block">
+      <h3>Enhanced Prompt</h3>
+      <pre><code class="language-plaintext hjs">A complex symbolic illustration layered with organic and scientific motifs, rendered in dynamic black ink strokes on aged textured paper. At its core, Gaia’s form emerges as a swirling vortex of interwoven vines and molten earth, while Chaos manifests as fractal lightning and shifting geometric patterns. Eros is depicted as a central figure with flowing tendrils of light, his eyes reflecting both ancient wisdom and quantum insight. Modern science symbols—circuit-like filigree, holographic spheres, and binary code—merge seamlessly with flora and fauna, their edges softened by ink washes to suggest organic integration. The composition is symmetrical, with a central axis dividing the canvas into balanced halves: left side a dense tapestry of living forms and chaotic energy, right side a crystalline lattice of data and thought. Lighting is soft yet directional, casting subtle shadows that deepen the three-dimensionality of each symbol. The paper’s aged texture adds tactile depth, with faint watermarks and creases enhancing the sense of time and history. The color palette is monochromatic in black, but the paper’s natural sepia and cream tones provide a warm contrast, creating a harmonious tension between primal nature and mechanical precision.</code></pre>
+    </div>
+
+    <div class="image-wrap">
+      <img src="/garkbit/track_9/_0.jpg" alt="Initial image" loading="lazy"/>
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- Cycles -->
+  
+    <section class="cycle" id="cycle-1">
+      <div class="cycle-header">
+        <span class="cycle-badge">Cycle 1</span>
+      </div>
+
+      <div class="block description-block">
+        <h3>Description</h3>
+        <pre><code class="language-json">{
+  &quot;subject&quot;: &quot;A figure resembling a goddess or nature personified, with a complex, intricate design&quot;,
+  &quot;description&quot;: &quot;The artwork depicts a female figure with a tree-like structure for hair, extending from her head into a symmetrical, organic pattern. Her body is adorned with swirling patterns and lightning-like designs, giving a sense of power and energy. The figure is surrounded by elaborate, detailed patterns that include celestial and botanical motifs, creating a sense of unity with nature and the cosmos&quot;,
+  &quot;tone&quot;: &quot;Mystical and ethereal, with a tone of reverence for nature and the divine&quot;,
+  &quot;medium&quot;: &quot;Ink or pencil on paper&quot;,
+  &quot;surface&quot;: &quot;Paper&quot;,
+  &quot;artisticStyle&quot;: &quot;Symbolic, mystical, and nature-inspired&quot;,
+  &quot;brushworkOrDetail&quot;: &quot;The artwork features intricate, detailed brushwork with fine lines and elaborate patterns, emphasizing the organic and sacred nature of the subject&quot;,
+  &quot;composition&quot;: &quot;Symmetrical, with the figure at the center, surrounded by detailed patterns that extend outward, creating a balanced and harmonious composition&quot;,
+  &quot;lighting&quot;: &quot;The lighting is subtle and diffuse, enhancing the ethereal quality of the figure and the intricate details of the artwork&quot;,
+  &quot;colorPalette&quot;: &quot;Monochromatic, primarily black and white, with gray tones&quot;,
+  &quot;notableTraits&quot;: &quot;The use of organic and sacred symbols, the depiction of a nature-inspired figure, and the intricate, detailed patterns that create a sense of depth and complexity&quot;,
+  &quot;overallFeeling&quot;: &quot;The artwork evokes a sense of awe and reverence, blending elements of nature, mythology, and science in a visually stunning and deeply symbolic manner&quot;
+}</code></pre>
+      </div>
+
+      <div class="block prompt-block">
+        <h3>Prompt</h3>
+        <pre><code class="language-plaintext">A luminous, ethereal figure of a nature personified goddess, her form composed of intricate, organic patterns that extend from her tree-like hair into symmetrical spirals and fractal-like designs. Her body is adorned with swirling, lightning-infused patterns that pulse with energy, their lines interwoven with celestial motifs like crescent moons and stars. Surrounding her, elaborate botanical and cosmic symbols—such as leaves entwined with constellations and roots merging into starfields—create a balanced, harmonious composition centered on her figure. The artwork is rendered in monochromatic ink or pencil on paper, with fine, deliberate lines that emphasize texture and depth. Subtle, diffuse lighting enhances the figure’s ethereal presence, casting soft shadows that define form without harshness. The color palette consists of deep black, crisp white, and earthy gray tones, creating a timeless, symbolic atmosphere. The overall feeling is one of awe and reverence, as the figure embodies the sacred union of nature, mythology, and the divine, her presence radiating power, balance, and timeless beauty through intricate detail and symbolic depth.</code></pre>
+      </div>
+
+      <div class="image-wrap">
+        <img src="/garkbit/track_9/_1.jpg" alt="Cycle 1 result" loading="lazy"/>
+      </div>
+    </section>
+
+    <section class="cycle" id="cycle-2">
+      <div class="cycle-header">
+        <span class="cycle-badge">Cycle 2</span>
+      </div>
+
+      <div class="block description-block">
+        <h3>Description</h3>
+        <pre><code class="language-json">{
+  &quot;subject&quot;: &quot;A woman with a tree-like structure and glowing energy&quot;,
+  &quot;description&quot;: &quot;The artwork depicts a woman whose body is intricately intertwined with a tree-like structure, symbolizing a deep connection with nature and possibly a divine or spiritual entity. The woman's body is adorned with glowing energy lines that radiate outwards, and her head is crowned with a crescent moon and stars, suggesting a celestial or otherworldly presence. The tree's branches are adorned with leaves and small celestial symbols, adding to the mystical and sacred atmosphere.&quot;,
+  &quot;tone&quot;: &quot;Mystical and sacred&quot;,
+  &quot;medium&quot;: &quot;Illustration&quot;,
+  &quot;surface&quot;: &quot;Paper&quot;,
+  &quot;artisticStyle&quot;: &quot;Symbolic and mystical, with a focus on organic and celestial elements&quot;,
+  &quot;brushworkOrDetail&quot;: &quot;The brushwork is intricate and detailed, with a focus on the interplay between the human form and the tree-like structure. The use of light and shadow creates a sense of depth and movement within the composition.&quot;,
+  &quot;composition&quot;: &quot;Symmetrical with a central focus on the woman and the tree-like structure. The composition is balanced, with the glowing energy lines extending outward from the subject, creating a sense of expansion and energy.&quot;,
+  &quot;lighting&quot;: &quot;The lighting is soft and ethereal, with a focus on the glowing energy lines and the celestial symbols. The use of light and shadow adds to the mystical and otherworldly feel of the artwork.&quot;,
+  &quot;colorPalette&quot;: &quot;Monochromatic, with shades of brown and white, creating a sense of depth and contrast. The glowing energy lines and celestial symbols add splashes of light within the otherwise dark palette.&quot;,
+  &quot;notableTraits&quot;: &quot;The intricate interplay between the human form and the tree-like structure, the use of celestial symbols, and the glowing energy lines.&quot;,
+  &quot;overallFeeling&quot;: &quot;The overall feeling of the artwork is one of mysticism, spirituality, and a deep connection with nature and the divine.&quot;
+}</code></pre>
+      </div>
+
+      <div class="block prompt-block">
+        <h3>Prompt</h3>
+        <pre><code class="language-plaintext">A mystical woman entwined with a tree-like structure, her body seamlessly fused with branches and leaves that pulse with glowing energy lines radiating outward like celestial currents. Her head is crowned with a crescent moon and a constellation of stars, symbolizing her connection to the divine. The tree’s bark is textured with organic patterns, its leaves adorned with small celestial symbols that shimmer faintly in the soft light. The composition is symmetrical and balanced, centered on the woman and tree, with the glowing energy lines forming a radiant halo around her form. The illustration is rendered in a symbolic and mystical style, using intricate brushwork to capture the delicate interplay between human and nature. The medium is paper, allowing for tactile texture and subtle grain. Soft, ethereal lighting bathes the scene in a warm glow, with highlights on the glowing energy lines and shadows deepening the mystical atmosphere. The monochromatic palette consists of rich browns and deep whites, punctuated by the luminous golds and silvers of the energy lines and celestial symbols. The overall feeling is one of profound spiritual connection, timeless harmony between earth and sky, and a sacred bond between humanity and the divine.</code></pre>
+      </div>
+
+      <div class="image-wrap">
+        <img src="/garkbit/track_9/_2.jpg" alt="Cycle 2 result" loading="lazy"/>
+      </div>
+    </section>
+
+    <section class="cycle" id="cycle-3">
+      <div class="cycle-header">
+        <span class="cycle-badge">Cycle 3</span>
+      </div>
+
+      <div class="block description-block">
+        <h3>Description</h3>
+        <pre><code class="language-json">{
+  &quot;subject&quot;: &quot;A tree-like figure with a crescent moon above it&quot;,
+  &quot;description&quot;: &quot;The artwork depicts a figure resembling a tree with a human-like face and body, surrounded by intricate branches and leaves. The figure has a glowing, ethereal quality with light emanating from various points on its body and the surrounding foliage. A crescent moon is positioned above the figure, adding to the mystical atmosphere.&quot;,
+  &quot;tone&quot;: &quot;Mystical and ethereal&quot;,
+  &quot;medium&quot;: &quot;Illustration&quot;,
+  &quot;surface&quot;: &quot;Paper&quot;,
+  &quot;artisticStyle&quot;: &quot;Symbolic and mystical&quot;,
+  &quot;brushworkOrDetail&quot;: &quot;Fine lines and detailed brushwork, creating a sense of depth and texture&quot;,
+  &quot;composition&quot;: &quot;Symmetrical with the central figure flanked by the branches and leaves&quot;,
+  &quot;lighting&quot;: &quot;Subtle, with light emanating from the figure and the foliage, creating a glowing effect&quot;,
+  &quot;colorPalette&quot;: &quot;Monochromatic, primarily shades of sepia and cream&quot;,
+  &quot;notableTraits&quot;: &quot;The combination of natural and human features, the crescent moon, and the glowing light elements&quot;,
+  &quot;overallFeeling&quot;: &quot;Dreamy and otherworldly&quot;
+}</code></pre>
+      </div>
+
+      <div class="block prompt-block">
+        <h3>Prompt</h3>
+        <pre><code class="language-plaintext">A symbolic and mystical illustration of a tree-like figure with a human-like face and body, rendered in delicate fine lines and detailed brushwork that create a sense of depth and organic texture. The central figure is surrounded by intricate branches and leaves that cascade symmetrically from its arms and torso, forming a living canopy. A soft, ethereal glow emanates from the figure’s body and the foliage, creating a luminous halo effect that enhances its otherworldly presence. Above the figure floats a crescent moon, its pale silver crescent casting a subtle, dreamlike light that contrasts with the warm sepia tones of the tree’s bark and leaves. The monochromatic color palette features deep earthy browns, creamy whites, and soft ochres, evoking a timeless, sacred atmosphere. The composition is perfectly symmetrical, with the figure centered and balanced by flowing branches that mirror its form. The lighting is diffused yet deliberate, with soft highlights that trace the curve of the figure’s limbs and the delicate edges of the leaves, while shadows deepen the texture of bark and foliage. The overall feeling is serene and transcendent, blending the natural world with mystical energy in a harmonious, ethereal balance.</code></pre>
+      </div>
+
+      <div class="image-wrap">
+        <img src="/garkbit/track_9/_3.jpg" alt="Cycle 3 result" loading="lazy"/>
+      </div>
+    </section>
+
+    <section class="cycle" id="cycle-4">
+      <div class="cycle-header">
+        <span class="cycle-badge">Cycle 4</span>
+      </div>
+
+      <div class="block description-block">
+        <h3>Description</h3>
+        <pre><code class="language-json">{
+  &quot;subject&quot;: &quot;tree with human-like features and a crescent moon above&quot;,
+  &quot;description&quot;: &quot;The artwork depicts a tree with human-like features, including a face and a body, and a crescent moon positioned above it, symbolizing a connection between nature and the celestial. The tree has intricate branches and leaves, and the figure's body appears to be made of roots, emphasizing a deep connection with the earth.&quot;,
+  &quot;tone&quot;: &quot;serene and mystical&quot;,
+  &quot;medium&quot;: &quot;illustration&quot;,
+  &quot;surface&quot;: &quot;paper&quot;,
+  &quot;artisticStyle&quot;: &quot;mythological realism&quot;,
+  &quot;brushworkOrDetail&quot;: &quot;The artwork is highly detailed, with intricate lines and shading that give a sense of depth and texture to the tree and the figure within it. The brushwork is delicate, focusing on the organic forms and the interplay between the tree and the figure.&quot;,
+  &quot;composition&quot;: &quot;The composition is symmetrical, with the tree and the figure as the central focus, and the crescent moon as a key element above the tree, creating a balanced and harmonious image.&quot;,
+  &quot;lighting&quot;: &quot;The lighting is soft and ethereal, with a glow emanating from the figure and the moon, creating a sense of light and shadow that adds to the mystical atmosphere of the artwork.&quot;,
+  &quot;colorPalette&quot;: &quot;The color palette is primarily sepia-toned, with shades of brown and beige, which gives the artwork a vintage and timeless quality. The color scheme is muted, enhancing the serene and mystical tone of the piece.&quot;,
+  &quot;notableTraits&quot;: &quot;The artwork features a blend of natural and human elements, creating a unique and symbolic representation of nature and the divine. The use of the crescent moon and the organic forms suggest themes of growth, life, and the cyclical nature of existence.&quot;,
+  &quot;overallFeeling&quot;: &quot;The overall feeling of the artwork is one of harmony, balance, and reverence for the natural world. The use of symbolism and the ethereal lighting create a sense of wonder and mystery, inviting the viewer to contemplate the deep connections between humanity, nature, and the cosmos.&quot;
+}</code></pre>
+      </div>
+
+      <div class="block prompt-block">
+        <h3>Prompt</h3>
+        <pre><code class="language-plaintext">A mythological realism illustration of a tree with human-like features, including a face and a body, rendered in exquisite detail on textured paper. The tree’s trunk and branches merge seamlessly with the figure’s form, its roots forming a human torso and arms that extend upward like branches. A crescent moon floats above the tree, symbolizing celestial connection and cyclical life. The composition is symmetrical, with the tree and figure as central focus, balanced by the moon’s gentle curve above. Soft, ethereal lighting emanates from the figure and moon, creating a luminous glow that highlights the organic textures of bark, leaf veins, and skin-like pores. The color palette is richly sepia-toned, with deep browns, warm beiges, and subtle ochres, evoking a timeless, vintage quality. Delicate brushwork defines every contour, from the tree’s gnarled roots to the figure’s smooth face and flowing hair. The overall atmosphere is serene and mystical, filled with a sense of reverence for nature’s dual essence—earth and sky, life and eternity. The artwork invites contemplation through its harmonious balance, symbolic depth, and luminous softness.</code></pre>
+      </div>
+
+      <div class="image-wrap">
+        <img src="/garkbit/track_9/_4.jpg" alt="Cycle 4 result" loading="lazy"/>
+      </div>
+    </section>
+
+</div>
+<footer>Generated by Garkbit Examples</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script>hljs.highlightAll();</script>
+</body>
+</html>

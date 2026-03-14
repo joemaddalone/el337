@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Track 7 – Garkbit Examples</title>
+<meta name="description" content="Detailed view of Track 7: A complex, symbolic illustration filled with organic sacred symbols (Chaos, Gaia, Eros), mingled with symbols representi"/>
+<!-- highlight.js for JSON formatting -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0e0e12;
+  --surface:#16161d;
+  --surface2:#1e1e28;
+  --border:#2a2a3a;
+  --text:#e2e2ee;
+  --text-muted:#8888a0;
+  --accent:#7c6aef;
+  --accent2:#a78bfa;
+  --gradient:linear-gradient(135deg,#7c6aef 0%,#a78bfa 50%,#c084fc 100%);
+  --radius:12px;
+  --font:'Inter',system-ui,-apple-system,sans-serif;
+}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font);
+  line-height:1.7;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent2);text-decoration:none;transition:color .2s}
+a:hover{color:#c084fc}
+
+.topbar{
+  position:sticky;top:0;z-index:100;
+  padding:.75rem 2rem;
+  background:rgba(14,14,18,.85);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.topbar a{font-weight:500}
+.topbar .title{font-weight:600;font-size:1.05rem}
+.container{max-width:900px;margin:0 auto;padding:2rem}
+
+/* ── Hero banner ── */
+.track-hero{
+  text-align:center;
+  padding:4rem 2rem 3rem;
+  background:radial-gradient(ellipse at 50% 0%,rgba(124,106,239,.12) 0%,transparent 55%);
+}
+.track-hero h1{
+  font-size:clamp(1.6rem,4vw,2.6rem);
+  font-weight:700;
+  background:var(--gradient);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  margin-bottom:.25rem;
+}
+.track-hero .subtitle{color:var(--text-muted);font-size:.95rem}
+
+/* ── Blocks ── */
+.block{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:1.25rem 1.5rem;
+  margin-bottom:1.25rem;
+}
+.block h3{
+  font-size:.75rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:var(--accent2);
+  margin-bottom:.65rem;
+  font-weight:600;
+}
+.block pre{
+  white-space:pre-wrap;
+  word-break:break-word;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.82rem;
+  line-height:1.65;
+  color:var(--text);
+}
+
+/* ── Image ── */
+.image-wrap{
+  border-radius:var(--radius);
+  overflow:hidden;
+  border:1px solid var(--border);
+  margin-bottom:2.5rem;
+}
+.image-wrap img{
+  width:100%;
+  display:block;
+}
+
+/* ── Cycles ── */
+.cycle{margin-bottom:1rem}
+.cycle-header{margin-bottom:1rem;display:flex;align-items:center;gap:.75rem}
+.cycle-badge{
+  display:inline-block;
+  padding:.3rem .9rem;
+  background:var(--gradient);
+  color:#fff;
+  border-radius:999px;
+  font-size:.75rem;
+  font-weight:700;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+
+/* ── Divider ── */
+.divider{
+  border:none;
+  height:1px;
+  background:var(--border);
+  margin:2.5rem 0;
+}
+
+/* ── Cycle nav ── */
+.cycle-nav{
+  display:flex;flex-wrap:wrap;gap:.5rem;
+  margin-bottom:2rem;
+}
+.cycle-nav a{
+  padding:.35rem .85rem;
+  border:1px solid var(--border);
+  border-radius:999px;
+  font-size:.78rem;
+  font-weight:500;
+  transition:background .2s,border-color .2s;
+}
+.cycle-nav a:hover{
+  background:var(--surface2);
+  border-color:var(--accent);
+}
+
+footer{
+  text-align:center;
+  padding:3rem 1rem;
+  color:var(--text-muted);
+  font-size:.8rem;
+  border-top:1px solid var(--border);
+  margin-top:2rem;
+}
+</style>
+</head>
+<body>
+<nav class="topbar">
+  <a href="index.html">← All Tracks</a>
+  <span class="title">Track 7</span>
+</nav>
+
+<div class="track-hero">
+  <h1>Track 7</h1>
+  <p class="subtitle">4 cycles of iterative reinterpretation</p>
+  <p class="subtitle" style="font-size:.8rem;font-weight:600;">All images resampled from hi-res png to mozjpeg encoded jpg</p>
+</div>
+
+<div class="container">
+
+  <!-- Cycle navigation -->
+  <div class="cycle-nav">
+    <a href="#initial">Initial</a>
+    <a href="#cycle-1">Cycle 1</a>
+    <a href="#cycle-2">Cycle 2</a>
+    <a href="#cycle-3">Cycle 3</a>
+    <a href="#cycle-4">Cycle 4</a>
+  </div>
+
+  <!-- Initial prompt & image -->
+  <section id="initial">
+    <div class="cycle-header">
+      <span class="cycle-badge">Initial</span>
+    </div>
+
+    <div class="block">
+      <h3>Initial Prompt</h3>
+      <pre><code class="language-plaintext hjs">A complex, symbolic illustration filled with organic sacred symbols (Chaos, Gaia, Eros), mingled with symbols representing modern science (AI, Cybernetics, Quantum Physics), dynamic black ink strokes on paper, symmetrical composition</code></pre>
+    </div>
+
+    <div class="block">
+      <h3>Enhanced Prompt</h3>
+      <pre><code class="language-plaintext hjs">A complex symbolic illustration filled with organic sacred symbols—Chaos represented by swirling, iridescent tendrils of energy, Gaia depicted as a massive, moss-covered root system fracturing across the canvas, Eros embodied in a serpentine figure entwined with blooming flowers—mingled with modern science symbols: AI as a crystalline neural network pulsing through circuitry, Cybernetics as a biomechanical limb fused to organic flesh, Quantum Physics illustrated by intersecting waveforms and fractal patterns. Dynamic black ink strokes define every element with bold, confident lines that vary in thickness from fine penwork to thick impasto, creating a sense of kinetic movement and layered depth. The composition is symmetrical, with a central axis dividing the image into mirrored halves: left side teeming with chaotic organic forms and right side exploding in technological precision. Aged paper provides a textured surface with visible grain, enhancing the tactile quality of the drawing. Lighting is implied through tonal contrast—deep blacks against light grays, creating a shadowy yet luminous atmosphere that emphasizes the interplay between primal energy and mechanical logic. The color palette is defined by black ink and subtle white highlights, with muted earth tones in the organic elements and metallic grays in the scientific ones, all rendered with precision and symbolic weight.</code></pre>
+    </div>
+
+    <div class="image-wrap">
+      <img src="/garkbit/track_7/_0.jpg" alt="Initial image" loading="lazy"/>
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- Cycles -->
+  
+    <section class="cycle" id="cycle-1">
+      <div class="cycle-header">
+        <span class="cycle-badge">Cycle 1</span>
+      </div>
+
+      <div class="block description-block">
+        <h3>Description</h3>
+        <pre><code class="language-json">{
+  &quot;subject&quot;: &quot;A woman with organic and cybernetic elements, intertwined with floral and root-like structures&quot;,
+  &quot;description&quot;: &quot;The artwork portrays a complex and intricate scene featuring a woman with a fusion of organic and cybernetic motifs. Her body is adorned with circuit-like patterns and mechanical limbs, while her surroundings are filled with floral and root-like forms, creating a harmonious blend of nature and technology. The overall composition is symmetrical and detailed, with a focus on intricate lines and patterns.&quot;,
+  &quot;tone&quot;: &quot;The artwork has a mysterious and surreal tone, blending elements of nature and technology in a visually striking and thought-provoking manner.&quot;,
+  &quot;medium&quot;: &quot;The medium appears to be detailed black ink strokes on paper, giving the artwork a textured and layered appearance.&quot;,
+  &quot;surface&quot;: &quot;The artwork is created on a surface that resembles paper, with a texture that enhances the intricate details and depth of the drawing.&quot;,
+  &quot;artisticStyle&quot;: &quot;The artistic style is a blend of surrealism and steampunk, with a strong emphasis on intricate line work and a harmonious integration of organic and mechanical elements.&quot;,
+  &quot;brushworkOrDetail&quot;: &quot;The brushwork is highly detailed, with a focus on fine lines and intricate patterns. The artist has employed a meticulous approach to create the complex and layered composition.&quot;,
+  &quot;composition&quot;: &quot;The composition is symmetrical, with the central figure of the woman serving as the focal point. The surrounding elements, including the floral and mechanical components, are arranged to create a balanced and harmonious visual effect.&quot;,
+  &quot;lighting&quot;: &quot;The lighting in the artwork is subtle and even, with no harsh shadows or highlights. This allows the intricate details of the drawing to stand out and maintain a cohesive visual narrative.&quot;,
+  &quot;colorPalette&quot;: &quot;The color palette is monochromatic, with various shades of black and gray used to create depth and contrast. The use of these colors enhances the intricate details and the overall complexity of the artwork.&quot;,
+  &quot;notableTraits&quot;: &quot;Notable traits of the artwork include the fusion of organic and mechanical elements, the symmetrical composition, and the intricate line work. These elements create a visually striking and thought-provoking piece.&quot;,
+  &quot;overallFeeling&quot;: &quot;The overall feeling of the artwork is mysterious and surreal, evoking a sense of wonder and curiosity about the fusion of nature and technology. The intricate details and harmonious composition make the artwork captivating and visually engaging.&quot;
+}</code></pre>
+      </div>
+
+      <div class="block prompt-block">
+        <h3>Prompt</h3>
+        <pre><code class="language-plaintext">A woman with organic and cybernetic elements stands at the center of a symmetrical composition, her body adorned with circuit-like patterns and mechanical limbs that merge seamlessly with flowing floral and root-like structures. The scene is rendered in detailed black ink strokes on textured paper, where intricate lines and patterns create a layered depth that emphasizes the fusion of nature and technology. The artwork blends surrealism with steampunk aesthetics, capturing a harmonious yet enigmatic balance between organic grace and mechanical precision. Subtle even lighting casts no harsh shadows or highlights, allowing the intricate details—fine circuitry, delicate petals, and tangled roots—to emerge with clarity. The monochromatic palette of deep blacks, grays, and muted shadows enhances the visual narrative, creating a mysterious and surreal atmosphere that evokes wonder at the convergence of life and machine. The overall feeling is one of profound curiosity and contemplation, where every line and form invites the viewer to wonder at the beauty of this fantastical fusion.</code></pre>
+      </div>
+
+      <div class="image-wrap">
+        <img src="/garkbit/track_7/_1.jpg" alt="Cycle 1 result" loading="lazy"/>
+      </div>
+    </section>
+
+    <section class="cycle" id="cycle-2">
+      <div class="cycle-header">
+        <span class="cycle-badge">Cycle 2</span>
+      </div>
+
+      <div class="block description-block">
+        <h3>Description</h3>
+        <pre><code class="language-json">{
+  &quot;subject&quot;: &quot;A female figure with cybernetic and organic elements&quot;,
+  &quot;description&quot;: &quot;The artwork depicts a humanoid figure with a blend of cybernetic and natural elements. The figure is adorned with intricate mechanical and floral motifs, creating a harmonious fusion of human and nature. The figure's head is crowned with a crown of flowers and leaves, while the body is covered in mechanical parts and roots, symbolizing a connection between technology and nature.&quot;,
+  &quot;tone&quot;: &quot;Mystical and surreal&quot;,
+  &quot;medium&quot;: &quot;Ink on paper&quot;,
+  &quot;surface&quot;: &quot;Paper&quot;,
+  &quot;artisticStyle&quot;: &quot;Surrealist&quot;,
+  &quot;brushworkOrDetail&quot;: &quot;Detailed and intricate&quot;,
+  &quot;composition&quot;: &quot;Symmetrical&quot;,
+  &quot;lighting&quot;: &quot;Subtle and even&quot;,
+  &quot;colorPalette&quot;: &quot;Monochromatic (black and white)&quot;,
+  &quot;notableTraits&quot;: &quot;The figure's blend of mechanical and natural elements, the symmetrical composition, and the intricate details&quot;,
+  &quot;overallFeeling&quot;: &quot;Enigmatic and profound&quot;
+}</code></pre>
+      </div>
+
+      <div class="block prompt-block">
+        <h3>Prompt</h3>
+        <pre><code class="language-plaintext">A surreal humanoid figure stands at the center of a symmetrical composition, her form seamlessly merging organic and mechanical elements. Her head is crowned with a delicate crown of cascading flowers and leaves, their petals rendered in intricate ink lines that blend into fine circuit-like patterns along her hairline. The body is draped in flowing mechanical armor—gears, pistons, and glowing conduits interwoven with roots and vines that snake from her shoulders to her legs, symbolizing unity between technology and nature. Her skin is smooth yet textured with subtle mechanical ridges and organic veins that pulse faintly under the light. The figure’s posture is serene and balanced, her gaze distant yet contemplative. The background dissolves into soft, indistinct shapes that echo her form, creating a sense of infinite depth. Rendered in ink on paper, the surface is smooth with precise linework and subtle shading that defines form without distraction. Subtle, even lighting from above casts gentle highlights on her features and mechanical elements, enhancing their three-dimensional quality. The monochromatic color palette of black and white emphasizes contrast, texture, and the intricate details of both organic and artificial forms. The overall feeling is enigmatic and profound—a quiet revelation of harmony between the natural and the artificial, evoking mystery through delicate fusion.</code></pre>
+      </div>
+
+      <div class="image-wrap">
+        <img src="/garkbit/track_7/_2.jpg" alt="Cycle 2 result" loading="lazy"/>
+      </div>
+    </section>
+
+    <section class="cycle" id="cycle-3">
+      <div class="cycle-header">
+        <span class="cycle-badge">Cycle 3</span>
+      </div>
+
+      <div class="block description-block">
+        <h3>Description</h3>
+        <pre><code class="language-json">{
+  &quot;subject&quot;: &quot;a surreal, biomechanical figure&quot;,
+  &quot;description&quot;: &quot;A humanoid figure with a combination of organic and mechanical elements, featuring a floral crown and intricate mechanical parts integrated into the body&quot;,
+  &quot;tone&quot;: &quot;dreamy and ethereal&quot;,
+  &quot;medium&quot;: &quot;drawing&quot;,
+  &quot;surface&quot;: &quot;paper&quot;,
+  &quot;artisticStyle&quot;: &quot;surrealism with a cyberpunk influence&quot;,
+  &quot;brushworkOrDetail&quot;: &quot;detailed pencil work with fine linework and shading&quot;,
+  &quot;composition&quot;: &quot;asymmetrical, with a focus on the upper body&quot;,
+  &quot;lighting&quot;: &quot;soft, diffused light that enhances the ethereal quality&quot;,
+  &quot;colorPalette&quot;: &quot;monochromatic, with shades of gray and white&quot;,
+  &quot;notableTraits&quot;: &quot;floral crown, mechanical limbs, intricate mechanical details, organic and mechanical fusion&quot;,
+  &quot;overallFeeling&quot;: &quot;mysterious and otherworldly&quot;
+}</code></pre>
+      </div>
+
+      <div class="block prompt-block">
+        <h3>Prompt</h3>
+        <pre><code class="language-plaintext">A surreal, biomechanical figure stands in an asymmetrical composition, its upper body dominating the frame with intricate fusion of organic and mechanical elements. The humanoid form features delicate floral crown made of translucent petals with veins tracing through the petals like circuitry, while mechanical limbs emerge from the torso—gears and pistons interwoven into flesh-like skin, their surfaces gleaming with polished metal and subtle rust. The figure’s face is partially obscured by a crown of glowing bioluminescent flowers that pulse softly in shades of lavender and mint, casting faint light across the organic contours of its features. The drawing is rendered in precise pencil work with fine linework and delicate shading that creates a three-dimensional texture on the paper surface. Soft, diffused light emanates from above and slightly to the left, highlighting the figure’s ethereal form and enhancing the dreamy quality of its silhouette. The monochromatic color palette features muted grays, soft whites, and subtle highlights in pale gold and slate, creating a harmonious contrast that emphasizes depth and form. The composition centers on the upper torso with dynamic negative space around the limbs, drawing the eye upward toward the crown. The overall feeling is one of quiet mystery and otherworldly beauty, evoking a sense of wonder through intricate detail and surreal harmony.</code></pre>
+      </div>
+
+      <div class="image-wrap">
+        <img src="/garkbit/track_7/_3.jpg" alt="Cycle 3 result" loading="lazy"/>
+      </div>
+    </section>
+
+    <section class="cycle" id="cycle-4">
+      <div class="cycle-header">
+        <span class="cycle-badge">Cycle 4</span>
+      </div>
+
+      <div class="block description-block">
+        <h3>Description</h3>
+        <pre><code class="language-json">{
+  &quot;subject&quot;: &quot;A humanoid figure with mechanical and organic elements&quot;,
+  &quot;description&quot;: &quot;The artwork features a figure that combines human-like features with intricate mechanical components and floral motifs. The figure's body is adorned with gears and metallic parts, giving it a cybernetic appearance. Flowers are integrated into the design, with glowing purple petals adorning the head, adding a surreal and ethereal quality to the overall composition.&quot;,
+  &quot;tone&quot;: &quot;Dreamlike and surreal&quot;,
+  &quot;medium&quot;: &quot;Illustration&quot;,
+  &quot;surface&quot;: &quot;Paper&quot;,
+  &quot;artisticStyle&quot;: &quot;Cyberpunk&quot;,
+  &quot;brushworkOrDetail&quot;: &quot;Detailed and intricate&quot;,
+  &quot;composition&quot;: &quot;Symmetrical with a central focus on the figure&quot;,
+  &quot;lighting&quot;: &quot;Subtle and soft, highlighting the figure's features&quot;,
+  &quot;colorPalette&quot;: &quot;Neutral tones with accents of purple&quot;,
+  &quot;notableTraits&quot;: &quot;Cybernetic design, Floral integration, Glowing elements, Symmetry&quot;,
+  &quot;overallFeeling&quot;: &quot;Mystical and futuristic&quot;
+}</code></pre>
+      </div>
+
+      <div class="block prompt-block">
+        <h3>Prompt</h3>
+        <pre><code class="language-plaintext">An intricate illustration on smooth paper features a humanoid figure whose body merges seamlessly with mechanical components and delicate floral motifs. The figure’s form is sculpted with precision, its torso adorned with interlocking gears, polished metallic plates, and translucent conduits that glow faintly with internal light. Delicate purple flowers bloom across the figure’s arms, chest, and head, their petals radiating a soft luminescence that contrasts with the cool metallic tones of its form. The composition is perfectly symmetrical, centered on the figure as the focal point, with balanced proportions that enhance its elegant presence. Subtle, directional lighting from a soft source above casts gentle highlights across the figure’s features, emphasizing the interplay between organic texture and mechanical precision. The color palette is defined by neutral earthy tones—creams, ochres, and silvers—that are punctuated by vivid purple accents, creating a harmonious yet surreal contrast. The brushwork is detailed and expressive, with fine lines defining the mechanical elements and soft strokes blending into the floral forms. The overall atmosphere is mystical and futuristic, evoking a sense of wonder through its fusion of nature and technology, all rendered with the clarity and depth of high-quality paper illustration.</code></pre>
+      </div>
+
+      <div class="image-wrap">
+        <img src="/garkbit/track_7/_4.jpg" alt="Cycle 4 result" loading="lazy"/>
+      </div>
+    </section>
+
+</div>
+<footer>Generated by Garkbit Examples</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script>hljs.highlightAll();</script>
+</body>
+</html>

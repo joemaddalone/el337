@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Track 5 – Garkbit Examples</title>
+<meta name="description" content="Detailed view of Track 5: A neon sign reading 'OPEN 24 HOURS' in a rainy city alley at night, reflections on wet pavement"/>
+<!-- highlight.js for JSON formatting -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0e0e12;
+  --surface:#16161d;
+  --surface2:#1e1e28;
+  --border:#2a2a3a;
+  --text:#e2e2ee;
+  --text-muted:#8888a0;
+  --accent:#7c6aef;
+  --accent2:#a78bfa;
+  --gradient:linear-gradient(135deg,#7c6aef 0%,#a78bfa 50%,#c084fc 100%);
+  --radius:12px;
+  --font:'Inter',system-ui,-apple-system,sans-serif;
+}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font);
+  line-height:1.7;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent2);text-decoration:none;transition:color .2s}
+a:hover{color:#c084fc}
+
+.topbar{
+  position:sticky;top:0;z-index:100;
+  padding:.75rem 2rem;
+  background:rgba(14,14,18,.85);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.topbar a{font-weight:500}
+.topbar .title{font-weight:600;font-size:1.05rem}
+.container{max-width:900px;margin:0 auto;padding:2rem}
+
+/* ── Hero banner ── */
+.track-hero{
+  text-align:center;
+  padding:4rem 2rem 3rem;
+  background:radial-gradient(ellipse at 50% 0%,rgba(124,106,239,.12) 0%,transparent 55%);
+}
+.track-hero h1{
+  font-size:clamp(1.6rem,4vw,2.6rem);
+  font-weight:700;
+  background:var(--gradient);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  margin-bottom:.25rem;
+}
+.track-hero .subtitle{color:var(--text-muted);font-size:.95rem}
+
+/* ── Blocks ── */
+.block{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:1.25rem 1.5rem;
+  margin-bottom:1.25rem;
+}
+.block h3{
+  font-size:.75rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:var(--accent2);
+  margin-bottom:.65rem;
+  font-weight:600;
+}
+.block pre{
+  white-space:pre-wrap;
+  word-break:break-word;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.82rem;
+  line-height:1.65;
+  color:var(--text);
+}
+
+/* ── Image ── */
+.image-wrap{
+  border-radius:var(--radius);
+  overflow:hidden;
+  border:1px solid var(--border);
+  margin-bottom:2.5rem;
+}
+.image-wrap img{
+  width:100%;
+  display:block;
+}
+
+/* ── Cycles ── */
+.cycle{margin-bottom:1rem}
+.cycle-header{margin-bottom:1rem;display:flex;align-items:center;gap:.75rem}
+.cycle-badge{
+  display:inline-block;
+  padding:.3rem .9rem;
+  background:var(--gradient);
+  color:#fff;
+  border-radius:999px;
+  font-size:.75rem;
+  font-weight:700;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+
+/* ── Divider ── */
+.divider{
+  border:none;
+  height:1px;
+  background:var(--border);
+  margin:2.5rem 0;
+}
+
+/* ── Cycle nav ── */
+.cycle-nav{
+  display:flex;flex-wrap:wrap;gap:.5rem;
+  margin-bottom:2rem;
+}
+.cycle-nav a{
+  padding:.35rem .85rem;
+  border:1px solid var(--border);
+  border-radius:999px;
+  font-size:.78rem;
+  font-weight:500;
+  transition:background .2s,border-color .2s;
+}
+.cycle-nav a:hover{
+  background:var(--surface2);
+  border-color:var(--accent);
+}
+
+footer{
+  text-align:center;
+  padding:3rem 1rem;
+  color:var(--text-muted);
+  font-size:.8rem;
+  border-top:1px solid var(--border);
+  margin-top:2rem;
+}
+</style>
+</head>
+<body>
+<nav class="topbar">
+  <a href="index.html">← All Tracks</a>
+  <span class="title">Track 5</span>
+</nav>
+
+<div class="track-hero">
+  <h1>Track 5</h1>
+  <p class="subtitle">4 cycles of iterative reinterpretation</p>
+  <p class="subtitle" style="font-size:.8rem;font-weight:600;">All images resampled from hi-res png to mozjpeg encoded jpg</p>
+</div>
+
+<div class="container">
+
+  <!-- Cycle navigation -->
+  <div class="cycle-nav">
+    <a href="#initial">Initial</a>
+    <a href="#cycle-1">Cycle 1</a>
+    <a href="#cycle-2">Cycle 2</a>
+    <a href="#cycle-3">Cycle 3</a>
+    <a href="#cycle-4">Cycle 4</a>
+  </div>
+
+  <!-- Initial prompt & image -->
+  <section id="initial">
+    <div class="cycle-header">
+      <span class="cycle-badge">Initial</span>
+    </div>
+
+    <div class="block">
+      <h3>Initial Prompt</h3>
+      <pre><code class="language-plaintext hjs">A neon sign reading 'OPEN 24 HOURS' in a rainy city alley at night, reflections on wet pavement</code></pre>
+    </div>
+
+    <div class="block">
+      <h3>Enhanced Prompt</h3>
+      <pre><code class="language-plaintext hjs">A wide-angle lens captures a rain-slicked city alley at night, with the neon sign reading 'OPEN 24 HOURS' casting a warm, pulsing orange glow that reflects vividly across the wet pavement. The sign is mounted on a weathered brick wall, its letters sharp and glowing with a soft halo of light that merges with the ambient city glow. In the foreground, the glossy asphalt reflects distorted ripples of rain and neon, creating a mirror-like surface that amplifies the scene's depth. The midground reveals rows of distant streetlamps and flickering storefront signs, their light diffused through misty air. The background dissolves into soft bokeh of buildings and fog, enhancing the sense of layered space. A shallow depth of field keeps the sign in crisp focus while gently blurring the rain-slicked pavement and distant lights, evoking a mood of quiet urban vitality punctuated by the reflective chaos of rain.</code></pre>
+    </div>
+
+    <div class="image-wrap">
+      <img src="/garkbit/track_5/_0.jpg" alt="Initial image" loading="lazy"/>
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- Cycles -->
+  
+    <section class="cycle" id="cycle-1">
+      <div class="cycle-header">
+        <span class="cycle-badge">Cycle 1</span>
+      </div>
+
+      <div class="block description-block">
+        <h3>Description</h3>
+        <pre><code class="language-json">{
+  &quot;subject&quot;: &quot;A neon-lit street scene at night&quot;,
+  &quot;style&quot;: &quot;Photorealistic&quot;,
+  &quot;description&quot;: &quot;A wet street at night, illuminated by neon signs, with reflections on the pavement. The most prominent sign reads 'OPEN 24 HOURS'.&quot;,
+  &quot;tone&quot;: &quot;Mysterious and slightly moody&quot;,
+  &quot;notable&quot;: &quot;The wet pavement reflecting the neon lights creates a striking visual effect, and the 'OPEN 24 HOURS' sign is particularly eye-catching.&quot;,
+  &quot;cameraPosition&quot;: &quot;At street level, looking down the street&quot;,
+  &quot;composition&quot;: &quot;The subject is centered, with the 'OPEN 24 HOURS' sign prominently displayed on the right side of the frame. The street extends into the distance, creating a sense of depth.&quot;,
+  &quot;lighting&quot;: &quot;The primary light source is the neon sign, casting a warm glow on the wet pavement. Other streetlights add to the illumination.&quot;,
+  &quot;atmospherics&quot;: &quot;The scene evokes a feeling of quiet nighttime activity, with the neon light suggesting a place that is always open and active.&quot;,
+  &quot;lensType&quot;: &quot;Not specified&quot;,
+  &quot;motionInTheScene&quot;: &quot;No visible motion in the scene; it is a still image&quot;,
+  &quot;colorScheme&quot;: &quot;Predominantly cool tones with a strong contrast provided by the neon orange and red lights against the dark background&quot;,
+  &quot;sceneDetails&quot;: &quot;The street is lined with buildings, some of which have additional neon signs. The pavement is wet, indicating recent rain. The overall scene suggests a city environment.&quot;,
+  &quot;overallFeeling&quot;: &quot;The image conveys a sense of solitude and mystery, with the neon light providing a stark contrast to the otherwise dim and quiet street.&quot;
+}</code></pre>
+      </div>
+
+      <div class="block prompt-block">
+        <h3>Prompt</h3>
+        <pre><code class="language-plaintext">A wet street at night illuminated by vibrant neon signs, captured from a low street-level perspective looking down the length of the street. The central subject is a large, eye-catching 'OPEN 24 HOURS' sign glowing in warm orange and red hues against the dark pavement, its letters sharply defined against the rain-slicked surface. The scene extends into the distance, revealing a row of buildings with additional neon signage, their lights casting long shadows and creating a layered depth of field. The wet pavement reflects the neon glow like a mirror, amplifying the contrast between the cool urban darkness and the warm, pulsing light. The primary lighting comes from the neon signs, which emit a strong, saturated orange and red glow that cuts through the night, while ambient streetlights provide a secondary wash of light that softens the edges. The atmosphere is quiet and mysterious, filled with the subtle hum of rain on concrete and the faint echo of footsteps on damp surfaces. The color scheme is dominated by cool grays and deep blues of the night sky and buildings, contrasted sharply by the bold, glowing neon colors that leap from the pavement like living fire. The lens type is standard wide-angle, capturing the full breadth of the scene without distortion, while the stillness of the image emphasizes the solitude and quiet energy of the night. The overall feeling is one of quiet mystery, solitude, and unspoken activity—where every neon glow tells a story of permanence in the dark.</code></pre>
+      </div>
+
+      <div class="image-wrap">
+        <img src="/garkbit/track_5/_1.jpg" alt="Cycle 1 result" loading="lazy"/>
+      </div>
+    </section>
+
+    <section class="cycle" id="cycle-2">
+      <div class="cycle-header">
+        <span class="cycle-badge">Cycle 2</span>
+      </div>
+
+      <div class="block description-block">
+        <h3>Description</h3>
+        <pre><code class="language-json">{
+  &quot;subject&quot;: &quot;A nighttime urban street scene&quot;,
+  &quot;style&quot;: &quot;Photographic realism with a moody, atmospheric tone&quot;,
+  &quot;description&quot;: &quot;The image depicts a wet urban street at night, illuminated by neon signs and streetlights, creating a reflective surface on the pavement. The scene includes a 'OPEN 24 HOURS' sign glowing in red neon, which casts a dramatic glow on the wet pavement. The surrounding buildings are dimly lit, and the overall ambiance is dark and moody, with raindrops visible in the air, suggesting a recent or ongoing light rain.&quot;,
+  &quot;tone&quot;: &quot;Dark and moody, with a sense of quiet urban life&quot;,
+  &quot;notable&quot;: &quot;The 'OPEN 24 HOURS' sign is the most prominent feature, standing out against the darker background. The wet pavement reflects the neon lights and streetlights, adding to the visual depth and atmosphere of the scene.&quot;,
+  &quot;cameraPosition&quot;: &quot;The camera appears to be positioned at street level, facing down the street, capturing the wet pavement and the reflections of the neon lights.&quot;,
+  &quot;composition&quot;: &quot;The composition is balanced with the 'OPEN 24 HOURS' sign as the focal point, with the street extending into the distance. The wet pavement serves as a reflective surface, enhancing the visual interest and depth of the scene.&quot;,
+  &quot;lighting&quot;: &quot;The scene is illuminated by a combination of neon signs and streetlights, with the wet pavement acting as a reflective surface that amplifies the glow of these lights. The lighting is primarily artificial, contributing to the nighttime urban atmosphere.&quot;,
+  &quot;atmospherics&quot;: &quot;The scene conveys a sense of quietness and solitude, with the rain and the reflections adding to the tranquil and slightly melancholic mood. The 'OPEN 24 HOURS' sign suggests a constant, ongoing activity in the area, contrasting with the stillness of the night.&quot;,
+  &quot;lensType&quot;: &quot;The image appears to be captured with a wide-angle lens, allowing for a broad view of the street and its surroundings, which emphasizes the reflections on the wet pavement and the depth of the scene.&quot;,
+  &quot;motionInTheScene&quot;: &quot;There is no visible motion in the scene, but the raindrops and reflections give a subtle impression of movement and the ongoing light rain.&quot;,
+  &quot;colorScheme&quot;: &quot;The color scheme is dominated by dark tones, with the red and yellow neon lights providing the primary source of color. The reflections on the wet pavement introduce additional colors, creating a dynamic interplay of light and shadow.&quot;,
+  &quot;sceneDetails&quot;: &quot;The scene includes urban elements such as street signs, parked cars, and buildings, with the 'OPEN 24 HOURS' sign being the most prominent feature. The reflections on the wet pavement and the raindrops add a layer of visual interest and depth to the scene.&quot;,
+  &quot;overallFeeling&quot;: &quot;The overall feeling of the image is one of quiet urban life at night, with a touch of melancholy and a sense of ongoing activity in the midst of stillness.&quot;
+}</code></pre>
+      </div>
+
+      <div class="block prompt-block">
+        <h3>Prompt</h3>
+        <pre><code class="language-plaintext">A nighttime urban street scene captured at street level, facing down the narrow sidewalk and paved street. The wet pavement reflects a vibrant glow from a large red neon 'OPEN 24 HOURS' sign, which casts a dramatic red light across the surface, creating sharp reflections of its curved letters. The scene is dominated by dark shadows and deep blues, with faint yellow accents from streetlights illuminating the horizon. The wet surface acts as a mirror, amplifying the neon's glow and creating a dynamic interplay of light and shadow. Raindrops fall steadily in the air, catching the light and adding subtle motion to the stillness. The composition centers on the glowing sign, with buildings receding into darkness behind it. The wide-angle lens captures the full breadth of the street, emphasizing the reflections on the wet pavement and the depth of the urban night. The overall atmosphere is quiet and contemplative, punctuated by the rhythmic sound of rain and the steady pulse of neon light. The mood is one of serene urban solitude, where the stillness of night contrasts with the enduring presence of the 'OPEN 24 HOURS' sign, suggesting a quiet promise of continuity in a bustling world.</code></pre>
+      </div>
+
+      <div class="image-wrap">
+        <img src="/garkbit/track_5/_2.jpg" alt="Cycle 2 result" loading="lazy"/>
+      </div>
+    </section>
+
+    <section class="cycle" id="cycle-3">
+      <div class="cycle-header">
+        <span class="cycle-badge">Cycle 3</span>
+      </div>
+
+      <div class="block description-block">
+        <h3>Description</h3>
+        <pre><code class="language-json">{
+  &quot;subject&quot;: &quot;A neon sign that reads \&quot;OPEN 24 HOURS\&quot;&quot;,
+  &quot;style&quot;: &quot;Urban nighttime photography&quot;,
+  &quot;description&quot;: &quot;The image depicts a wet urban street at night, with a prominent neon sign reading \&quot;OPEN 24 HOURS\&quot; glowing red. The street is empty, with reflections of the neon sign on the wet pavement, creating a mirror-like effect. The buildings on either side are dark, with some windows slightly illuminated, suggesting it's a quiet time of day.&quot;,
+  &quot;tone&quot;: &quot;Mysterious and slightly eerie&quot;,
+  &quot;notable&quot;: &quot;The glowing neon sign and its reflection&quot;,
+  &quot;cameraPosition&quot;: &quot;Looking down the street, slightly angled towards the left&quot;,
+  &quot;composition&quot;: &quot;The sign is centered in the frame, with the wet pavement leading the viewer's eye down the street. The buildings flank the street on either side, creating a sense of depth and perspective.&quot;,
+  &quot;lighting&quot;: &quot;Artificial neon light and ambient streetlights, with the neon sign being the primary light source&quot;,
+  &quot;atmospherics&quot;: &quot;The wet pavement and reflections create a glossy, almost cinematic quality. The scene evokes a sense of solitude and quietness&quot;,
+  &quot;lensType&quot;: &quot;Not explicitly stated, but likely a wide-angle lens to capture the street scene&quot;,
+  &quot;motionInTheScene&quot;: &quot;Still, with the wet pavement reflecting the neon sign&quot;,
+  &quot;colorScheme&quot;: &quot;Dark tones with the bright red neon sign as the focal point, reflecting off the wet pavement&quot;,
+  &quot;sceneDetails&quot;: &quot;The scene includes a wet street, buildings with windows, and a single neon sign. The absence of people and vehicles adds to the quietness of the scene&quot;,
+  &quot;overallFeeling&quot;: &quot;The image conveys a sense of solitude, mystery, and quiet urban life, with the neon sign providing a stark contrast to the otherwise dark and reflective scene&quot;
+}</code></pre>
+      </div>
+
+      <div class="block prompt-block">
+        <h3>Prompt</h3>
+        <pre><code class="language-plaintext">A wide-angle urban night scene captures a wet street at dusk, viewed from a low angle slightly angled toward the left, emphasizing depth and perspective. At the center of the frame, a glowing neon sign reading 'OPEN 24 HOURS' in vibrant red casts a sharp, reflective light onto the rain-slick pavement, which acts as a mirror to distort and amplify its image. The wet surface creates a glossy, cinematic sheen that captures ambient neon glows and distant streetlights, enhancing the atmosphere of quiet mystery. The buildings lining either side are dark silhouettes, their windows faintly illuminated by scattered city lights, suggesting a city at rest. The scene is still, with no movement in the air or water, reinforcing a sense of solitude and contemplative stillness. The primary light source is the red neon sign, which contrasts sharply with the dark urban backdrop, while secondary lighting from ambient streetlights adds subtle texture to the night. The lens captures the full breadth of the street, with the neon sign as the visual anchor, its reflection creating a layered depth that draws the eye through the scene. The overall mood is one of quiet urban solitude, underscored by the stark contrast between the glowing sign and the dark, reflective world around it.</code></pre>
+      </div>
+
+      <div class="image-wrap">
+        <img src="/garkbit/track_5/_3.jpg" alt="Cycle 3 result" loading="lazy"/>
+      </div>
+    </section>
+
+    <section class="cycle" id="cycle-4">
+      <div class="cycle-header">
+        <span class="cycle-badge">Cycle 4</span>
+      </div>
+
+      <div class="block description-block">
+        <h3>Description</h3>
+        <pre><code class="language-json">{
+  &quot;subject&quot;: &quot;A neon 'OPEN 24 HOURS' sign on a wet street at dusk&quot;,
+  &quot;style&quot;: &quot;Urban night scene with a cinematic feel&quot;,
+  &quot;description&quot;: &quot;The image depicts a wet street at dusk, with a prominent neon 'OPEN 24 HOURS' sign glowing red. The street is lined with buildings, some with illuminated windows, and the reflection of the neon sign is visible on the wet pavement. In the background, there are faint lights and silhouettes of distant buildings, suggesting a cityscape. The overall scene has a moody and atmospheric quality, with the neon sign being the focal point&quot;,
+  &quot;tone&quot;: &quot;Mysterious and atmospheric, with a sense of late-night activity&quot;,
+  &quot;notable&quot;: &quot;The vibrant red neon sign contrasts sharply with the dark, muted tones of the surrounding environment&quot;,
+  &quot;cameraPosition&quot;: &quot;The camera appears to be positioned at street level, facing down the street, slightly angled to capture the reflection on the wet pavement&quot;,
+  &quot;composition&quot;: &quot;The composition is balanced with the neon sign centered and the wet pavement reflecting the sign, creating a strong visual impact&quot;,
+  &quot;lighting&quot;: &quot;The lighting is low, with the primary light source being the neon sign and some ambient light from the windows of the buildings&quot;,
+  &quot;atmospherics&quot;: &quot;The atmosphere is quiet and still, with the wet pavement adding a reflective quality that enhances the mood of the scene&quot;,
+  &quot;lensType&quot;: &quot;The image appears to have been taken with a wide-angle lens to capture the full street scene and the reflection on the pavement&quot;,
+  &quot;motionInTheScene&quot;: &quot;There is no visible motion in the scene, suggesting a moment of stillness&quot;,
+  &quot;colorScheme&quot;: &quot;The color scheme is dominated by dark blues and blacks, with the red neon sign and the wet pavement reflecting a reddish hue&quot;,
+  &quot;sceneDetails&quot;: &quot;The scene includes a wet street, buildings with illuminated windows, a neon sign, and the reflection of the sign on the pavement. The background features distant buildings and faint lights&quot;,
+  &quot;overallFeeling&quot;: &quot;The overall feeling of the image is one of quiet urban nightlife, with a sense of solitude and mystery&quot;
+}</code></pre>
+      </div>
+
+      <div class="block prompt-block">
+        <h3>Prompt</h3>
+        <pre><code class="language-plaintext">A wide-angle street-level shot captures a wet street at dusk, where a vibrant red neon 'OPEN 24 HOURS' sign glows against a dark, moody urban backdrop. The camera is positioned slightly angled to capture the sign's reflection on the rain-slicked pavement below. The composition balances the neon sign in the center with the wet surface mirroring its fiery hue. Distant buildings stand silhouetted against the deepening twilight, their windows faintly lit by ambient glow. The low-angle lighting from the neon sign and scattered streetlights creates a warm contrast against the cool blues of the sky and pavement. The wet surface enhances the scene’s atmosphere with a reflective sheen, amplifying the sense of quiet solitude and mysterious urban stillness. The overall feeling is one of serene nocturnal solitude, underscored by the dramatic interplay of red light and dark shadows.</code></pre>
+      </div>
+
+      <div class="image-wrap">
+        <img src="/garkbit/track_5/_4.jpg" alt="Cycle 4 result" loading="lazy"/>
+      </div>
+    </section>
+
+</div>
+<footer>Generated by Garkbit Examples</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script>hljs.highlightAll();</script>
+</body>
+</html>
