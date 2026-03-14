@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Track 2 – Garkbit Examples</title>
+<meta name="description" content="Detailed view of Track 2: concept art for the gadget, scientific measurements and notation, pencil and watercolor on paper"/>
+<!-- highlight.js for JSON formatting -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0e0e12;
+  --surface:#16161d;
+  --surface2:#1e1e28;
+  --border:#2a2a3a;
+  --text:#e2e2ee;
+  --text-muted:#8888a0;
+  --accent:#7c6aef;
+  --accent2:#a78bfa;
+  --gradient:linear-gradient(135deg,#7c6aef 0%,#a78bfa 50%,#c084fc 100%);
+  --radius:12px;
+  --font:'Inter',system-ui,-apple-system,sans-serif;
+}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font);
+  line-height:1.7;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent2);text-decoration:none;transition:color .2s}
+a:hover{color:#c084fc}
+
+.topbar{
+  position:sticky;top:0;z-index:100;
+  padding:.75rem 2rem;
+  background:rgba(14,14,18,.85);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.topbar a{font-weight:500}
+.topbar .title{font-weight:600;font-size:1.05rem}
+.container{max-width:900px;margin:0 auto;padding:2rem}
+
+/* ── Hero banner ── */
+.track-hero{
+  text-align:center;
+  padding:4rem 2rem 3rem;
+  background:radial-gradient(ellipse at 50% 0%,rgba(124,106,239,.12) 0%,transparent 55%);
+}
+.track-hero h1{
+  font-size:clamp(1.6rem,4vw,2.6rem);
+  font-weight:700;
+  background:var(--gradient);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  margin-bottom:.25rem;
+}
+.track-hero .subtitle{color:var(--text-muted);font-size:.95rem}
+
+/* ── Blocks ── */
+.block{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:1.25rem 1.5rem;
+  margin-bottom:1.25rem;
+}
+.block h3{
+  font-size:.75rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:var(--accent2);
+  margin-bottom:.65rem;
+  font-weight:600;
+}
+.block pre{
+  white-space:pre-wrap;
+  word-break:break-word;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.82rem;
+  line-height:1.65;
+  color:var(--text);
+}
+
+/* ── Image ── */
+.image-wrap{
+  border-radius:var(--radius);
+  overflow:hidden;
+  border:1px solid var(--border);
+  margin-bottom:2.5rem;
+}
+.image-wrap img{
+  width:100%;
+  display:block;
+}
+
+/* ── Cycles ── */
+.cycle{margin-bottom:1rem}
+.cycle-header{margin-bottom:1rem;display:flex;align-items:center;gap:.75rem}
+.cycle-badge{
+  display:inline-block;
+  padding:.3rem .9rem;
+  background:var(--gradient);
+  color:#fff;
+  border-radius:999px;
+  font-size:.75rem;
+  font-weight:700;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+
+/* ── Divider ── */
+.divider{
+  border:none;
+  height:1px;
+  background:var(--border);
+  margin:2.5rem 0;
+}
+
+/* ── Cycle nav ── */
+.cycle-nav{
+  display:flex;flex-wrap:wrap;gap:.5rem;
+  margin-bottom:2rem;
+}
+.cycle-nav a{
+  padding:.35rem .85rem;
+  border:1px solid var(--border);
+  border-radius:999px;
+  font-size:.78rem;
+  font-weight:500;
+  transition:background .2s,border-color .2s;
+}
+.cycle-nav a:hover{
+  background:var(--surface2);
+  border-color:var(--accent);
+}
+
+footer{
+  text-align:center;
+  padding:3rem 1rem;
+  color:var(--text-muted);
+  font-size:.8rem;
+  border-top:1px solid var(--border);
+  margin-top:2rem;
+}
+</style>
+</head>
+<body>
+<nav class="topbar">
+  <a href="index.html">← All Tracks</a>
+  <span class="title">Track 2</span>
+</nav>
+
+<div class="track-hero">
+  <h1>Track 2</h1>
+  <p class="subtitle">5 cycles of iterative reinterpretation</p>
+  <p class="subtitle" style="font-size:.8rem;font-weight:600;">All images resampled from hi-res png to mozjpeg encoded jpg</p>
+</div>
+
+<div class="container">
+
+  <!-- Cycle navigation -->
+  <div class="cycle-nav">
+    <a href="#initial">Initial</a>
+    <a href="#cycle-1">Cycle 1</a>
+    <a href="#cycle-2">Cycle 2</a>
+    <a href="#cycle-3">Cycle 3</a>
+    <a href="#cycle-4">Cycle 4</a>
+    <a href="#cycle-5">Cycle 5</a>
+  </div>
+
+  <!-- Initial prompt & image -->
+  <section id="initial">
+    <div class="cycle-header">
+      <span class="cycle-badge">Initial</span>
+    </div>
+
+    <div class="block">
+      <h3>Initial Prompt</h3>
+      <pre><code class="language-plaintext hjs">concept art for the gadget, scientific measurements and notation, pencil and watercolor on paper</code></pre>
+    </div>
+
+    <div class="block">
+      <h3>Enhanced Prompt</h3>
+      <pre><code class="language-plaintext hjs">Concept art for a futuristic scientific gadget rendered in meticulous pencil and watercolor on aged paper. The composition centers a spherical device with layered circuitry and translucent panels, its metallic surface captured in precise linear detail with soft pencil strokes defining structural form and reflective sheen. Surrounding it are scientific measurements in clear, hand-illustrated notation—equations, frequency charts, and scale markers—in a warm amber ink that contrasts with cool watercolor washes of deep indigo and lavender. The paper features a textured grain with subtle pencil scratches in the lower margin, enhancing tactile realism. A soft, diffused light from above casts gentle highlights on the gadget’s curved edges and creates a luminous glow in the watercolor areas, while faint cross-hatching adds depth to shadowed zones. The color palette balances cool scientific tones with warm ink highlights, evoking precision and wonder. The overall mood is intellectually engaging and artistically refined, blending technical accuracy with painterly softness.</code></pre>
+    </div>
+
+    <div class="image-wrap">
+      <img src="/garkbit/track_2/_0.jpg" alt="Initial image" loading="lazy"/>
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- Cycles -->
+  
+    <section class="cycle" id="cycle-1">
+      <div class="cycle-header">
+        <span class="cycle-badge">Cycle 1</span>
+      </div>
+
+      <div class="block description-block">
+        <h3>Description</h3>
+        <pre><code class="language-json">{
+  &quot;subject&quot;: &quot;A futuristic, spherical object with a metallic and glowing appearance&quot;,
+  &quot;description&quot;: &quot;The artwork depicts a spherical object with a complex, metallic structure and glowing elements, surrounded by mathematical equations and diagrams. The object appears to be a piece of advanced technology or a conceptual representation of a futuristic device.&quot;,
+  &quot;tone&quot;: &quot;Mysterious and technological&quot;,
+  &quot;medium&quot;: &quot;Illustration&quot;,
+  &quot;surface&quot;: &quot;Paper&quot;,
+  &quot;artisticStyle&quot;: &quot;Conceptual and scientific illustration&quot;,
+  &quot;brushworkOrDetail&quot;: &quot;The artwork features detailed brushwork, especially around the edges of the sphere and the surrounding equations, giving it a hand-drawn, sketch-like quality.&quot;,
+  &quot;composition&quot;: &quot;The composition is centered around the spherical object, with mathematical equations and diagrams surrounding it, creating a sense of complexity and depth.&quot;,
+  &quot;lighting&quot;: &quot;The object is illuminated from within, casting a glow that contrasts with the darker, more shadowed areas of the surrounding equations and diagrams.&quot;,
+  &quot;colorPalette&quot;: &quot;The color palette includes metallic grays, blues, and purples for the sphere, with white and black for the equations and diagrams. The background has a watercolor effect with shades of blue and purple.&quot;,
+  &quot;notableTraits&quot;: &quot;The sphere has a complex, segmented structure with glowing elements, The surrounding equations and diagrams suggest a scientific or mathematical context, The use of watercolor effects in the background adds a dreamy, ethereal quality to the image&quot;,
+  &quot;overallFeeling&quot;: &quot;The artwork conveys a sense of mystery and advanced technology, with a touch of surrealism due to the combination of the glowing object and the surrounding equations.&quot;
+}</code></pre>
+      </div>
+
+      <div class="block prompt-block">
+        <h3>Prompt</h3>
+        <pre><code class="language-plaintext">A futuristic spherical object with a metallic and glowing appearance, rendered in a conceptual and scientific illustration on textured paper. The sphere features a complex, segmented structure of interlocking metallic plates, each embedded with glowing blue and purple energy nodes that pulse softly under internal light. Surrounding it are intricate mathematical equations and diagrams in white ink, their lines hand-drawn with visible texture, creating a dynamic interplay between form and formula. The composition is tightly centered, with the sphere as the focal point, while the equations radiate outward in concentric circles, suggesting movement and depth. Lighting originates from within the sphere, casting a warm, luminous glow that highlights its metallic surfaces and creates soft highlights on the surrounding diagrams. The color palette is defined by cool metallic grays, deep blues, and vibrant purples for the sphere, contrasted with crisp white and black ink for the equations. The background features a watercolor wash of muted blue and purple tones, lending a soft, ethereal quality that enhances the surreal atmosphere. The overall feeling is one of mystery and advanced technology, where science meets imagination through the fusion of glowing machinery and mathematical precision.</code></pre>
+      </div>
+
+      <div class="image-wrap">
+        <img src="/garkbit/track_2/_1.jpg" alt="Cycle 1 result" loading="lazy"/>
+      </div>
+    </section>
+
+    <section class="cycle" id="cycle-2">
+      <div class="cycle-header">
+        <span class="cycle-badge">Cycle 2</span>
+      </div>
+
+      <div class="block description-block">
+        <h3>Description</h3>
+        <pre><code class="language-json">{
+  &quot;subject&quot;: &quot;A futuristic, spherical object with glowing blue and purple lights&quot;,
+  &quot;description&quot;: &quot;The artwork depicts a spherical object with a metallic, intricate design, featuring multiple glowing blue and purple lights. The object is encased within a circular, radiant aura, giving it a mystical and otherworldly appearance. The background is a swirling, nebulous cloud, enhancing the cosmic and futuristic theme.&quot;,
+  &quot;tone&quot;: &quot;Mystical, futuristic, and otherworldly&quot;,
+  &quot;medium&quot;: &quot;Digital art&quot;,
+  &quot;surface&quot;: &quot;Digital canvas&quot;,
+  &quot;artisticStyle&quot;: &quot;Futuristic, cosmic, and abstract&quot;,
+  &quot;brushworkOrDetail&quot;: &quot;The artwork is highly detailed, with a focus on the intricate design of the spherical object and the radiant glow of the lights. The brushwork is precise, creating a sense of depth and complexity.&quot;,
+  &quot;composition&quot;: &quot;The spherical object is centrally positioned, with the glowing lights and aura surrounding it. The background is a swirling cloud, adding to the cosmic theme. The composition is balanced, with the object as the focal point.&quot;,
+  &quot;lighting&quot;: &quot;The lighting is dynamic, with the glowing blue and purple lights emanating from the spherical object, creating a radiant aura. The background is illuminated by the object's glow, enhancing the overall luminosity.&quot;,
+  &quot;colorPalette&quot;: &quot;The color palette includes shades of blue, purple, and white, with the background featuring swirling, nebulous clouds in various shades of blue and gray.&quot;,
+  &quot;notableTraits&quot;: &quot;The intricate design of the spherical object, the glowing lights, the radiant aura, and the cosmic background are the most notable traits of this artwork.&quot;,
+  &quot;overallFeeling&quot;: &quot;The overall feeling of the artwork is one of wonder and mystery, evoking a sense of the unknown and the futuristic. The combination of the intricate design, glowing lights, and cosmic background creates a captivating and immersive experience.&quot;
+}</code></pre>
+      </div>
+
+      <div class="block prompt-block">
+        <h3>Prompt</h3>
+        <pre><code class="language-plaintext">A futuristic, spherical object with a metallic, intricate design, encased in a luminous aura of radiant blue and purple light. The object is positioned centrally within a swirling nebulous cloud background, its surface textured with precise metallic sheen and delicate circuit-like patterns. The glowing lights emit dynamic, pulsating radiance that radiates outward, creating an ethereal halo around the sphere. The composition balances the object as the focal point with the vast, abstract cloud of swirling blues and grays in the foreground and midground. The brushwork is highly detailed, with sharp lines defining the sphere’s structure and smooth gradients blending the light into soft halos. The lighting is dynamic and multi-layered, with cool blue highlights contrasted against warm purple glows, enhancing depth and dimensionality. The color palette features rich blues, deep purples, and subtle whites, with the background rendered in soft, undulating clouds that evoke cosmic mystery. The artwork’s overall feeling is one of wonder and transcendence, evoking the unknown through a blend of technological precision and celestial imagination.</code></pre>
+      </div>
+
+      <div class="image-wrap">
+        <img src="/garkbit/track_2/_2.jpg" alt="Cycle 2 result" loading="lazy"/>
+      </div>
+    </section>
+
+    <section class="cycle" id="cycle-3">
+      <div class="cycle-header">
+        <span class="cycle-badge">Cycle 3</span>
+      </div>
+
+      <div class="block description-block">
+        <h3>Description</h3>
+        <pre><code class="language-json">{
+  &quot;subject&quot;: &quot;A glowing, circuit-like sphere&quot;,
+  &quot;description&quot;: &quot;The artwork depicts a sphere with intricate circuitry, glowing with a bright blue light, set against a cosmic background with swirling nebulae in shades of purple and blue.&quot;,
+  &quot;tone&quot;: &quot;Mysterious and futuristic&quot;,
+  &quot;medium&quot;: &quot;Digital art&quot;,
+  &quot;surface&quot;: &quot;The sphere appears to be a digital rendering, possibly a 3D model with a glossy finish&quot;,
+  &quot;artisticStyle&quot;: &quot;Digital surrealism&quot;,
+  &quot;brushworkOrDetail&quot;: &quot;The image is a digital creation with smooth gradients and sharp lines for the circuitry, giving it a high-tech, almost holographic appearance.&quot;,
+  &quot;composition&quot;: &quot;The sphere is centered, drawing the viewer's attention directly to it, with the cosmic background providing a contrasting and expansive setting.&quot;,
+  &quot;lighting&quot;: &quot;The sphere is illuminated from within, casting a bright blue glow that contrasts with the darker, more subdued tones of the surrounding space.&quot;,
+  &quot;colorPalette&quot;: &quot;Dominantly blue and purple hues with black and white circuitry details&quot;,
+  &quot;notableTraits&quot;: &quot;The interplay between the glowing sphere and the cosmic background, the detailed circuitry, and the use of light to create depth and focus.&quot;,
+  &quot;overallFeeling&quot;: &quot;The artwork evokes a sense of wonder and the intersection of technology and the cosmos, suggesting a futuristic or otherworldly theme.&quot;
+}</code></pre>
+      </div>
+
+      <div class="block prompt-block">
+        <h3>Prompt</h3>
+        <pre><code class="language-plaintext">A luminous digital art rendering of a glowing, circuit-like sphere suspended in a vast cosmic void. The sphere, a perfect orb of translucent blue light, is embedded with intricate, fractal-like circuitry that pulses with energy, its lines sharp and geometric yet fluid in their interplay. Surrounding it is a deep, velvety nebula of shifting purple and indigo hues, its edges softened by gentle gradients that dissolve into darkness. The sphere is centered in a balanced composition, drawing immediate focus through its radiant core and the stark contrast between its luminous form and the surrounding darkness. The lighting is internal, casting a bright blue glow that reflects off the sphere’s surface and creates subtle highlights along its circuitry, while the background remains cool and deep. The artwork employs digital surrealism: smooth gradients for the nebulae, precise lines for the circuitry, and a glossy, reflective finish on the sphere that mimics a holographic interface. The color palette is dominated by rich blues and purples, punctuated by the crisp black and white of the circuit details. The overall atmosphere is one of quiet wonder, where technology and the infinite cosmos converge in a moment of luminous mystery and futuristic wonder.</code></pre>
+      </div>
+
+      <div class="image-wrap">
+        <img src="/garkbit/track_2/_3.jpg" alt="Cycle 3 result" loading="lazy"/>
+      </div>
+    </section>
+
+    <section class="cycle" id="cycle-4">
+      <div class="cycle-header">
+        <span class="cycle-badge">Cycle 4</span>
+      </div>
+
+      <div class="block description-block">
+        <h3>Description</h3>
+        <pre><code class="language-json">{
+  &quot;subject&quot;: &quot;A glowing, circuit-like sphere&quot;,
+  &quot;description&quot;: &quot;The artwork depicts a spherical object with a glowing, circuit-like pattern radiating from a central bright light. The sphere is set against a dark, nebulous background with hints of purple and blue, giving it a cosmic or futuristic appearance.&quot;,
+  &quot;tone&quot;: &quot;Mysterious and futuristic&quot;,
+  &quot;medium&quot;: &quot;Digital art&quot;,
+  &quot;surface&quot;: &quot;Smooth, spherical&quot;,
+  &quot;artisticStyle&quot;: &quot;Digital illustration with a sci-fi or cosmic theme&quot;,
+  &quot;brushworkOrDetail&quot;: &quot;The image is composed of digital brushstrokes that create the intricate circuit pattern and the glowing effect of the light. The background is a blend of digital techniques to create the nebulous effect.&quot;,
+  &quot;composition&quot;: &quot;The central focus is the glowing sphere, with the circuit pattern radiating outward. The background is dark with subtle gradients of purple and blue, drawing attention to the sphere.&quot;,
+  &quot;lighting&quot;: &quot;The central light source is bright and intense, casting a glow that illuminates the circuit pattern and parts of the sphere. The background is dimly lit, enhancing the sphere's prominence.&quot;,
+  &quot;colorPalette&quot;: &quot;Primarily blue and purple tones with a bright white or yellow light source&quot;,
+  &quot;notableTraits&quot;: &quot;The intricate circuit pattern, the glowing effect, the contrast between the bright light and the dark background, and the overall futuristic aesthetic.&quot;,
+  &quot;overallFeeling&quot;: &quot;The artwork evokes a sense of mystery, technology, and the unknown, possibly representing a concept of advanced technology or a futuristic entity.&quot;
+}</code></pre>
+      </div>
+
+      <div class="block prompt-block">
+        <h3>Prompt</h3>
+        <pre><code class="language-plaintext">A digital art illustration of a glowing, circuit-like sphere centered within a dark, nebulous void. The sphere emits a radiant, intricate pattern of glowing blue and purple circuit lines that radiate outward from its central light source, creating a dynamic, fractal-like glow. The background is a deep, gradient-rich expanse of purple and blue tones, rendered with subtle digital brushstrokes to enhance depth and texture. The surface of the sphere is smooth and spherical, with the circuit lines defined by precise, flowing digital brushwork that mimics organic yet mechanical energy. The lighting is intense and focused, casting a bright white or yellow core that illuminates the circuit lines and creates a luminous halo around the sphere. The overall composition is balanced and serene, with the central sphere as the focal point against an expansive, mysterious backdrop. The artistic style combines clean digital precision with a soft, painterly glow, evoking a futuristic, cosmic atmosphere. The mood is one of quiet wonder and technological mystery, suggesting advanced thought or a hidden force.</code></pre>
+      </div>
+
+      <div class="image-wrap">
+        <img src="/garkbit/track_2/_4.jpg" alt="Cycle 4 result" loading="lazy"/>
+      </div>
+    </section>
+
+    <section class="cycle" id="cycle-5">
+      <div class="cycle-header">
+        <span class="cycle-badge">Cycle 5</span>
+      </div>
+
+      <div class="block description-block">
+        <h3>Description</h3>
+        <pre><code class="language-json">{
+  &quot;subject&quot;: &quot;A glowing circuit board within a sphere&quot;,
+  &quot;description&quot;: &quot;The image depicts a futuristic, glowing circuit board encased within a translucent, spherical structure. The board is illuminated with bright blue and white light, creating a stark contrast against the dark background. The sphere appears to be composed of a mesh-like material, allowing the circuitry to be visible through it.&quot;,
+  &quot;tone&quot;: &quot;Futuristic and high-tech&quot;,
+  &quot;medium&quot;: &quot;Digital art&quot;,
+  &quot;surface&quot;: &quot;Translucent sphere with a mesh-like texture&quot;,
+  &quot;artisticStyle&quot;: &quot;Digital illustration with a sci-fi aesthetic&quot;,
+  &quot;brushworkOrDetail&quot;: &quot;The image is a digital rendering with precise lines and bright highlights, giving it a clean and modern look.&quot;,
+  &quot;composition&quot;: &quot;The circuit board is centered within the sphere, with the light source at the center of the board, radiating outward. The composition is symmetrical and balanced.&quot;,
+  &quot;lighting&quot;: &quot;The lighting is focused on the circuit board, with bright, concentrated light emanating from the center, creating a glowing effect. The background is dark, which enhances the brightness of the subject.&quot;,
+  &quot;colorPalette&quot;: &quot;Dark background with bright blue and white highlights on the circuit board, and a translucent purple hue on the sphere.&quot;,
+  &quot;notableTraits&quot;: &quot;The use of light to emphasize the circuit board, the mesh-like texture of the sphere, and the contrast between the dark background and the bright, glowing elements.&quot;,
+  &quot;overallFeeling&quot;: &quot;The artwork evokes a sense of advanced technology and energy, with a feeling of power and innovation.&quot;
+}</code></pre>
+      </div>
+
+      <div class="block prompt-block">
+        <h3>Prompt</h3>
+        <pre><code class="language-plaintext">A futuristic, high-tech digital illustration depicting a glowing circuit board suspended within a translucent, spherical structure. The sphere is composed of a delicate mesh-like texture, allowing the intricate circuitry to be visible through its surface. The circuit board is illuminated with sharp, concentrated blue and white light, radiating outward from a central point to create a radiant, three-dimensional glow. The background is deep black, amplifying the brightness of the subject and creating a striking contrast. The composition is perfectly symmetrical, with the circuit board centered within the sphere, its light source precisely aligned at the center of the frame. The art medium is digital illustration, rendered with crisp lines and clean, modern brushwork that emphasizes precision and clarity. The color palette features a dark obsidian base, vibrant electric blue highlights on the circuitry, and a translucent purple hue that softly permeates the sphere’s surface. The overall feeling is one of advanced technological power and innovation, evoking a sense of energy, progress, and cutting-edge design.</code></pre>
+      </div>
+
+      <div class="image-wrap">
+        <img src="/garkbit/track_2/_5.jpg" alt="Cycle 5 result" loading="lazy"/>
+      </div>
+    </section>
+
+</div>
+<footer>Generated by Garkbit Examples</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script>hljs.highlightAll();</script>
+</body>
+</html>

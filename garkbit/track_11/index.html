@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Track 11 – Garkbit Examples</title>
+<meta name="description" content="Detailed view of Track 11: LEGO battlefield scene, grittier and bloodier than LEGO should be, true to life LEGO horrors of LEGO war"/>
+<!-- highlight.js for JSON formatting -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0e0e12;
+  --surface:#16161d;
+  --surface2:#1e1e28;
+  --border:#2a2a3a;
+  --text:#e2e2ee;
+  --text-muted:#8888a0;
+  --accent:#7c6aef;
+  --accent2:#a78bfa;
+  --gradient:linear-gradient(135deg,#7c6aef 0%,#a78bfa 50%,#c084fc 100%);
+  --radius:12px;
+  --font:'Inter',system-ui,-apple-system,sans-serif;
+}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font);
+  line-height:1.7;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent2);text-decoration:none;transition:color .2s}
+a:hover{color:#c084fc}
+
+.topbar{
+  position:sticky;top:0;z-index:100;
+  padding:.75rem 2rem;
+  background:rgba(14,14,18,.85);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.topbar a{font-weight:500}
+.topbar .title{font-weight:600;font-size:1.05rem}
+.container{max-width:900px;margin:0 auto;padding:2rem}
+
+/* ── Hero banner ── */
+.track-hero{
+  text-align:center;
+  padding:4rem 2rem 3rem;
+  background:radial-gradient(ellipse at 50% 0%,rgba(124,106,239,.12) 0%,transparent 55%);
+}
+.track-hero h1{
+  font-size:clamp(1.6rem,4vw,2.6rem);
+  font-weight:700;
+  background:var(--gradient);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  margin-bottom:.25rem;
+}
+.track-hero .subtitle{color:var(--text-muted);font-size:.95rem}
+
+/* ── Blocks ── */
+.block{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:1.25rem 1.5rem;
+  margin-bottom:1.25rem;
+}
+.block h3{
+  font-size:.75rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:var(--accent2);
+  margin-bottom:.65rem;
+  font-weight:600;
+}
+.block pre{
+  white-space:pre-wrap;
+  word-break:break-word;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.82rem;
+  line-height:1.65;
+  color:var(--text);
+}
+
+/* ── Image ── */
+.image-wrap{
+  border-radius:var(--radius);
+  overflow:hidden;
+  border:1px solid var(--border);
+  margin-bottom:2.5rem;
+}
+.image-wrap img{
+  width:100%;
+  display:block;
+}
+
+/* ── Cycles ── */
+.cycle{margin-bottom:1rem}
+.cycle-header{margin-bottom:1rem;display:flex;align-items:center;gap:.75rem}
+.cycle-badge{
+  display:inline-block;
+  padding:.3rem .9rem;
+  background:var(--gradient);
+  color:#fff;
+  border-radius:999px;
+  font-size:.75rem;
+  font-weight:700;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+
+/* ── Divider ── */
+.divider{
+  border:none;
+  height:1px;
+  background:var(--border);
+  margin:2.5rem 0;
+}
+
+/* ── Cycle nav ── */
+.cycle-nav{
+  display:flex;flex-wrap:wrap;gap:.5rem;
+  margin-bottom:2rem;
+}
+.cycle-nav a{
+  padding:.35rem .85rem;
+  border:1px solid var(--border);
+  border-radius:999px;
+  font-size:.78rem;
+  font-weight:500;
+  transition:background .2s,border-color .2s;
+}
+.cycle-nav a:hover{
+  background:var(--surface2);
+  border-color:var(--accent);
+}
+
+footer{
+  text-align:center;
+  padding:3rem 1rem;
+  color:var(--text-muted);
+  font-size:.8rem;
+  border-top:1px solid var(--border);
+  margin-top:2rem;
+}
+</style>
+</head>
+<body>
+<nav class="topbar">
+  <a href="index.html">← All Tracks</a>
+  <span class="title">Track 11</span>
+</nav>
+
+<div class="track-hero">
+  <h1>Track 11</h1>
+  <p class="subtitle">4 cycles of iterative reinterpretation</p>
+  <p class="subtitle" style="font-size:.8rem;font-weight:600;">All images resampled from hi-res png to mozjpeg encoded jpg</p>
+</div>
+
+<div class="container">
+
+  <!-- Cycle navigation -->
+  <div class="cycle-nav">
+    <a href="#initial">Initial</a>
+    <a href="#cycle-1">Cycle 1</a>
+    <a href="#cycle-2">Cycle 2</a>
+    <a href="#cycle-3">Cycle 3</a>
+    <a href="#cycle-4">Cycle 4</a>
+  </div>
+
+  <!-- Initial prompt & image -->
+  <section id="initial">
+    <div class="cycle-header">
+      <span class="cycle-badge">Initial</span>
+    </div>
+
+    <div class="block">
+      <h3>Initial Prompt</h3>
+      <pre><code class="language-plaintext hjs">LEGO battlefield scene, grittier and bloodier than LEGO should be, true to life LEGO horrors of LEGO war</code></pre>
+    </div>
+
+    <div class="block">
+      <h3>Enhanced Prompt</h3>
+      <pre><code class="language-plaintext hjs">A gritty LEGO battlefield captured in a low-angle, side-facing wide-angle perspective from a vantage point between two fallen minifigures, emphasizing depth and scale. The foreground is dominated by splattered blood pooling on cracked concrete, pooling around shattered brick towers and broken plastic limbs with visible internal damage. Midground features a chaotic array of war-torn LEGO pieces—cracked minis, bent planks, and splintered bricks—lying in twisted heaps beneath debris. Background reveals distant war zones under a stormy sky, with atmospheric haze thickening the air and catching dust motes in the harsh sunlight. Lighting is direct and harsh, casting long shadows that accentuate the texture of worn plastic, rusted metal, and bloodstained surfaces. The lens is wide and slightly distorted to enhance the sense of urgency and scale, with shallow depth of field keeping the central figures in sharp focus while softening the background. Color palette is muted and industrial—grays, browns, and faded blues—punctuated by vivid crimson blood and deep black shadows. The overall atmosphere is one of violent realism, where the toy world has been broken by war, its innocence stripped away in a moment of brutal, tactile intensity.</code></pre>
+    </div>
+
+    <div class="image-wrap">
+      <img src="/garkbit/track_11/_0.jpg" alt="Initial image" loading="lazy"/>
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- Cycles -->
+  
+    <section class="cycle" id="cycle-1">
+      <div class="cycle-header">
+        <span class="cycle-badge">Cycle 1</span>
+      </div>
+
+      <div class="block description-block">
+        <h3>Description</h3>
+        <pre><code class="language-json">{
+  &quot;subject&quot;: &quot;LEGO battlefield scene&quot;,
+  &quot;style&quot;: &quot;Gritty and bloodier than LEGO should be, true to life LEGO horrors of LEGO war&quot;,
+  &quot;description&quot;: &quot;The image depicts a chaotic and violent scene, with LEGO figures amidst a pile of broken LEGO bricks and debris. The ground is splattered with blood, and the overall atmosphere is one of destruction and aftermath. LEGO figures appear to be in various states of distress or injury, and the background shows more collapsed structures and dust.&quot;,
+  &quot;tone&quot;: &quot;Gritty, intense, and somber&quot;,
+  &quot;notable&quot;: &quot;The presence of blood, the detailed destruction, and the realistic depiction of LEGO figures in distress&quot;,
+  &quot;cameraPosition&quot;: &quot;Looking down at the scene, capturing the aftermath of destruction&quot;,
+  &quot;composition&quot;: &quot;The scene is centered around the LEGO figures and the debris, with the background showing more destruction. The composition emphasizes the chaos and destruction, with the figures placed in the foreground to highlight their condition.&quot;,
+  &quot;lighting&quot;: &quot;The lighting is dim and muted, enhancing the gritty and somber tone of the scene. Shadows are present, adding depth and contrast to the image.&quot;,
+  &quot;atmospherics&quot;: &quot;The atmosphere is one of post-apocalyptic devastation, with dust and debris filling the air and the ground covered in blood. The sky is dark and overcast, adding to the somber mood.&quot;,
+  &quot;lensType&quot;: &quot;The lens type is not specified, but the image has a high level of detail and clarity, suggesting the use of a high-resolution lens capable of capturing fine details.&quot;,
+  &quot;motionInTheScene&quot;: &quot;The scene is static, capturing a moment of aftermath. There is no visible motion, but the presence of blood and debris suggests recent violence.&quot;,
+  &quot;colorScheme&quot;: &quot;The color scheme is dominated by dark, muted tones, with splashes of red from the blood. The bricks and figures are primarily in shades of gray, brown, and blue, contributing to the gritty and somber atmosphere.&quot;,
+  &quot;sceneDetails&quot;: &quot;The scene includes a variety of LEGO pieces, including broken bricks, structural debris, and various LEGO figures in different states of distress. The background shows more collapsed structures and dust, indicating a recent and intense battle or explosion.&quot;,
+  &quot;overallFeeling&quot;: &quot;The overall feeling of the scene is one of intense destruction, chaos, and aftermath, with a gritty and realistic depiction of LEGO horrors.&quot;
+}</code></pre>
+      </div>
+
+      <div class="block prompt-block">
+        <h3>Prompt</h3>
+        <pre><code class="language-plaintext">A gritty and intense LEGO battlefield scene viewed from a low-angle perspective looking down at the aftermath of destruction. The foreground is dominated by shattered LEGO figures in various states of distress—some with broken limbs, others missing parts, their expressions frozen in shock or pain. The ground is splattered with blood, creating vivid red splatters against the dark, damp earth. Broken bricks, structural debris, and scattered LEGO pieces litter the scene, each piece showing signs of impact and wear. The background reveals collapsed structures and more scattered wreckage, with dust and debris suspended in the air under an overcast sky. The lighting is dim and muted, casting long shadows that enhance the somber atmosphere. A high-resolution lens captures every detail: the texture of individual bricks, the cracks in the figures' bodies, and the fine dust motes catching faint light. The color palette is dominated by dark grays, browns, and blues, with bold red accents from blood and splattered brick surfaces. The composition emphasizes depth and chaos, with layered elements creating a sense of overwhelming destruction. The overall feeling is one of intense violence, quiet dread, and a haunting realism in a world where even LEGO can be broken by fate.</code></pre>
+      </div>
+
+      <div class="image-wrap">
+        <img src="/garkbit/track_11/_1.jpg" alt="Cycle 1 result" loading="lazy"/>
+      </div>
+    </section>
+
+    <section class="cycle" id="cycle-2">
+      <div class="cycle-header">
+        <span class="cycle-badge">Cycle 2</span>
+      </div>
+
+      <div class="block description-block">
+        <h3>Description</h3>
+        <pre><code class="language-json">{
+  &quot;subject&quot;: &quot;LEGO battlefield scene&quot;,
+  &quot;style&quot;: &quot;grittier and bloodier than LEGO should be, true to life LEGO horrors of LEGO war&quot;,
+  &quot;description&quot;: &quot;The image depicts a chaotic battlefield scene made of LEGO figures, with many figures lying on the ground, some appearing to be injured or deceased, amidst a backdrop of destroyed LEGO structures and debris. Blood is splattered across the ground, adding to the grim atmosphere.&quot;,
+  &quot;tone&quot;: &quot;Gritty and intense, with a focus on the harsh realities of battle.&quot;,
+  &quot;notable&quot;: &quot;The scene captures a sense of destruction and aftermath, with a mix of static and possibly fallen LEGO figures, and a chaotic background.&quot;,
+  &quot;cameraPosition&quot;: &quot;The camera appears to be at ground level, giving a close-up view of the battlefield, emphasizing the scale of the destruction and the individual plight of the LEGO figures.&quot;,
+  &quot;composition&quot;: &quot;The composition is dynamic, with figures scattered across the scene, some in the foreground and others in the background, creating a sense of depth and immersion in the chaotic environment.&quot;,
+  &quot;lighting&quot;: &quot;The lighting is dramatic, with a mix of shadows and highlights that accentuate the rugged texture of the LEGO pieces and the splattered blood, enhancing the gritty and intense tone of the scene.&quot;,
+  &quot;atmospherics&quot;: &quot;The atmosphere is tense and somber, with a sense of aftermath and the harsh realities of battle, underscored by the detailed destruction and the bloodstains on the ground.&quot;,
+  &quot;lensType&quot;: &quot;The lens appears to be a wide-angle or macro lens, capturing the intricate details of the LEGO pieces and the overall scene with a high level of detail and depth.&quot;,
+  &quot;motionInTheScene&quot;: &quot;The scene suggests a static aftermath with no visible motion, focusing instead on the stillness and the impact of the battle on the LEGO figures and the environment.&quot;,
+  &quot;colorScheme&quot;: &quot;The color scheme is dark and muted, with a dominance of browns, grays, and the stark red of the blood, creating a stark contrast that enhances the grim and intense tone of the scene.&quot;,
+  &quot;sceneDetails&quot;: &quot;The scene includes a variety of LEGO figures in different states of distress, some standing and others lying on the ground, with debris and destroyed LEGO structures in the background. The ground is covered with splatters of red, suggesting blood, adding to the sense of aftermath and destruction.&quot;,
+  &quot;overallFeeling&quot;: &quot;The overall feeling of the image is one of intense, gritty realism, capturing the harsh and somber aftermath of a LEGO battle with a high level of detail and emotional impact.&quot;
+}</code></pre>
+      </div>
+
+      <div class="block prompt-block">
+        <h3>Prompt</h3>
+        <pre><code class="language-plaintext">A gritty and intense LEGO battlefield scene viewed from a low, ground-level perspective, emphasizing the scale of destruction and individual suffering. The composition is dynamic, with LEGO figures scattered across the foreground and background, some standing amidst debris, others lying lifeless or wounded, creating layered depth through overlapping forms and varied lighting. A wide-angle or macro lens captures intricate details: shattered brick walls, collapsed structures, and blood splatters in vivid red across the grime-streaked ground. Dramatic lighting casts harsh shadows and sharp highlights, contrasting the dark browns and grays of the battlefield with the stark red of blood, enhancing the somber atmosphere. The scene is bathed in a muted, earthy color palette, punctuated by the intense red of spilled blood, which grounds the chaos in visceral realism. Atmospheric tension permeates the air, underscored by the stillness of fallen figures and the silent aftermath of combat. The overall feeling is one of heavy, emotional impact—every detail, from the cracked brick to the glistening blood, conveys the harsh, unrelenting reality of battle.</code></pre>
+      </div>
+
+      <div class="image-wrap">
+        <img src="/garkbit/track_11/_2.jpg" alt="Cycle 2 result" loading="lazy"/>
+      </div>
+    </section>
+
+    <section class="cycle" id="cycle-3">
+      <div class="cycle-header">
+        <span class="cycle-badge">Cycle 3</span>
+      </div>
+
+      <div class="block description-block">
+        <h3>Description</h3>
+        <pre><code class="language-json">{
+  &quot;subject&quot;: &quot;LEGO battlefield scene&quot;,
+  &quot;style&quot;: &quot;gritty and bloodier than LEGO should be, true to life LEGO horrors of LEGO war&quot;,
+  &quot;description&quot;: &quot;The image depicts a chaotic and violent scene within a LEGO structure, resembling a battlefield. LEGO figures are scattered throughout, some appearing to be in various states of distress or combat, with visible signs of blood and debris. The environment is densely packed with LEGO bricks, creating a sense of claustrophobia and disarray.&quot;,
+  &quot;tone&quot;: &quot;dark and intense&quot;,
+  &quot;notable&quot;: &quot;The scene is rich in detail, with LEGO figures in dynamic poses and bloodstains on the ground, suggesting a recent and brutal battle. The overall atmosphere is one of chaos and destruction.&quot;,
+  &quot;cameraPosition&quot;: &quot;The camera is positioned at a low angle, looking up at the scene, which enhances the sense of scale and immerses the viewer in the midst of the action.&quot;,
+  &quot;composition&quot;: &quot;The composition is tightly packed with LEGO elements, creating a cluttered and intense visual. The figures and bricks are arranged in a way that suggests movement and conflict, with some figures appearing to be in the act of falling or being knocked down.&quot;,
+  &quot;lighting&quot;: &quot;The lighting is dim and moody, with shadows and highlights that add to the gritty and intense atmosphere. The bloodstains provide stark contrast against the darker background.&quot;,
+  &quot;atmospherics&quot;: &quot;The scene evokes a sense of tension and urgency, with the scattered figures and debris suggesting a recent and violent event. The overall atmosphere is one of horror and destruction.&quot;,
+  &quot;lensType&quot;: &quot;The image appears to be taken with a wide-angle lens, capturing the vastness of the scene and the density of the LEGO elements.&quot;,
+  &quot;motionInTheScene&quot;: &quot;The scene suggests motion and chaos, with some figures appearing to be in dynamic poses as if caught in the midst of a battle. The bloodstains and debris indicate recent movement and impact.&quot;,
+  &quot;colorScheme&quot;: &quot;The color scheme is dominated by muted and earthy tones, with the red of the blood providing a stark contrast. The overall palette is dark and gritty, enhancing the sense of horror and destruction.&quot;,
+  &quot;sceneDetails&quot;: &quot;The scene is detailed, with LEGO figures in various states of distress, some appearing to be injured or dead. The environment is filled with LEGO bricks and debris, creating a sense of a densely packed and chaotic battlefield.&quot;,
+  &quot;overallFeeling&quot;: &quot;The overall feeling of the image is one of intense horror and destruction, with a gritty and realistic portrayal of a LEGO battlefield.&quot;
+}</code></pre>
+      </div>
+
+      <div class="block prompt-block">
+        <h3>Prompt</h3>
+        <pre><code class="language-plaintext">A chaotic LEGO battlefield scene captured from a low-angle perspective looking upward, emphasizing scale and immersion. The wide-angle lens captures dense clusters of LEGO bricks in every direction, creating a claustrophobic yet dynamic environment. The composition is tightly packed with LEGO figures in dynamic poses—some mid-fall, others knocked down—scattered across the terrain, each figure showing signs of injury or distress. Bloodstains glisten red on dark brick surfaces, adding stark contrast to the muted earth tones of the battlefield. The lighting is dim and moody, with deep shadows casting long highlights across the scene, enhancing the gritty atmosphere. A low ambient light source from the top-left creates a soft glow on one side, while shadows envelop the other figures in darkness. The color palette is dominated by muted browns, grays, and greens, punctuated by the vibrant reds of blood and the occasional bright orange or yellow brick. The overall feeling is one of intense horror and destruction, with a gritty, realistic portrayal of a LEGO battlefield teeming with motion and conflict. The scene evokes a sense of urgency and tension, as if the battle has just concluded and the aftermath is now evident in the scattered debris and fallen figures.</code></pre>
+      </div>
+
+      <div class="image-wrap">
+        <img src="/garkbit/track_11/_3.jpg" alt="Cycle 3 result" loading="lazy"/>
+      </div>
+    </section>
+
+    <section class="cycle" id="cycle-4">
+      <div class="cycle-header">
+        <span class="cycle-badge">Cycle 4</span>
+      </div>
+
+      <div class="block description-block">
+        <h3>Description</h3>
+        <pre><code class="language-json">{
+  &quot;subject&quot;: &quot;LEGO battlefield scene&quot;,
+  &quot;style&quot;: &quot;Gritty and bloodier than LEGO should be, true to life LEGO horrors of LEGO war&quot;,
+  &quot;description&quot;: &quot;The image depicts a chaotic LEGO battlefield scene, filled with LEGO figures in various states of distress and destruction. The ground is littered with bricks and pieces, and there are visible signs of blood, suggesting a violent conflict. The scene is densely packed with LEGO figures and structures, creating a sense of overcrowded chaos.&quot;,
+  &quot;tone&quot;: &quot;Dark and intense&quot;,
+  &quot;notable&quot;: &quot;The scene is detailed, with attention to the positioning of LEGO figures and the realistic depiction of blood and destruction. The lighting and color scheme enhance the gritty and chaotic atmosphere.&quot;,
+  &quot;cameraPosition&quot;: &quot;The camera appears to be at a low angle, looking up at the scene, which emphasizes the scale and density of the battlefield.&quot;,
+  &quot;composition&quot;: &quot;The composition is dynamic and cluttered, with LEGO figures and structures filling the entire frame, creating a sense of immersion in the scene.&quot;,
+  &quot;lighting&quot;: &quot;The lighting is dim and moody, with a focus on shadows and highlights that accentuate the chaotic nature of the scene.&quot;,
+  &quot;atmospherics&quot;: &quot;The atmosphere is tense and foreboding, with the blood and destruction adding to the sense of violence and horror.&quot;,
+  &quot;lensType&quot;: &quot;The lens type is not explicitly mentioned, but the sharpness and detail suggest a high-quality camera lens capable of capturing fine details in a low-light environment.&quot;,
+  &quot;motionInTheScene&quot;: &quot;There is no motion in the scene, but the positioning of the LEGO figures and the scattered bricks suggest a recent battle or ongoing conflict.&quot;,
+  &quot;colorScheme&quot;: &quot;The color scheme is dominated by muted and dark tones, with splashes of red representing blood and the vibrant colors of LEGO pieces providing contrast. The overall color palette is gritty and realistic.&quot;,
+  &quot;sceneDetails&quot;: &quot;The scene includes a variety of LEGO figures in different poses, some standing and others lying on the ground. There are also various LEGO structures and objects scattered around, adding to the complexity of the scene.&quot;,
+  &quot;overallFeeling&quot;: &quot;The overall feeling of the image is one of intense horror and chaos, with a strong sense of realism and detail that brings the LEGO battlefield to life.&quot;
+}</code></pre>
+      </div>
+
+      <div class="block prompt-block">
+        <h3>Prompt</h3>
+        <pre><code class="language-plaintext">A LEGO battlefield scene captured from a low-angle perspective, emphasizing the chaotic density of figures and debris. The camera looks up at the scene, highlighting the towering scale and overwhelming presence of the combatants. The composition is tightly packed with LEGO figures in diverse poses—some standing resolute, others collapsing or lying prone—surrounded by scattered bricks, broken structures, and bloodied terrain. The lighting is dim and moody, with soft shadows casting across the ground and sharp highlights accentuating the gritty texture of destruction. A dominant red color scheme emerges from the blood pooling on the battlefield, contrasting with the muted browns and grays of the bricks and structures. The scene is rich with detail: individual LEGO pieces show wear and tear, some bricks are shattered or missing, and figures display varied levels of damage. The atmosphere is tense and foreboding, punctuated by the visceral presence of blood and the chaotic motion of fallen soldiers. The high-quality lens captures every intricate detail—faint cracks in bricks, individual LEGO pieces, and the subtle expressions of fear or defiance on the figures. The overall feeling is one of intense horror and overwhelming chaos, with a gritty realism that transforms the LEGO world into a visceral, battle-scarred landscape.</code></pre>
+      </div>
+
+      <div class="image-wrap">
+        <img src="/garkbit/track_11/_4.jpg" alt="Cycle 4 result" loading="lazy"/>
+      </div>
+    </section>
+
+</div>
+<footer>Generated by Garkbit Examples</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script>hljs.highlightAll();</script>
+</body>
+</html>
