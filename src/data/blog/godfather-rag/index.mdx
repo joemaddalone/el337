@@ -1,0 +1,256 @@
+---
+title: 'Build a local RAG system with Ollama, libSQL, and an EPUB'
+date: 2026-04-06
+tags: ['ai']
+excerpt: 'The one where AI meets The Godfather'
+short: 'rag'
+---
+import { YouTube } from '@astro-community/astro-embed-youtube';
+
+# Let's have AI read The Godfather
+
+<div class="py-6">
+<YouTube id="PZVXYrjDa8w" />
+</div>
+
+
+In this post, we'll explore a complete Retrieval-Augmented Generation (RAG) system designed to query books using AI. This system ingests an EPUB book, stores its content with vector embeddings in SQLite, and allows semantic search using Ollama.
+
+## Architecture Overview
+
+The system consists of several key components working together:
+
+- **Database Layer** - SQLite with vector support for storing text chunks and embeddings
+- **Ingestion Pipeline** - Parses EPUB, extracts text, chunks it, and generates embeddings
+- **Query System** - Performs semantic search and generates answers using AI
+- **AI Integration** - Connects to Ollama for embeddings and text generation
+
+## File-by-File Breakdown
+
+### Database Setup (`src/db.ts`)
+
+```typescript
+// Dependencies: npm install @libsql/client
+import { createClient } from "@libsql/client";
+import sql from "./sql";
+
+export const db = createClient({ url: "file:rag.db" });
+
+export const initDB = async () => {
+	await db.execute(sql.createTable);
+	await db.execute(sql.createIndex);
+};
+```
+
+The database layer uses `@libsql/client` to connect to a local SQLite database. The `initDB` function creates the chunks table and a vector index for efficient similarity search.
+
+### SQL Queries (`src/sql/index.ts`)
+
+```typescript
+export default {
+	createTable: `
+    CREATE TABLE IF NOT EXISTS chunks (
+      id        INTEGER PRIMARY KEY AUTOINCREMENT,
+      text      TEXT NOT NULL,
+      embedding F32_BLOB(1024)
+    )
+  `,
+	createIndex: `
+    CREATE INDEX IF NOT EXISTS chunks_vec
+    ON chunks (libsql_vector_idx(embedding))
+  `,
+	insert: `INSERT INTO chunks (text, embedding) VALUES (?, vector(?))`,
+	query: `
+    SELECT chunks.text FROM vector_top_k('chunks_vec', vector(?), ?) AS top
+    JOIN chunks ON chunks.id = top.id
+  `,
+};
+```
+
+This file contains all SQL queries used throughout the application. The table stores text chunks alongside their 1024-dimensional embeddings. The query uses LibSQL's vector search extension to find the most similar chunks.
+
+### Text Processing Utilities (`src/utils/index.ts`)
+
+```typescript
+// (No external dependencies - pure TypeScript)
+export const stripHTML = (text: string): string => {
+	return text.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+};
+
+export const chunkText = (text: string, chunkSize = 1500, overlap = 100): string[] => {
+	const chunks: string[] = [];
+	for (let i = 0; i < text.length; i += chunkSize - overlap) {
+		chunks.push(text.slice(i, i + chunkSize));
+	}
+	return chunks;
+};
+```
+
+Two utility functions process raw text:
+- `stripHTML` - Removes HTML tags from EPUB chapter content
+- `chunkText` - Splits text into overlapping chunks (1500 chars with 100 char overlap) for better context preservation
+
+### AI Integration (`src/ai.ts`)
+
+```typescript
+// Dependencies: npm install ai @ai-sdk/openai
+import { createOpenAI } from "@ai-sdk/openai";
+import { embed, generateText } from "ai";
+
+const QUERY_PROMPT = "Answer ONLY using the provided context...";
+
+const ollama = createOpenAI({
+	baseURL: "http://localhost:11434/v1",
+	apiKey: "ollama",
+});
+
+const embeddingModel = ollama.embeddingModel("mxbai-embed-large");
+const queryModel = ollama.languageModel("qwen3:8b");
+
+export const embedder = async (text: string): Promise<number[]> => {
+	const { embedding } = await embed({ model: embeddingModel, value: text });
+	return embedding;
+};
+
+export const generate = async (context: string, question: string): Promise<string> => {
+	const { text } = await generateText({
+		model: queryModel,
+		temperature: 0.1,
+		system: QUERY_PROMPT,
+		messages: [
+			{
+				role: "user",
+				content: `
+					Context: ${context}
+					Question: ${question}
+				`
+			}
+		]
+	});
+
+	return text;
+}
+```
+
+This module connects to a local Ollama instance running on port 11434. It uses two models:
+- **mxbai-embed-large** - For generating text embeddings
+- **qwen3:8b** - For generating answers to questions
+
+The `embedder` function generates vector embeddings from text, while `generate` creates answers using retrieved context.
+
+### Ingestion Pipeline (`src/ingest.ts`)
+
+```typescript
+// Dependencies: npm install epub2
+import Epub from "epub2";
+import { db } from "./db";
+import { embedder } from "./ai";
+import { stripHTML, chunkText } from "./utils";
+import sql from "./sql";
+
+const EPUB_PATH = "./src/source/The_Godfather_Mario_Puzo.epub";
+
+export const ingest = async () => {
+	console.log("Ingesting book...");
+	const epub = await Epub.createAsync(EPUB_PATH);
+	const chapters = epub.flow;
+
+	for (const chapter of chapters) {
+		let html: string;
+		try {
+			html = await epub.getChapterRawAsync(chapter.id);
+		} catch (error) {
+			console.log("Error reading chapter", chapter.id, error);
+			continue;
+		}
+
+		const text = stripHTML(html);
+		const chunks = chunkText(text);
+
+		for (const chunk of chunks) {
+			const embedding = await embedder(chunk);
+			await db.execute(sql.insert, [chunk, `[${embedding.join(",")}]`]);
+		}
+	}
+
+	console.log("Done!");
+};
+```
+
+The ingestion pipeline:
+1. Opens the EPUB file (The Godfather by Mario Puzo)
+2. Iterates through all chapters
+3. Extracts raw HTML from each chapter
+4. Strips HTML tags and chunks the text
+5. Generates embeddings for each chunk
+6. Inserts text and embeddings into the database
+
+### Query System (`src/query.ts`)
+
+```typescript
+// Dependencies: (uses db from db.ts, embedder/generate from ai.ts, sql from sql/index.ts)
+import { db } from "./db";
+import { embedder, generate } from "./ai";
+import sql from "./sql";
+
+const TOP_K = 20;
+
+export const query = async (question: string): Promise<string> => {
+	const vector = await embedder(question);
+
+	const { rows } = await db.execute({
+		sql: sql.query,
+		args: [`[${vector.join(",")}]`, TOP_K],
+	});
+
+	const context = rows.map(r => r.text).join("\n\n");
+
+	return await generate(context, question);
+
+};
+```
+
+When a user asks a question:
+1. The question is converted to a vector embedding
+2. The database performs similarity search to find the top 20 most relevant chunks
+3. Retrieved chunks are joined as context
+4. The AI model generates an answer using the retrieved context
+
+### Main Entry Points
+
+**Setup (`src/setup.ts`)** - Initializes the database and ingests the book:
+```typescript
+// Dependencies: (imports from db.ts and ingest.ts)
+await initDB();
+await ingest();
+```
+
+**Query (`src/index.ts`)** - CLI interface for asking questions:
+```typescript
+// Dependencies: npm install -D @types/node (for process.argv)
+const question = process.argv[2] ?? process.exit(1);
+const answer = await query(question);
+```
+
+## How It All Fits Together
+
+1. **First Run**: Execute `setup.ts` to initialize the database and ingest The Godfather
+2. **Query Time**: Run `index.ts` with a question like "Who is Michael Corleone?"
+
+The system retrieves relevant passages from the book and uses the AI model to generate a context-aware answer - demonstrating a complete, working RAG pipeline for book content.
+
+## Dependencies
+
+Install all required packages:
+
+```bash
+npm install @libsql/client epub2 ai @ai-sdk/openai
+npm install -D @types/node typescript
+```
+
+## Technologies Used
+
+- **@libsql/client** - SQLite with vector support
+- **epub2** - EPUB parsing
+- **ai** - Vercel AI SDK for embeddings and text generation
+- **@ai-sdk/openai** - OpenAI-compatible API for Ollama
