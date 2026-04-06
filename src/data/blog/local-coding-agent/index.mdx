@@ -1,0 +1,200 @@
+---
+title: 'Building an AI Coding Agent with Vercel AI SDK and Ollama'
+date: 2026-04-07
+tags: ['ai']
+excerpt: 'Building an AI Coding Agent with Vercel AI SDK and Ollama'
+short: 'coding-agent'
+---
+import { YouTube } from '@astro-community/astro-embed-youtube';
+
+# We dont need no subscriptions
+
+<div class="py-6">
+<YouTube id="jDwwNq11Nuo" />
+</div>
+
+Here we'll build a CLI-based AI coding agent that can execute bash commands to help you with development tasks.
+
+## Prerequisites
+
+- Bun runtime installed
+- Ollama running locally with a model
+	- qwen3.5:35b-a3b-coding-nvfp4 is the newest hotness
+- Node.js basics familiarity
+
+## The Code
+
+Here's the complete implementation in `index.ts`:
+
+```typescript
+#!/usr/bin/env bun
+
+import { createOpenAI } from "@ai-sdk/openai";
+import { generateText, isLoopFinished, tool, zodSchema } from "ai";
+import type { ModelMessage } from "ai";
+import { z } from "zod";
+import { spawnSync } from "child_process";
+import * as readline from "readline";
+
+/** CONSTANTS */
+const WORKDIR = process.cwd();
+const MODEL = "qwen3.5:35b-a3b-coding-nvfp4";
+const BLOCKED_COMMANDS = ["rm -rf /", "sudo", "shutdown", "reboot", "> /dev/"];
+
+/** API */
+const ollama = createOpenAI({
+  baseURL: "http://localhost:11434/v1",
+  apiKey: "ollama",
+});
+
+/** TOOLS */
+const runBash = (command: string): string => {
+  if (BLOCKED_COMMANDS.some((c) => command.includes(c))) {
+    return "Error: Danger Will Robinson!!!";
+  }
+  try {
+    const result = spawnSync("sh", ["-c", command], {
+      cwd: WORKDIR,
+      encoding: "utf8",
+      timeout: 120000
+    });
+    return (result.stdout + result.stderr).trim().slice(0, 50000) || "";
+
+  } catch (e) {
+    return `Error ${e}`;
+  }
+};
+
+const TOOLS = {
+  bash: tool({
+    description: "Run a shell command",
+    inputSchema: zodSchema(z.object({ command: z.string() })),
+    execute: async ({ command }: { command: string; }) => {
+      const output = runBash(command);
+      return output;
+    }
+  })
+};
+
+
+/** AGENT LOOP */
+
+const agentLoop = async (messages: ModelMessage[]): Promise<string> => {
+  const { text } = await generateText({
+    model: ollama.chat(MODEL),
+    system: `You are a coding agents at ${WORKDIR}. Use bash to solve tasks.  Act, dont explain.`,
+    messages,
+    tools: TOOLS,
+    stopWhen: isLoopFinished(),
+  });
+  return text;
+};
+
+/** INTERFACE */
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+const history: ModelMessage[] = [];
+
+const prompt = (): void => {
+  rl.question(" input >> ", async (query) => {
+    history.push({ role: "user", content: query });
+    const reply = await agentLoop(history);
+    history.push({ role: "assistant", content: reply });
+    if (reply) console.log(reply);
+    console.log();
+    prompt();
+  });
+};
+
+prompt();
+```
+
+## How It Works
+
+### 1. API Configuration
+The code creates an OpenAI-compatible client pointing to your local Ollama instance:
+
+```typescript
+const ollama = createOpenAI({
+  baseURL: "http://localhost:11434/v1",
+  apiKey: "ollama",
+});
+```
+
+### 2. Tool Definition
+We define a `bash` tool that the model can call to execute shell commands. The tool uses Zod schema validation to ensure proper input:
+
+```typescript
+const TOOLS = {
+  bash: tool({
+    description: "Run a shell command",
+    inputSchema: zodSchema(z.object({ command: z.string() })),
+    execute: async ({ command }) => runBash(command)
+  })
+};
+```
+
+### 3. Security Measures
+A blocklist prevents dangerous commands from executing:
+
+```typescript
+const BLOCKED_COMMANDS = ["rm -rf /", "sudo", "shutdown", "reboot", "> /dev/"];
+```
+
+### 4. Agent Loop
+The `agentLoop` function uses `generateText` with `stopWhen: isLoopFinished()` to automatically handle tool execution cycles. The model will keep calling tools until it completes the task without needing more input.
+
+```typescript
+const agentLoop = async (messages: ModelMessage[]): Promise<string> => {
+  const { text } = await generateText({
+    model: ollama.chat(MODEL),
+    system: `You are a coding agents at ${WORKDIR}. Use bash to solve tasks.  Act, dont explain.`,
+    messages,
+    tools: TOOLS,
+    stopWhen: isLoopFinished(),
+  });
+  return text;
+};
+```
+
+### 5. Interactive CLI
+The readline interface provides a simple interactive prompt that maintains conversation history:
+
+```typescript
+const prompt = (): void => {
+  rl.question(" input >> ", async (query) => {
+    history.push({ role: "user", content: query });
+    const reply = await agentLoop(history);
+    // ...
+  });
+};
+```
+
+## Running the Agent
+
+1. Ensure Ollama is running with your chosen model
+2. Run the script:
+
+```bash
+bun run index.ts
+```
+
+3. Enter your task at the prompt. For example:
+
+```
+input >> Create a new file called hello.txt with the content "Hello World"
+```
+
+The agent will execute the necessary bash commands to complete your task.
+
+## Key Concepts
+
+- **Tool Execution**: Vercel AI SDK's `tool` function allows models to execute code and return results
+- **Loop Detection**: `isLoopFinished()` automatically detects when the model has completed its task
+- **Message History**: Maintaining conversation context helps the agent understand ongoing tasks
+- **Zod Integration**: Schema validation ensures tools receive correct input types
+
+This implementation provides a foundation for building more sophisticated AI coding assistants!
