@@ -1,0 +1,290 @@
+---
+title: 'Build llama.cpp from source'
+date: 2026-04-16
+tags: ['ai']
+excerpt: 'Build llama.cpp from source'
+short: 'llama.cpp'
+---
+
+
+
+## Here is everything we're going to run
+
+
+```bash
+brew install cmake
+```
+
+```bash
+curl -LsSf https://hf.co/cli/install.sh | bash
+```
+
+```bash
+git clone https://github.com/ggml-org/llama.cpp
+
+cd llama.cpp
+```
+
+```bash
+cmake -B llama.cpp/build -DBUILD_SHARED_LIBS=OFF -DGGML_CUDA=OFF -DGGML_METAL=ON
+
+cmake --build llama.cpp/build --config Release -j --clean-first
+    --target llama-cli llama-mtmd-cli llama-server llama-gguf-split
+
+cp llama.cpp/build/bin/llama-* llama.cpp
+```
+
+```bash
+hf download unsloth/Qwen3.5-35B-A3B-GGUF \
+    --local-dir models/Qwen3.5-35B-A3B-GGUF \
+    --include "*UD-Q4_K_XL*"
+```
+
+```bash
+./llama.cpp/llama-server \
+    --model /models/Qwen3.5-35B-A3B-GGUF/Qwen3.5-35B-A3B-Q4_K_M.gguf \
+    --alias "Qwen3.5-35B-A3B" \
+    --temp 0.6 \
+    --top-p 0.95 \
+    --top-k 20 \
+    --min-p 0.00 \
+    --port 8001 \
+    --kv-unified \
+		--n-gpu-layers 0 \
+    --cache-type-k q8_0 --cache-type-v q8_0 \
+    --flash-attn on --fit on
+```
+
+
+-----------
+
+Step by step
+
+```bash
+brew install cmake
+```
+
+install [cmake](https://cmake.org/)
+> CMake is the de-facto standard for building C++ code
+
+Imagine you're building a big LEGO robot (llama.cpp).
+cmake is the instruction sheet that explains how to put it together.
+
+-----------
+```bash
+curl -LsSf https://hf.co/cli/install.sh | bash
+```
+install [huggingface cli](https://huggingface.co/docs/huggingface_hub/en/guides/cli)
+> This tool allows you to interact with the Hugging Face Hub directly from a terminal
+
+----------
+
+```bash
+git clone https://github.com/ggml-org/llama.cpp
+
+cd llama.cpp
+```
+Clone the [llama.cpp](https://github.com/ggerganov/llama.cpp) repository and change-directory into it.
+> LLM inference in C/C++
+
+-----------
+
+
+
+```bash
+cmake -B llama.cpp/build -DBUILD_SHARED_LIBS=OFF -DGGML_CUDA=OFF
+```
+
+
+
+`-DBUILD_SHARED_LIBS=OFF` controls how the code is packaged
+
+There are two ways to build code libraries:
+
+### Shared Libraries (-DBUILD_SHARED_LIBS=ON)
+
+Think of this like:
+
+“The robot uses LEGO pieces stored in a shared box somewhere else.”
+
+- Multiple programs can share the same library file.
+- Smaller executable file.
+- But you must have those shared files installed on the system.
+
+### Static Libraries (-DBUILD_SHARED_LIBS=OFF)
+
+This means:
+
+“Glue all the LEGO pieces directly into the robot.”
+
+- Everything gets bundled inside the final binary.
+- No external library files needed at runtime.
+- Bigger file size.
+- More portable (easy to move to another machine).
+
+
+------------
+
+`-DGGML_CUDA=OFF` controls whether the program uses your GPU (CUDA).
+
+When ON:
+
+“Use NVIDIA GPU acceleration.”
+
+- Much faster on supported GPUs.
+- Requires CUDA toolkit installed.
+- Only works with NVIDIA GPUs.
+
+When OFF:
+
+“Use only the CPU.”
+
+- Slower than GPU.
+- But works on any machine.
+- No CUDA dependencies needed.
+
+
+Our build says:
+
+- Make one big self-contained program
+- Use only the CPU
+- Don't rely on NVIDIA GPU
+
+------------
+
+```bash
+cmake --build llama.cpp/build --config Release -j --clean-first \
+    --target llama-cli llama-mtmd-cli llama-server llama-gguf-split
+```
+
+“Okay, actually build the robot — and build these specific versions of it.”
+
+Let's break it down simply.
+
+`cmake --build llama.cpp/build`
+
+“Go to the build folder and build whatever was configured there.”
+
+`--config Release`
+
+There are different “modes” you can build in:
+
+- Debug (`--config Debug`)
+	- Slower
+	- Extra debugging info
+	- Easier to troubleshoot
+- Release (`--config Release`)
+	- Optimized for speed
+	- No debug overhead
+	- What you want for real use
+
+We chose `--config Release`
+
+“Build the fast, optimized version.”
+
+`-j`
+
+“Use multiple CPU cores at once.”
+
+Instead of building one file at a time, it builds many in parallel.
+
+`--clean-first`
+
+“Delete old compiled pieces before building again.”
+
+Sometimes old build artifacts cause weird bugs. This ensures a fresh rebuild.
+
+`--target`
+
+“Only build these specific programs.”
+
+We want:
+- `llama-cli` Simple command-line interface for chatting with a model.
+- `llama-mtmd-cli` Multi-modal CLI (text + images for supported models).
+- `llama-server` Runs an OpenAI-compatible HTTP server.
+- `llama-gguf-split` Tool to split large .gguf model files into smaller chunks.
+
+-------------
+
+
+
+hf download unsloth/Qwen3.5-9B-GGUF  --local-dir models/Qwen3.5-9B-GGUF --include "*UD-Q4_K_XL*"
+
+```bash
+hf download unsloth/Qwen3.5-35B-A3B-GGUF \
+    --local-dir models/Qwen3.5-35B-A3B-GGUF \
+    --include "*UD-Q4_K_XL*"
+```
+
+Download the model from huggingface.
+
+-------------
+
+```bash
+./llama.cpp/llama-server \
+    --model path-to-model/model.gguf \
+    --alias "model" \
+    --temp 0.6 \
+    --top-p 0.95 \
+    --top-k 20 \
+    --min-p 0.00 \
+    --port 8001 \
+    --kv-unified \
+    --cache-type-k q8_0 --cache-type-v q8_0 \
+    --flash-attn on --fit on \
+		```
+
+Imagine the AI is a super smart parrot that tries to guess the next word in a sentence. These settings tell the parrot how to guess and how fast to think.
+
+### The “How Creative Should I Be?” Settings
+
+`--temp 0.6` Temperature = how creative the parrot feels.
+
+- Low (like 0.2) → very serious, boring, predictable.
+- Medium (like 0.7–1.0) → balanced.
+- High (like 1.5+) → silly, creative, sometimes weird.
+
+`--top-p 0.95` Top-p = how many good guesses the parrot is allowed to consider.
+
+Imagine the parrot has 100 possible next words ranked from best to worst.
+
+0.95 means: “Only consider the top words that together make up 95% of the most likely answers.” So it ignores the really bad guesses, but still allows variety.
+
+`--min-p 0.00` Min-p = don't use super unlikely words.
+
+If a word is too unlikely (below 0.01 in your case), the parrot throws it away.
+
+It's like saying: “Don't say anything THAT random.”
+
+### The “How Fast and Efficient?” Settings
+
+Now we tell the parrot how to use its memory and brain efficiently.
+
+`--kv-unified`
+
+The AI remembers previous words using little memory boxes called K (key) and V (value).
+
+Normally they're separate.
+`--kv-unified` says: “Put them together in one organized box.”
+
+`--cache-type-k q8_0`
+`--cache-type-v q8_0`
+
+“Compress memory a bit to save space, but don't make it too fuzzy.”
+
+- More compression → uses less VRAM
+- Less compression → better quality but heavier
+
+`-flash-attn on` Flash Attention = turbo mode
+
+It's a smarter math trick that makes long-context thinking much faster.
+
+`--fit on` “Try your best to squeeze everything into my memory.”
+
+We told the AI:
+
+- Be moderately creative
+- Don't say super weird words
+- Use turbo math
+- Remember up to a giant amount of text
+- Compress memory smartly
