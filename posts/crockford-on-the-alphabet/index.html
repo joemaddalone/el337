@@ -30,7 +30,7 @@
           }
         });
       };
-    </script><script src="/toggle-theme.js"></script><link rel="stylesheet" href="/_astro/Footer.DNV0Mv19.css">
+    </script><script src="/toggle-theme.js"></script><link rel="stylesheet" href="/_astro/Footer.BQNpyItW.css">
 <style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media(prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}[data-astro-transition-scope]{animation:none!important}}
 </style><style>[data-astro-transition-scope="astro-o7lyfsza-1"] { view-transition-name: crockford-on-the-alphabet; }@layer astro { ::view-transition-old(crockford-on-the-alphabet) { 
 	animation-duration: 180ms;
@@ -442,57 +442,6 @@ Back To Top
     }
   }
   addHeadingLinks();
-
-  /** Attaches copy buttons to code blocks in the document,
-   * allowing users to copy code easily. */
-  function attachCopyButtons() {
-    const copyButtonLabel = "Copy";
-    const codeBlocks = Array.from(document.querySelectorAll("pre"));
-
-    for (const codeBlock of codeBlocks) {
-      const wrapper = document.createElement("div");
-      wrapper.style.position = "relative";
-
-      // Check if --file-name-offset custom property exists
-      const computedStyle = getComputedStyle(codeBlock);
-      const hasFileNameOffset =
-        computedStyle.getPropertyValue("--file-name-offset").trim() !== "";
-
-      // Determine the top positioning class
-      const topClass = hasFileNameOffset
-        ? "top-(--file-name-offset)"
-        : "-top-3";
-
-      const copyButton = document.createElement("button");
-      copyButton.className = `copy-code absolute end-3 ${topClass} rounded bg-muted border border-muted px-2 py-1 text-xs leading-4 text-foreground font-medium`;
-      copyButton.innerHTML = copyButtonLabel;
-      codeBlock.setAttribute("tabindex", "0");
-      codeBlock.appendChild(copyButton);
-
-      // wrap codebock with relative parent element
-      codeBlock?.parentNode?.insertBefore(wrapper, codeBlock);
-      wrapper.appendChild(codeBlock);
-
-      copyButton.addEventListener("click", async () => {
-        await copyCode(codeBlock, copyButton);
-      });
-    }
-
-    async function copyCode(block, button) {
-      const code = block.querySelector("code");
-      const text = code?.innerText;
-
-      await navigator.clipboard.writeText(text ?? "");
-
-      // visual feedback that task is completed
-      button.innerText = "Copied";
-
-      setTimeout(() => {
-        button.innerText = copyButtonLabel;
-      }, 700);
-    }
-  }
-  attachCopyButtons();
 
   /* Go to page start after page swap */
   document.addEventListener("astro:after-swap", () =>

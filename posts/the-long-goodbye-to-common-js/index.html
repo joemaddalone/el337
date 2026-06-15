@@ -30,7 +30,7 @@
           }
         });
       };
-    </script><script src="/toggle-theme.js"></script><link rel="stylesheet" href="/_astro/Footer.DNV0Mv19.css">
+    </script><script src="/toggle-theme.js"></script><link rel="stylesheet" href="/_astro/Footer.BQNpyItW.css">
 <style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media(prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}[data-astro-transition-scope]{animation:none!important}}
 </style><style>[data-astro-transition-scope="astro-o7lyfsza-1"] { view-transition-name: the-long-goodbye-to-common-js; }@layer astro { ::view-transition-old(the-long-goodbye-to-common-js) { 
 	animation-duration: 180ms;
@@ -140,15 +140,9 @@ About
 <p>So even if the limits of what we can fetch are no longer a barrier we certainly still need a way to load modules within code… we can’t just expect things to work as if there was a module bundler, right?</p>
 <h2 id="ecmascript-modules">EcmaScript Modules</h2>
 <p>Enter ESM (EcmaScript Modules) - with the end of life of Node 10 on April 30th 2021 all active versions of node will support ESM (with some caveats being worked on). This is without a doubt the death knell for CommonJS across both Node and UI development. It’s been dead in modern UI development for a while now. Here’s the kicker - ESM works in the browsers already. Like all of them - yes even Safari on iOS.</p>
-<pre class="astro-code astro-code-themes min-light night-owl" style="--shiki-light:#24292eff;--shiki-dark:#d6deeb;--shiki-light-bg:#ffffff;--shiki-dark-bg:#011627; overflow-x: auto;" tabindex="0" data-language="js"><code><span class="line"><span style="--shiki-light:#C2C3C5;--shiki-light-font-style:inherit;--shiki-dark:#637777;--shiki-dark-font-style:italic">// a.js</span></span>
-<span class="line"><span style="--shiki-light:#D32F2F;--shiki-light-font-style:inherit;--shiki-dark:#C792EA;--shiki-dark-font-style:italic">export</span><span style="--shiki-light:#D32F2F;--shiki-light-font-style:inherit;--shiki-dark:#C792EA;--shiki-dark-font-style:italic"> default</span><span style="--shiki-light:#24292EFF;--shiki-dark:#D9F5DD"> ()</span><span style="--shiki-light:#D32F2F;--shiki-dark:#C792EA"> =></span><span style="--shiki-light:#1976D2;--shiki-light-font-style:inherit;--shiki-dark:#7FDBCA;--shiki-dark-font-style:italic"> console</span><span style="--shiki-light:#6F42C1;--shiki-light-font-style:inherit;--shiki-dark:#C792EA;--shiki-dark-font-style:italic">.</span><span style="--shiki-light:#6F42C1;--shiki-light-font-style:inherit;--shiki-dark:#82AAFF;--shiki-dark-font-style:italic">log</span><span style="--shiki-light:#24292EFF;--shiki-dark:#D6DEEB">(</span><span style="--shiki-light:#22863A;--shiki-dark:#D9F5DD">"</span><span style="--shiki-light:#22863A;--shiki-dark:#ECC48D">A</span><span style="--shiki-light:#22863A;--shiki-dark:#D9F5DD">"</span><span style="--shiki-light:#24292EFF;--shiki-dark:#D6DEEB">);</span></span>
-<span class="line"></span>
-<span class="line"><span style="--shiki-light:#C2C3C5;--shiki-light-font-style:inherit;--shiki-dark:#637777;--shiki-dark-font-style:italic">// index.js</span></span>
-<span class="line"><span style="--shiki-light:#D32F2F;--shiki-light-font-style:inherit;--shiki-dark:#C792EA;--shiki-dark-font-style:italic">import</span><span style="--shiki-light:#24292EFF;--shiki-dark:#D6DEEB"> A </span><span style="--shiki-light:#D32F2F;--shiki-light-font-style:inherit;--shiki-dark:#C792EA;--shiki-dark-font-style:italic">from</span><span style="--shiki-light:#22863A;--shiki-dark:#D9F5DD"> "</span><span style="--shiki-light:#22863A;--shiki-dark:#ECC48D">./a.js</span><span style="--shiki-light:#22863A;--shiki-dark:#D9F5DD">"</span><span style="--shiki-light:#24292EFF;--shiki-dark:#D6DEEB">; </span><span style="--shiki-light:#C2C3C5;--shiki-light-font-style:inherit;--shiki-dark:#637777;--shiki-dark-font-style:italic">// yes, you need to use the extension.</span></span>
-<span class="line"><span style="--shiki-light:#6F42C1;--shiki-light-font-style:inherit;--shiki-dark:#82AAFF;--shiki-dark-font-style:italic">A</span><span style="--shiki-light:#24292EFF;--shiki-dark:#D6DEEB">();</span></span>
-<span class="line"></span>
-<span class="line"><span style="--shiki-light:#C2C3C5;--shiki-light-font-style:inherit;--shiki-dark:#637777;--shiki-dark-font-style:italic">// index.html</span></span>
-<span class="line"><span style="--shiki-light:#24292EFF;--shiki-dark:#7FDBCA">&#x3C;</span><span style="--shiki-light:#22863A;--shiki-dark:#CAECE6">script</span><span style="--shiki-light:#6F42C1;--shiki-light-font-style:inherit;--shiki-dark:#C5E478;--shiki-dark-font-style:italic"> type</span><span style="--shiki-light:#D32F2F;--shiki-dark:#C792EA">=</span><span style="--shiki-light:#22863A;--shiki-dark:#D9F5DD">"</span><span style="--shiki-light:#22863A;--shiki-dark:#ECC48D">module</span><span style="--shiki-light:#22863A;--shiki-dark:#D9F5DD">"</span><span style="--shiki-light:#6F42C1;--shiki-light-font-style:inherit;--shiki-dark:#C5E478;--shiki-dark-font-style:italic"> src</span><span style="--shiki-light:#D32F2F;--shiki-dark:#C792EA">=</span><span style="--shiki-light:#22863A;--shiki-dark:#D9F5DD">"</span><span style="--shiki-light:#22863A;--shiki-dark:#ECC48D">index.js</span><span style="--shiki-light:#22863A;--shiki-dark:#D9F5DD">"</span><span style="--shiki-light:#24292EFF;--shiki-dark:#7FDBCA"> /></span><span style="--shiki-light:#24292EFF;--shiki-dark:#D6DEEB">;</span></span></code></pre>
+<div class="expressive-code"><link rel="stylesheet" href="/_astro/ec.y0rd3.css"><script type="module" src="/_astro/ec.0vx5m.js"></script><figure class="frame has-title"><figcaption class="header"><span class="title">a.js</span></figcaption><pre data-language="js"><code><div class="ec-line"><div class="code"><span style="--0:#F97583;--1:#BF3441">export</span><span style="--0:#E1E4E8;--1:#24292E"> </span><span style="--0:#F97583;--1:#BF3441">default</span><span style="--0:#E1E4E8;--1:#24292E"> () </span><span style="--0:#F97583;--1:#BF3441">=></span><span style="--0:#E1E4E8;--1:#24292E"> console.</span><span style="--0:#B392F0;--1:#6F42C1">log</span><span style="--0:#E1E4E8;--1:#24292E">(</span><span style="--0:#9ECBFF;--1:#032F62">"A"</span><span style="--0:#E1E4E8;--1:#24292E">);</span></div></div><div class="ec-line"><div class="code">
+</div></div><div class="ec-line"><div class="code"><span style="--0:#99A0A6;--1:#616972">// index.js</span></div></div><div class="ec-line"><div class="code"><span style="--0:#F97583;--1:#BF3441">import</span><span style="--0:#E1E4E8;--1:#24292E"> A </span><span style="--0:#F97583;--1:#BF3441">from</span><span style="--0:#E1E4E8;--1:#24292E"> </span><span style="--0:#9ECBFF;--1:#032F62">"./a.js"</span><span style="--0:#E1E4E8;--1:#24292E">; </span><span style="--0:#99A0A6;--1:#616972">// yes, you need to use the extension.</span></div></div><div class="ec-line"><div class="code"><span style="--0:#B392F0;--1:#6F42C1">A</span><span style="--0:#E1E4E8;--1:#24292E">();</span></div></div><div class="ec-line"><div class="code">
+</div></div><div class="ec-line"><div class="code"><span style="--0:#99A0A6;--1:#616972">// index.html</span></div></div><div class="ec-line"><div class="code"><span style="--0:#E1E4E8;--1:#24292E">&#x3C;</span><span style="--0:#85E89D;--1:#1E7734">script</span><span style="--0:#E1E4E8;--1:#24292E"> </span><span style="--0:#B392F0;--1:#6F42C1">type</span><span style="--0:#F97583;--1:#BF3441">=</span><span style="--0:#9ECBFF;--1:#032F62">"module"</span><span style="--0:#E1E4E8;--1:#24292E"> </span><span style="--0:#B392F0;--1:#6F42C1">src</span><span style="--0:#F97583;--1:#BF3441">=</span><span style="--0:#9ECBFF;--1:#032F62">"index.js"</span><span style="--0:#E1E4E8;--1:#24292E"> />;</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="export default () => console.log(&#x22;A&#x22;);// index.jsimport A from &#x22;./a.js&#x22;; // yes, you need to use the extension.A();// index.html<script type=&#x22;module&#x22; src=&#x22;index.js&#x22; />;"><div></div></button></div></figure></div>
 <p>That’s it.</p>
 <h2 id="more-reading">More reading</h2>
 <ul>
@@ -274,57 +268,6 @@ Back To Top
     }
   }
   addHeadingLinks();
-
-  /** Attaches copy buttons to code blocks in the document,
-   * allowing users to copy code easily. */
-  function attachCopyButtons() {
-    const copyButtonLabel = "Copy";
-    const codeBlocks = Array.from(document.querySelectorAll("pre"));
-
-    for (const codeBlock of codeBlocks) {
-      const wrapper = document.createElement("div");
-      wrapper.style.position = "relative";
-
-      // Check if --file-name-offset custom property exists
-      const computedStyle = getComputedStyle(codeBlock);
-      const hasFileNameOffset =
-        computedStyle.getPropertyValue("--file-name-offset").trim() !== "";
-
-      // Determine the top positioning class
-      const topClass = hasFileNameOffset
-        ? "top-(--file-name-offset)"
-        : "-top-3";
-
-      const copyButton = document.createElement("button");
-      copyButton.className = `copy-code absolute end-3 ${topClass} rounded bg-muted border border-muted px-2 py-1 text-xs leading-4 text-foreground font-medium`;
-      copyButton.innerHTML = copyButtonLabel;
-      codeBlock.setAttribute("tabindex", "0");
-      codeBlock.appendChild(copyButton);
-
-      // wrap codebock with relative parent element
-      codeBlock?.parentNode?.insertBefore(wrapper, codeBlock);
-      wrapper.appendChild(codeBlock);
-
-      copyButton.addEventListener("click", async () => {
-        await copyCode(codeBlock, copyButton);
-      });
-    }
-
-    async function copyCode(block, button) {
-      const code = block.querySelector("code");
-      const text = code?.innerText;
-
-      await navigator.clipboard.writeText(text ?? "");
-
-      // visual feedback that task is completed
-      button.innerText = "Copied";
-
-      setTimeout(() => {
-        button.innerText = copyButtonLabel;
-      }, 700);
-    }
-  }
-  attachCopyButtons();
 
   /* Go to page start after page swap */
   document.addEventListener("astro:after-swap", () =>
