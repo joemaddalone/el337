@@ -5,18 +5,23 @@
   "targetDefaults": {
     "build": {
       "cache": true,
-      "outputs": ["{projectRoot}/dist"]
+      "outputs": [
+        "{projectRoot}/dist"
+      ]
     },
     "dev": {
+      "cache": false
+    },
+    "deploy": {
       "cache": false
     }
   },
   "projects": {
-    "cloudinary": {
+    "@el337/cloudinary": {
       "root": "packages/cloudinary",
       "projectType": "library"
     },
-    "website": {
+    "@el337/website": {
       "root": "apps/website",
       "sourceRoot": "apps/website/src",
       "projectType": "application",
@@ -27,7 +32,9 @@
             "command": "npm run build",
             "cwd": "apps/website"
           },
-          "outputs": ["apps/website/dist"]
+          "outputs": [
+            "apps/website/dist"
+          ]
         },
         "dev": {
           "executor": "nx:run-commands",
@@ -35,10 +42,17 @@
             "command": "npm run dev",
             "cwd": "apps/website"
           }
+        },
+        "deploy": {
+          "executor": "nx:run-commands",
+          "options": {
+            "command": "npm run deploy",
+            "cwd": "apps/website"
+          }
         }
       }
     },
-    "bknd": {
+    "@el337/bknd": {
       "root": "apps/bknd",
       "projectType": "application",
       "targets": {
