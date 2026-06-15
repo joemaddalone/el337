@@ -1,0 +1,44 @@
+---
+import { getAllSeries, getSeriesBySlug } from "../../lib/api";
+
+export async function getStaticPaths() {
+  const allSeries = await getAllSeries();
+  return allSeries.map((s) => ({ params: { slug: s.slug } }));
+}
+
+const { slug } = Astro.params;
+const series = await getSeriesBySlug(slug!);
+if (!series) return Astro.redirect("/404");
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>{series.title}</title>
+  </head>
+  <body>
+    <h1>{series.title}</h1>
+
+    {series.description && <p>{series.description}</p>}
+
+    {series.youtube_playlist_id && (
+      <a
+        href={`https://www.youtube.com/playlist?list=${series.youtube_playlist_id}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Watch full playlist on YouTube
+      </a>
+    )}
+
+    {series.videos && series.videos.length > 0 && (
+      <ol>
+        {series.videos.map((video) => (
+          <li>
+            <a href={`/videos/${video.slug}`}>{video.title}</a>
+          </li>
+        ))}
+      </ol>
+    )}
+  </body>
+</html>

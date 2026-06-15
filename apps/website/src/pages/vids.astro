@@ -1,0 +1,46 @@
+---
+import { getAllVideos, getAllSeries } from "../lib/api";
+
+const [videos, allSeries] = await Promise.all([getAllVideos(), getAllSeries()]);
+const standaloneVideos = videos.filter((v) => !v.series_id);
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Tutorials</title>
+  </head>
+  <body>
+    <h1>Tutorials</h1>
+
+    {allSeries.length > 0 && (
+      <section>
+        <h2>Series</h2>
+        <ul>
+          {allSeries.map((s) => (
+            <li>
+              <a href={`/series/${s.slug}`}>{s.title}</a>
+              {s.description && <span> — {s.description}</span>}
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    {standaloneVideos.length > 0 && (
+      <section>
+        <h2>Videos</h2>
+        <ul>
+          {standaloneVideos.map((v) => (
+            <li>
+              <a href={`/videos/${v.slug}`}>{v.title}</a>
+              {v.description && <span> — {v.description}</span>}
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+  </body>
+</html>

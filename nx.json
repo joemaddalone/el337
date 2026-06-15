@@ -1,0 +1,62 @@
+{
+  "extends": "nx/presets/npm.json",
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "analytics": false,
+  "targetDefaults": {
+    "build": {
+      "cache": true,
+      "outputs": ["{projectRoot}/dist"]
+    },
+    "dev": {
+      "cache": false
+    }
+  },
+  "projects": {
+    "cloudinary": {
+      "root": "packages/cloudinary",
+      "projectType": "library"
+    },
+    "website": {
+      "root": "apps/website",
+      "sourceRoot": "apps/website/src",
+      "projectType": "application",
+      "targets": {
+        "build": {
+          "executor": "nx:run-commands",
+          "options": {
+            "command": "npm run build",
+            "cwd": "apps/website"
+          },
+          "outputs": ["apps/website/dist"]
+        },
+        "dev": {
+          "executor": "nx:run-commands",
+          "options": {
+            "command": "npm run dev",
+            "cwd": "apps/website"
+          }
+        }
+      }
+    },
+    "bknd": {
+      "root": "apps/bknd",
+      "projectType": "application",
+      "targets": {
+        "dev": {
+          "executor": "nx:run-commands",
+          "options": {
+            "command": "npm run dev",
+            "cwd": "apps/bknd"
+          }
+        },
+        "start": {
+          "executor": "nx:run-commands",
+          "options": {
+            "command": "npm run start",
+            "cwd": "apps/bknd"
+          }
+        }
+      }
+    }
+  }
+}

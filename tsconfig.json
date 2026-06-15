@@ -1,12 +1,12 @@
 {
-  "extends": "astro/tsconfigs/strict",
-  "include": [".astro/types.d.ts", "**/*"],
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
+  "extends": "./tsconfig.base.json",
+  "files": [],
+  "references": [
+    {
+      "path": "./apps/website"
     },
-    "jsx": "react-jsx",
-    "jsxImportSource": "react"
-  }
+    {
+      "path": "./libs/cloudinary"
+    },
+  ]
 }

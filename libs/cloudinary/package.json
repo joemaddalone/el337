@@ -1,0 +1,15 @@
+{
+  "name": "@os-manager/cloudinary",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "cloudinary": "^2.0.0"
+  },
+  "peerDependencies": {
+    "bknd": "*"
+  }
+}

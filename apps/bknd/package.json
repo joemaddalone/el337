@@ -1,0 +1,13 @@
+{
+  "name": "@el337/bknd",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "bknd run",
+    "start": "bknd run"
+  },
+  "dependencies": {
+    "@el337/cloudinary": "workspace:*",
+    "bknd": "latest"
+  }
+}

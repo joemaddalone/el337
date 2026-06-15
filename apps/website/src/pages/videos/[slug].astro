@@ -1,0 +1,71 @@
+---
+import { getAllVideos, getVideoBySlug } from "../../lib/api";
+
+export async function getStaticPaths() {
+  const videos = await getAllVideos();
+  return videos.map((video) => ({ params: { slug: video.slug } }));
+}
+
+const { slug } = Astro.params;
+const video = await getVideoBySlug(slug!);
+if (!video) return Astro.redirect("/404");
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>{video.title}</title>
+  </head>
+  <body>
+    <h1>{video.title}</h1>
+
+    <iframe
+      width="560"
+      height="315"
+      src={`https://www.youtube.com/embed/${video.youtube_id}`}
+      allowfullscreen
+    />
+
+    {video.description && <p>{video.description}</p>}
+
+    {video.series && (
+      <p>Part of <a href={`/series/${video.series.slug}`}>{video.series.title}</a></p>
+    )}
+
+    {video.content && (
+      <section>
+        <h2>Notes</h2>
+        <div set:html={video.content} />
+      </section>
+    )}
+
+    {video.transcript && (
+      <section>
+        <h2>Transcript</h2>
+        <pre>{video.transcript}</pre>
+      </section>
+    )}
+
+    {video.assets && video.assets.length > 0 && (
+      <section>
+        <h2>Downloads</h2>
+        <ul>
+          {video.assets.map((a) => (
+            <li><a href={a.url} download>{a.label}</a></li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    {video.links && video.links.length > 0 && (
+      <section>
+        <h2>Links</h2>
+        <ul>
+          {video.links.map((l) => (
+            <li><a href={l.url} target="_blank" rel="noopener noreferrer">{l.label}</a></li>
+          ))}
+        </ul>
+      </section>
+    )}
+  </body>
+</html>
