@@ -23,6 +23,7 @@
     "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/vite": "^4.3.1",
     "astro": "^6.4.6",
+    "astro-expressive-code": "^0.43.1",
     "bknd": "latest",
     "dagre": "^0.8.5",
     "dayjs": "^1.11.21",

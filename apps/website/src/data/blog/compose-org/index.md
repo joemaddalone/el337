@@ -70,7 +70,7 @@ I use each directory to house any volumes, config data, etc. for that service. U
 
 And they all share the same .env file:
 
-```env title=".env"
+```bash title=".env"
 COMPOSE_HTTP_TIMEOUT='60'
 APPDATADIR='/home/joe/docker-apps'
 GID='******'

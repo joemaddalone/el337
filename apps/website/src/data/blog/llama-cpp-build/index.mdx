@@ -6,24 +6,36 @@ excerpt: 'Build llama.cpp from source'
 short: 'llama.cpp'
 ---
 
+import { YouTube } from '@astro-community/astro-embed-youtube';
 
+
+<div class="py-6">
+<YouTube id="7IDhNLZVfq0" />
+</div>
 
 ## Here is everything we're going to run
 
+### Install cmake
 
 ```bash
 brew install cmake
 ```
 
+### Install huggingface cli
+
 ```bash
 curl -LsSf https://hf.co/cli/install.sh | bash
 ```
+
+### Clone the llama.cpp repository
 
 ```bash
 git clone https://github.com/ggml-org/llama.cpp
 
 cd llama.cpp
 ```
+
+### Build llama.cpp
 
 ```bash
 cmake -B llama.cpp/build -DBUILD_SHARED_LIBS=OFF -DGGML_CUDA=OFF -DGGML_METAL=ON
@@ -34,11 +46,22 @@ cmake --build llama.cpp/build --config Release -j --clean-first
 cp llama.cpp/build/bin/llama-* llama.cpp
 ```
 
+### create models directory
+
+```bash
+cd ..
+mkdir -p models
+```
+
+### Download the model
+
 ```bash
 hf download unsloth/Qwen3.5-35B-A3B-GGUF \
     --local-dir models/Qwen3.5-35B-A3B-GGUF \
     --include "*UD-Q4_K_XL*"
 ```
+
+### Run llama.cpp server
 
 ```bash
 ./llama.cpp/llama-server \
