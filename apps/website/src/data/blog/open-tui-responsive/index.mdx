@@ -1,0 +1,327 @@
+---
+title: "OpenTUI: Responsive Terminal"
+date: 2026-06-16
+tags: ["software"]
+excerpt: "OpenTUI is a responsive terminal user interface framework for the web."
+---
+
+import { YouTube } from '@astro-community/astro-embed-youtube';
+
+<div class="py-6">
+<YouTube id="D8xqENHQWCw" />
+</div>
+
+Terminal applications don't have to be limited to simple text output. With OpenTUI, you can build interfaces using concepts that feel very similar to frontend development. Containers behave like `<div>` elements, layouts are powered by Yoga (a Flexbox-inspired engine), and components can react dynamically to terminal size changes.
+
+In this article, we'll build:
+
+- An ASCII-art header
+- Two bordered panels
+- A responsive layout that switches between horizontal and vertical arrangements
+- A footer that always stays full width
+
+Here's the complete application we'll be building:
+
+```typescript
+import theme from "./theme";
+
+import {
+	createCliRenderer,
+	BoxRenderable,
+	TextRenderable,
+	ASCIIFontRenderable,
+	type CliRenderer,
+} from "@opentui/core";
+```
+
+
+## Creating the Header
+
+The first component is a header containing a large ASCII title and a subtitle.
+
+```typescript
+const buildHeader = (renderer: CliRenderer) => {
+	const header = new BoxRenderable(renderer, {
+		id: "header",
+		flexDirection: "column",
+		alignItems: "center",
+		paddingTop: 1,
+		height: 9,
+	});
+
+	header.add(
+		new ASCIIFontRenderable(renderer, {
+			id: "title",
+			text: "TUI",
+			font: "block",
+			color: theme.blue,
+			maxWidth: "100%",
+		}),
+	);
+
+	header.add(
+		new TextRenderable(renderer, {
+			id: "subtitle",
+			content: "Terminal User Interface",
+			fg: theme.dim,
+		}),
+	);
+
+	return header;
+};
+```
+
+If you're coming from React or browser development, you can think of a BoxRenderable as a `<div>` and TextRenderable as a text node.
+
+The ASCIIFontRenderable creates the large banner text:
+```
+████████╗██╗   ██╗██╗
+╚══██╔══╝██║   ██║██║
+   ██║   ██║   ██║██║
+   ██║   ██║   ██║██║
+   ██║   ╚██████╔╝██║
+   ╚═╝    ╚═════╝ ╚═╝
+
+Terminal User Interface
+```
+
+## Building the Panels
+
+Next, we'll create two panels. Both have rounded borders and occupy 50% of the available width.
+
+Panel A
+```typescript
+const buildPanelA = (renderer: CliRenderer) => {
+	const panel = new BoxRenderable(renderer, {
+		id: "panel-a",
+		border: true,
+		borderStyle: "rounded",
+		borderColor: theme.border,
+		width: "50%",
+		flexDirection: "column",
+		padding: 1,
+		title: "Panel A",
+	});
+
+	return panel;
+};
+```
+
+Panel B
+
+```typescript
+const buildPanelB = (renderer: CliRenderer) => {
+	const panel = new BoxRenderable(renderer, {
+		id: "panel-b",
+		border: true,
+		borderStyle: "rounded",
+		borderColor: theme.border,
+		width: "50%",
+		flexDirection: "column",
+		padding: 1,
+		title: "Panel B",
+	});
+
+	return panel;
+};
+```
+
+Because the components are nearly identical, they could eventually be replaced with a reusable panel component, but for clarity we'll keep them separate.
+
+## Adding a Footer
+
+The footer spans the entire width of the terminal and stays fixed regardless of screen size.
+
+```typescript
+const buildFooter = (renderer: CliRenderer) => {
+	const bar = new BoxRenderable(renderer, {
+		id: "footer",
+		height: 1,
+		flexDirection: "row",
+		backgroundColor: theme.bgAlt,
+		paddingLeft: 1,
+		paddingRight: 1,
+	});
+
+	bar.add(
+		new TextRenderable(renderer, {
+			id: "status-text",
+			content: "footer here",
+			fg: theme.dim,
+		}),
+	);
+
+	return bar;
+};
+```
+
+
+## Creating the Content Area
+
+Now we need somewhere to place the panels.
+
+The content area contains a single row named "top-row".
+
+```typescript
+const buildContentArea = (renderer: CliRenderer) => {
+	const content = new BoxRenderable(renderer, {
+		id: "content",
+		flexDirection: "column",
+		flexGrow: 1,
+	});
+
+	const topRow = new BoxRenderable(renderer, {
+		id: "top-row",
+		flexDirection: "row",
+		gap: 1,
+		flexGrow: 1,
+	});
+
+	topRow.add(buildPanelA(renderer));
+	topRow.add(buildPanelB(renderer));
+
+	content.add(topRow);
+
+	return content;
+};
+```
+
+Initially, the row flows horizontally:
+
+```
+┌──────────────┐ ┌──────────────┐
+│   Panel A    │ │   Panel B    │
+│              │ │              │
+└──────────────┘ └──────────────┘
+```
+
+## Building the Main UI
+
+The root container fills the entire terminal.
+
+```typescript
+const buildTui = (renderer: CliRenderer) => {
+	const main = new BoxRenderable(renderer, {
+		id: "main",
+		width: "100%",
+		height: "100%",
+		flexDirection: "column",
+		backgroundColor: theme.bg,
+	});
+
+	main.add(buildHeader(renderer));
+	main.add(buildContentArea(renderer));
+	main.add(buildFooter(renderer));
+
+	renderer.root.add(main);
+};
+```
+
+At this point, the application is complete—but it isn't responsive yet.
+
+## Handling Resize Events
+
+OpenTUI emits resize events whenever the terminal dimensions change.
+
+Inside our resize handler, we retrieve the elements we need by ID:
+
+```typescript
+const handleResize = (renderer: CliRenderer, width: number) => {
+	const topRow = renderer.root.findDescendantById("top-row");
+	const panelA = renderer.root.findDescendantById("panel-a");
+	const panelB = renderer.root.findDescendantById("panel-b");
+
+	if (!topRow) return;
+
+	if (width < 100) {
+		topRow.flexDirection = "column";
+
+		if (panelA) panelA.width = "100%";
+		if (panelB) panelB.width = "100%";
+	} else {
+		topRow.flexDirection = "row";
+
+		if (panelA) panelA.width = "50%";
+		if (panelB) panelB.width = "50%";
+	}
+};
+```
+
+The magic happens here:
+
+topRow.flexDirection = "column";
+
+When the terminal becomes narrow, the row changes from horizontal to vertical.
+
+Wide Terminal
+
+```
+┌──────────────┐ ┌──────────────┐
+│   Panel A    │ │   Panel B    │
+└──────────────┘ └──────────────┘
+```
+
+Narrow Terminal
+```
+┌──────────────┐
+│   Panel A    │
+└──────────────┘
+
+┌──────────────┐
+│   Panel B    │
+└──────────────┘
+```
+
+## Starting the Renderer
+
+Finally, we create the renderer, build the UI, and register the resize handler.
+
+```typescript
+const main = async () => {
+	const renderer = await createCliRenderer({
+		exitOnCtrlC: true,
+	});
+
+	buildTui(renderer);
+
+	renderer.on("resize", (width: number) => {
+		handleResize(renderer, width);
+	});
+
+	renderer.start();
+};
+
+main();
+```
+
+## Why OpenTUI Feels Familiar
+
+One of the nicest things about OpenTUI is that it borrows heavily from concepts frontend developers already know.
+
+| Browser              | OpenTUI                |
+| -------------------- | ---------------------- |
+| `<div>`              | `BoxRenderable`        |
+| Text node            | `TextRenderable`       |
+| Hero heading         | `ASCIIFontRenderable`  |
+| Flexbox              | Yoga Layout            |
+| `querySelector()`    | `findDescendantById()` |
+| Window resize events | Renderer resize events |
+
+
+Because of this, building terminal applications feels surprisingly close to building web applications.
+
+Final Thoughts
+
+Responsive design isn't limited to browsers.
+
+Using OpenTUI and TypeScript, we were able to create:
+
+- A reusable component structure
+- Flexbox-style layouts
+- Dynamic resizing
+- Side-by-side panels that collapse vertically when space becomes limited
+- A persistent footer
+
+If you're already comfortable with React, Vue, or modern frontend development, OpenTUI provides a very natural way to bring those same ideas into the terminal.
+
+And, of course, every terminal application deserves an unnecessarily large ASCII-art header.
