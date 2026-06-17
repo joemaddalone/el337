@@ -1,0 +1,295 @@
+---
+title: "Apple's Built-in LLM Sucks, Mostly"
+date: 2026-06-17
+tags: ["code", "ai"]
+excerpt: "good at one thing..."
+---
+
+Apple quietly ships a language model with macOS Tahoe. Naturally, the first thing I wanted to do after upgrading was see how useful it really is.
+
+After experimenting with it for a while, I discovered two things:
+
+1. It's much smaller than the models most of us are used to.
+2. It's surprisingly good at one specific task.
+
+---
+
+# What Are Apple's Foundation Models?
+
+If you're running macOS Tahoe, you already have a local language model sitting on your machine. Apple exposes this through the Foundation Models framework, allowing applications to interact with the same model used by Apple Intelligence and Siri.
+
+On paper, this sounds pretty exciting:
+
+- Local inference
+- No API keys
+- Privacy-focused
+- Built into the OS
+
+But there are some limitations.
+
+The model itself is tiny compared to what most local AI enthusiasts are used to running. It has a relatively small context window and isn't designed to compete with larger models from Ollama, MLX, or cloud providers.
+
+Still, that doesn't mean it's useless.
+
+---
+
+# Enter Apfel
+
+While looking for ways to experiment with the framework, I came across **[Apfel](https://apfel.franzai.com/)**, a Swift command-line utility that provides an easy interface to Apple's Foundation Models.
+
+Created by [Franz Enzenhofer](https://github.com/franzenzenhofer) and hosted in [github]((https://github.com/Arthur-Ficial/apfel)), Apfel exposes the built-in model through several different interfaces.
+
+It turns out to be a really elegant little tool.
+
+---
+
+# Installation
+
+Installing Apfel is as simple as using Homebrew.
+
+```bash
+brew install apfel
+```
+
+Once installed, you have three different ways to interact with the model.
+
+---
+
+# Option 1: Chat Mode
+
+The first mode is an interactive chat.
+
+```bash
+apfel --chat
+```
+For example, I asked it to write a Python function that reverses a string.
+
+```bash
+Apple Intelligence · on-device LLM · apfel v1.6.0
+────────────────────────────────────────────────────────
+Type 'quit' to exit.
+
+you› Write a python function that reverses a string
+ ai› Certainly! Here is a Python function that reverses a given string:
+
+
+def reverse_string(s):
+    return s[::-1]
+
+# Example usage:
+original_string = "hello"
+reversed_string = reverse_string(original_string)
+print(reversed_string)  # Output: "olleh"
+```
+Then I followed up with:
+
+```bash
+Rewrite it in JavaScript.
+```
+
+Without restating the original prompt, the model understood the context and produced a JavaScript version.
+
+Was it amazing? No. Was it correct? Mostly. And that's good enough for simple tasks.
+
+---
+
+# Option 2: OpenAI-Compatible Server Mode
+
+The next mode is where things become interesting.
+
+```bash
+apfel --serve
+
+apfel server v1.6.0
+├ endpoint: http://127.0.0.1:11434
+├ model:    apple-foundationmodel
+├ cors:     disabled
+├ origin:   localhost only (http://127.0.0.1, http://localhost, http://[::1])
+├ token:    none
+├ health:   public
+├ max concurrent: 5
+├ debug:    off
+└ ready
+
+Endpoints:
+  POST http://127.0.0.1:11434/v1/chat/completions
+  GET  http://127.0.0.1:11434/v1/models
+  GET  http://127.0.0.1:11434/health
+
+2026-06-17T11:40:55-0500 info Hummingbird: [HummingbirdCore] Server started and listening on 127.0.0.1:11434
+```
+
+Apfel exposes the model using the same API conventions as Ollama.
+
+That means tools and libraries that already support OpenAI-compatible endpoints can potentially talk to Apple's local model with very little effort.
+
+Things like:
+
+- AI SDK
+- Existing OpenAI clients
+- Ollama-based applications
+- OMLX tooling
+
+Neat.
+
+---
+
+# Option 3: Command-Line Mode
+
+You can simply pass a prompt directly to Apfel.
+
+```bash
+apfel "What is the weather in Chicago?"
+
+I'm sorry, but I don't have real-time access to current
+weather information. You can check the latest weather
+forecast for Chicago by visiting a weather website,
+app, or using a weather service like Weather.com,
+AccuWeather, or the National Weather Service.
+```
+
+The model has:
+
+- No internet access
+- No tools
+- No external knowledge
+
+It quickly reminds you that this isn't GPT 5.5 (or even GPT 3).
+
+---
+
+# Turns out the model is pretty good at one thing
+
+Summarization. That's where this tiny model gets useful.
+
+Pipe the contents of a file to it
+
+```
+cat somefile.sh | apfel -q -s "explain this code"
+```
+
+Within seconds, I get a concise explanation of what the script does. Even better, the response comes back in markdown. Which means I can redirect it straight into a file.
+
+```
+cat somefile.sh | apfel -q -s "explain this code" > markdown.md
+```
+
+---
+
+# Summarizing Git History
+
+There is a demo in the github repo called [gitsum](https://github.com/Arthur-Ficial/apfel/blob/main/demo/gitsum) that summarizes a `git log`.
+
+```bash
+git log -15 | apfel -q -s "Summarize this git log in 2-4 \
+sentences. Group relate d changes (features, fixes, \
+refactors, docs). Mention what was built or changed, \
+not individual commit hashes. Be specific about what \
+happened. No bullet points."
+```
+
+The results are surprisingly good.
+
+Rather than reading fifteen commit messages, I get a paragraph explaining what's actually changed.
+
+---
+
+# Practical use case
+
+I keep a local directory full of oss repositories that I am interested in hearing about.
+
+Something like:
+
+```
+oss-repos/
+├── project-a
+├── project-b
+├── project-c
+└── ...
+```
+
+So I wrote a shell script.
+
+The script:
+
+1. Iterates through each repository.
+2. Pulls the latest changes.
+3. Collects recent commits.
+4. Sends them to Apfel.
+5. Generates markdown summaries.
+6. Writes everything into my Obsidian vault.
+
+```shell
+#!/bin/bash
+
+ROOT_DIR="$HOME/oss-repos"
+OUTPUT="$HOME/obsidian/oss-summary-$(date +%Y-%m-%d).md"
+
+cat > "$OUTPUT" <<EOF
+# OSS Summary
+
+Date: $(date +"%B %d, %Y")
+
+EOF
+
+for dir in "$ROOT_DIR"/*; do
+    [ -d "$dir" ] || continue
+    [ -d "$dir/.git" ] || continue
+
+    repo=$(basename "$dir")
+    echo "Processing $repo..."
+
+    summary=$(
+        cd "$dir" || exit
+        git pull >/dev/null 2>&1
+        git log --oneline -15 |
+        apfel -q -s \
+        "Summarize this git log in 2-4 sentences. Group related \
+        changes. Mention what was built or changed and the date, \
+        not commit hashes. No bullet points."
+    )
+
+    cat >> "$OUTPUT" <<EOF
+## $repo
+
+$summary
+
+EOF
+
+done
+
+echo "Wrote summary to $OUTPUT"
+```
+
+Running it creates a file like:
+
+```
+oss-summary-2026-06-17.md
+```
+
+Inside are summaries for every repository I'm tracking.
+
+---
+
+# So is Apple's Local AI Good?
+
+That depends on what you're expecting. If you're hoping for GPT-4-level intelligence, you'll probably be disappointed. The model is small. Its context window is limited. And it doesn't have tools or internet access.
+
+But for tasks like:
+
+- Summarization
+- Documentation
+- Release notes
+- Git history digests
+- Code explanation
+- Markdown generation
+
+…it performs remarkably well. And because it's already running on your machine, the cost is effectively zero.
+
+---
+
+# Looking Ahead
+
+Apple has already announced the next version of macOS, and judging from the [WWDC]((https://www.apple.com/newsroom/2026/06/apple-unveils-next-generation-of-apple-intelligence-siri-ai-and-more/)) presentations, it appears future Foundation Models may incorporate technology derived from Google's Gemini models.
+
+If that's true, we could see some substantial improvements in the near future. Which makes now a great time to start experimenting. The current model won't change your life. But if Apple continues improving these local models, they could become an incredibly useful building block for developers.
