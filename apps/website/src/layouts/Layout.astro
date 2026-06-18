@@ -1,6 +1,6 @@
 ---
 import { ClientRouter } from "astro:transitions";
-// import Analytics from "@/components/Analytics.astro";
+import Analytics from "@/components/Analytics.astro";
 import { SITE } from "@/config";
 import "@/styles/global.css";
 
@@ -27,24 +27,6 @@ const {
   modDatetime,
   scrollSmooth = false,
 } = Astro.props;
-
-// const socialImageURL = new URL(ogImage, Astro.url);
-
-// const structuredData = {
-//   "@context": "https://schema.org",
-//   "@type": "BlogPosting",
-//   headline: `${title}`,
-//   image: `${socialImageURL}`,
-//   datePublished: `${pubDatetime?.toISOString()}`,
-//   ...(modDatetime && { dateModified: modDatetime.toISOString() }),
-//   author: [
-//     {
-//       "@type": "Person",
-//       name: `${author}`,
-//       ...(profile && { url: profile }),
-//     },
-//   ],
-// };
 ---
 
 <!doctype html>
@@ -75,7 +57,6 @@ const {
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalURL} />
-    <!-- <meta property="og:image" content={socialImageURL} /> -->
 
     <!-- Article Published/Modified time -->
     {
@@ -100,7 +81,6 @@ const {
     <meta property="twitter:url" content={canonicalURL} />
     <meta property="twitter:title" content={title} />
     <meta property="twitter:description" content={description} />
-    <!-- <meta property="twitter:image" content={socialImageURL} /> -->
 
     <!-- Google JSON-LD Structured data -->
     <!-- <script
@@ -150,7 +130,7 @@ const {
   </head>
   <body>
     <slot />
-    <!-- <Analytics id="G-NY4M10EDW5" /> -->
+    <Analytics id="G-NY4M10EDW5" />
   </body>
 </html>
 
