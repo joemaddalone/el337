@@ -4,6 +4,26 @@ date: 2026-06-17
 tags: ["code", "ai"]
 excerpt: "good at one thing..."
 ---
+export const videoMetadata = {
+  name: "Access Apple's Built-in LLM from Terminal with Apfel (Mac Foundation Models)",
+  description: "Apple ships a small local language model with macOS Tahoe, and Apfel lets you access it directly from the terminal. In this video, I explore Apple's Foundation Models Framework through the Apfel CLI to see what on-device AI is actually capable of on Apple Silicon.",
+  thumbnailUrl: "https://img.youtube.com/vi/PlgAXsy0b3g/maxresdefault.jpg",
+  uploadDate: "2026-06-18T00:00:00.000Z",
+  contentUrl: "https://youtu.be/PlgAXsy0b3g",
+};
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: videoMetadata.name,
+  description: videoMetadata.description,
+  thumbnailUrl: videoMetadata.thumbnailUrl,
+  uploadDate: videoMetadata.uploadDate,
+  contentUrl: videoMetadata.contentUrl,
+  duration: videoMetadata.duration,
+})} />
+
+
 import { YouTube } from '@astro-community/astro-embed-youtube';
 
 <div class="py-6">
