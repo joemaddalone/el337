@@ -1,0 +1,209 @@
+---
+title: "Baby's First Local AI"
+date: 2026-07-16
+tags: ["code", "ai"]
+excerpt: "good at one thing..."
+---
+export const videoMetadata = {
+  name: "Local AI 2026: Run Unlimited AI on Your Computer",
+  description: "Local AI in 2026 has gotten so good that anyone can run their own AI on their computer, no API keys, no subscriptions, no rate limits. This beginner's guide covers everything you need to get started.",
+  thumbnailUrl: "https://img.youtube.com/vi/AaGaTgeARl0/maxresdefault.jpg",
+  contentUrl: "https://youtu.be/AaGaTgeARl0",
+};
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: videoMetadata.name,
+  description: videoMetadata.description,
+  thumbnailUrl: videoMetadata.thumbnailUrl,
+  contentUrl: videoMetadata.contentUrl,
+  duration: videoMetadata.duration,
+})} />
+
+
+import { YouTube } from '@astro-community/astro-embed-youtube';
+
+<div class="py-6">
+<YouTube id="AaGaTgeARl0" />
+</div>
+
+# Running AI on Your Own Computer Is Not a Big Deal Anymore
+
+For years, running AI locally felt like something you had to be qualified for. Researchers. Engineers. People who spent weekends compiling obscure software and praying to the compiler gods.
+
+That's over.
+
+If you have a reasonably modern computer, you can run powerful language models entirely offline right now. No API keys. No subscriptions. No rate limits. No one watching what you ask.
+
+If you've been curious about local AI but assumed your hardware wasn't good enough or that you were too late to the party, stop assuming. This guide is for you.
+
+## The Three Lies Everyone Believes About Local AI
+
+### "My computer isn't powerful enough."
+
+It probably is.
+
+For most modern language models, the entry point is surprisingly low:
+
+* **Windows/Linux:** Around **8 GB of RAM or VRAM** gets you started. A GPU helps, but many inference engines work fine on CPU alone.
+* **macOS:** Apple's unified memory architecture means you usually don't need a dedicated GPU. Around **8 GB of unified memory** is enough to experiment.
+
+You won't be running the biggest frontier models locally. That's fine. There are thousands of smaller models that perform remarkably well at their jobs.
+
+### "I'm too late."
+
+No. You're early.
+
+The local AI ecosystem moves so fast that almost nobody has it figured out yet. New inference engines, new assistants, new quantization techniques, new specialized models — they appear every week.
+
+Even experienced users are still learning.
+
+There's never been a better time to jump in.
+
+### "This is only for engineers."
+
+It isn't.
+
+Using local AI today isn't much more complicated than installing a web browser. Most tools provide polished desktop applications with familiar chat interfaces. You install one, download a model, and start chatting.
+
+Minutes. Not hours.
+
+## Your First Inference Engine
+
+An inference engine is the software that loads an AI model and generates responses. It's the engine under the hood.
+
+Two good starting points:
+
+* **Ollama**
+* **Jan**
+
+Both work on Windows, macOS, and Linux. Install one, pick a model, and you get a ChatGPT-style interface running entirely on your machine.
+
+No cloud.
+
+No subscriptions.
+
+No internet required after the model is downloaded.
+
+### Ollama vs. Jan
+
+They solve the same problem differently.
+
+**Ollama** is lightweight and easy to script. It's the default for most developers because it gets out of your way.
+
+**Jan** is more feature-rich. It includes web search, project workflows, and other tools out of the box. Better for people who want a complete desktop experience.
+
+Both expose a local API. That means other applications can talk to them the same way they'd talk to a cloud AI provider. Your computer becomes your own private AI server.
+
+That's the whole game: your data stays on your machine, and you control what happens to it.
+
+## The Three Pieces of Local AI
+
+Once you understand these three components, the entire ecosystem clicks into place.
+
+### 1. The Inference Engine
+
+The software that actually runs the model.
+
+Examples: Ollama, Jan, llama.cpp, vLLM, MLX.
+
+### 2. The Interface
+
+What you interact with.
+
+Some are simple chat apps. Others are sophisticated assistants that browse the web, manage projects, write code, or coordinate multiple AI agents.
+
+These connect to the inference engine through its API. That's all.
+
+### 3. The Model
+
+The AI itself.
+
+Different models specialize in different things:
+
+* General conversation
+* Programming
+* OCR
+* Reasoning
+* Translation
+* Writing
+* Vision
+
+Swapping between models often takes a single command. That's the beauty of this stack — you're not locked into anything.
+
+## Finding Models on Hugging Face
+
+Eventually you'll want something beyond the default model.
+
+Hugging Face hosts an enormous collection of open-source AI models covering virtually every task you can imagine.
+
+Need a coding model? There's one.
+
+Need an OCR model? Several.
+
+Need a multilingual assistant? Thousands.
+
+Most inference engines pull models from Hugging Face directly.
+
+## What Does "8B" Actually Mean?
+
+You'll see model names like:
+
+* 4B
+* 8B
+* 14B
+* 32B
+
+The "B" stands for **billions of parameters**. Roughly, think of parameters as the model's memory — how much it can store and recall.
+
+* **4B–9B models** run on around **8 GB of memory**
+* **12B–14B models** prefer **16 GB**
+* **24B+ models** benefit from **32 GB or more**
+
+Larger models often perform better. But recent advances have made smaller models surprisingly capable. In many real-world tasks, an optimized 8B model is more than enough.
+
+I run 8B models on my machine. They do what I need them to do. I don't need the biggest model — I need the right one.
+
+## Mixing and Matching Your Stack
+
+Local AI's real strength is modularity. You aren't locked into one vendor or one application.
+
+Run Ollama as your engine. Connect it to your favorite desktop assistant. Swap between multiple models. Experiment with different workflows.
+
+Everything speaks through the same local API. Once you understand that, the whole ecosystem opens up.
+
+## Local AI Is Bigger Than Chatbots
+
+Running a language model is just the beginning.
+
+The same infrastructure powers:
+
+* Image generation
+* Video generation
+* Text-to-speech
+* Voice cloning
+* Research assistants
+* Knowledge bases
+* Email assistants
+* Calendar automation
+* AI workflows
+* Personal automation systems
+
+Many of these are free, open source, and designed to run entirely on your own hardware.
+
+## Getting Started
+
+You only need three things:
+
+1. Install an inference engine like Ollama or Jan.
+2. Download a model that fits your hardware.
+3. Start chatting.
+
+That's it.
+
+Once those pieces are in place, you've entered the world of local AI. From there, the ecosystem grows faster than almost any area of software today.
+
+The barrier to entry has never been lower. The possibilities have never been greater.
+
+Now go break something. That's where the learning happens.
