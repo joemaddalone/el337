@@ -14,34 +14,35 @@ const posts = await getCollection("blog");
 
 const sortedPosts = getSortedPosts(posts);
 const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
+const [heroPost, ...gridPosts] = recentPosts;
 ---
 
 <Layout>
   <Header />
   <main id="main-content" data-layout="index">
-    <section id="hero" class="pt-8 pb-6">
-      <p>Hi, I'm Joe Maddalone.  I write about software, books, and movies.</p>
-    </section>
-
-    <Hr />
-
     {
       recentPosts.length > 0 && (
-        <section id="recent-posts" class="pt-12 pb-6">
-          <h2 class="text-2xl font-semibold tracking-wide">Recent Posts</h2>
-          <ul>
-            {recentPosts.map(
-              (data, index) =>
-                index < SITE.postPerIndex && <Card variant="h3" {...data} />
+        <section id="recent-posts" class="mx-auto max-w-5xl px-4 pt-12 pb-6">
+          <h2 class="mb-6 text-2xl font-serif font-semibold tracking-wide">
+            Recent Posts
+          </h2>
+          <ul class="grid grid-cols-1 gap-8 md:grid-cols-2">
+            {heroPost && (
+              <Card variant="h2" featured {...heroPost} />
             )}
+            {gridPosts
+              .slice(0, SITE.postPerIndex - 1)
+              .map((data) => (
+                <Card variant="h3" {...data} />
+              ))}
           </ul>
         </section>
       )
     }
 
     <div class="my-8 text-center">
-      <LinkButton href="/posts/">
-        All Posts
+      <LinkButton href="/posts/2">
+        More
         <IconArrowRight class="inline-block rtl:-rotate-180" />
       </LinkButton>
     </div>

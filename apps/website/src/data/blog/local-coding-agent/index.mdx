@@ -4,7 +4,28 @@ date: 2026-04-07
 tags: ['ai']
 excerpt: 'Building an AI Coding Agent with Vercel AI SDK and Ollama'
 short: 'coding-agent'
+coverImage: "https://img.youtube.com/vi/jDwwNq11Nuo/maxresdefault.jpg"
+coverImageInPost: false
 ---
+
+export const videoMetadata = {
+  name: "Build an Agent Loop in Typescript: Part 1, The Agent Loop",
+  description: "Let’s build a real agent loop in Typescript — no frameworks, no magic.",
+  thumbnailUrl: "https://img.youtube.com/vi/jDwwNq11Nuo/maxresdefault.jpg",
+  contentUrl: "https://youtu.be/jDwwNq11Nuo",
+};
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: videoMetadata.name,
+  description: videoMetadata.description,
+  thumbnailUrl: videoMetadata.thumbnailUrl,
+  contentUrl: videoMetadata.contentUrl,
+  duration: videoMetadata.duration,
+})} />
+
+
 import { YouTube } from '@astro-community/astro-embed-youtube';
 
 # We dont need no subscriptions

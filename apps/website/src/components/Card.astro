@@ -2,34 +2,70 @@
 import { slugifyStr } from "@/utils/slugify";
 import type { CollectionEntry } from "astro:content";
 import Datetime from "./Datetime.astro";
+import { Image } from "astro:assets";
 
 export interface Props extends CollectionEntry<"blog"> {
   variant?: "h2" | "h3";
+  featured?: boolean;
 }
 
-const { variant = "h2", data } = Astro.props;
+const { variant = "h2", data, featured = false } = Astro.props;
 
-const { title, excerpt, date, timezone } = data;
+const { title, excerpt, date, timezone, coverImage } = data;
 
 const headerProps = {
   style: { viewTransitionName: slugifyStr(title) },
   class: "text-lg font-medium decoration-dashed hover:underline",
 };
+
+const hasImage = !!coverImage;
+const imageSrc = coverImage ?? coverImage;
 ---
 
-<li class="my-6">
-  <Datetime {date} {timezone} />
+<li class:list={["group", featured ? "col-span-full" : ""]}>
   <a
     href={`/posts/${slugifyStr(title)}`}
-    class="inline-block text-lg font-medium text-accent decoration-dashed underline-offset-4 focus-visible:no-underline focus-visible:underline-offset-0"
+    class="block cursor-pointer rounded-lg transition-colors duration-200 hover:bg-muted/50"
   >
     {
-      variant === "h2" ? (
-        <h2 {...headerProps}>{title}</h2>
-      ) : (
-        <h3 {...headerProps}>{title}</h3>
+      hasImage && (
+        <div
+          class:list={[
+            "overflow-hidden rounded-lg",
+            featured ? "aspect-video" : "aspect-video",
+          ]}
+        >
+          <Image
+            src={imageSrc}
+            alt={title}
+            width={featured ? 1200 : 800}
+            height={featured ? 675 : 450}
+            loading="lazy"
+            decoding="async"
+            class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+          />
+        </div>
       )
     }
+    <div class:list={["mt-3", hasImage && ""]}>
+      <Datetime {date} {timezone} />
+      <h2
+        {...headerProps}
+        class:list={[
+          featured ? "text-2xl font-bold sm:text-3xl" : "text-lg font-medium",
+          "font-serif decoration-dashed hover:underline",
+        ]}
+      >
+        {title}
+      </h2>
+      <p
+        class:list={[
+          featured ? "text-base" : "text-sm",
+          "mt-1 text-foreground/80",
+        ]}
+      >
+        {excerpt}
+      </p>
+    </div>
   </a>
-  <p>{excerpt}</p>
 </li>

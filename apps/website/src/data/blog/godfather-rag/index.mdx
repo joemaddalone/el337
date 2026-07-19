@@ -4,7 +4,29 @@ date: 2026-04-06
 tags: ['ai']
 excerpt: 'The one where AI meets The Godfather'
 short: 'rag'
+coverImage: "https://img.youtube.com/vi/PZVXYrjDa8w/maxresdefault.jpg"
+coverImageInPost: false
 ---
+
+export const videoMetadata = {
+  name: "Build an Agent Loop in Typescript: Part 1, The Agent Loop",
+  description: "Let’s build a real agent loop in Typescript — no frameworks, no magic.",
+  thumbnailUrl: "https://img.youtube.com/vi/PZVXYrjDa8w/maxresdefault.jpg",
+  contentUrl: "https://youtu.be/PZVXYrjDa8w",
+};
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: videoMetadata.name,
+  description: videoMetadata.description,
+  thumbnailUrl: videoMetadata.thumbnailUrl,
+  contentUrl: videoMetadata.contentUrl,
+  duration: videoMetadata.duration,
+})} />
+
+
+
 import { YouTube } from '@astro-community/astro-embed-youtube';
 
 # Let's have AI read The Godfather

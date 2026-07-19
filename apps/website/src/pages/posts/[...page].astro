@@ -1,10 +1,10 @@
 ---
 import type { GetStaticPaths } from "astro";
 import { getCollection } from "astro:content";
-import Main from "@/layouts/Main.astro";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
+import Breadcrumb from "@/components/Breadcrumb.astro";
 import Card from "@/components/Card.astro";
 import Pagination from "@/components/Pagination.astro";
 import getSortedPosts from "@/utils/getSortedPosts";
@@ -16,15 +16,18 @@ export const getStaticPaths = (async ({ paginate }) => {
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;
+const [firstPost, ...restPosts] = page.data;
 ---
 
 <Layout title={`Posts | ${SITE.title}`}>
   <Header />
-  <Main pageTitle="Posts" pageDesc="All the articles I've posted.">
-    <ul>
-      {page.data.map((data) => <Card {...data} />)}
+  <Breadcrumb />
+  <main id="main-content" class="mx-auto max-w-5xl px-4 pb-4">
+    <ul class="grid grid-cols-1 gap-8 md:grid-cols-2">
+      {firstPost && <Card variant="h2" featured {...firstPost} />}
+      {restPosts.map((data) => <Card variant="h3" {...data} />)}
     </ul>
-  </Main>
+  </main>
 
   <Pagination {page} />
 

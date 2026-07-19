@@ -3,7 +3,27 @@ title: "OpenTUI: Responsive Terminal"
 date: 2026-06-16
 tags: ["software"]
 excerpt: "OpenTUI is a terminal UI framework."
+coverImage: "https://img.youtube.com/vi/D8xqENHQWCw/maxresdefault.jpg"
+coverImageInPost: false
 ---
+
+export const videoMetadata = {
+  name: "Build a responsive terminal UI in OpenTUI",
+  description: "OpenTUI.",
+  thumbnailUrl: "https://img.youtube.com/vi/D8xqENHQWCw/maxresdefault.jpg",
+  contentUrl: "https://youtu.be/AaGaTgeARl0",
+};
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: videoMetadata.name,
+  description: videoMetadata.description,
+  thumbnailUrl: videoMetadata.thumbnailUrl,
+  contentUrl: videoMetadata.contentUrl,
+  duration: videoMetadata.duration,
+})} />
+
 
 import { YouTube } from '@astro-community/astro-embed-youtube';
 

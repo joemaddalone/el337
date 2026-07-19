@@ -1,10 +1,31 @@
 ---
-title: 'Extract structured data from images with DSPy and ax-llm'
+title: "Extract structured data from images with DSPy and ax-llm"
 date: 2025-10-27
-tags: ['ai']
+tags: ["ai"]
 excerpt: "Let's get structured data from an image"
-short: 'DSPy -> Image data'
+short: "DSPy -> Image data"
+coverImage: "https://img.youtube.com/vi/67faupn3G4g/maxresdefault.jpg"
+coverImageInPost: false
 ---
+
+export const videoMetadata = {
+  name: "Build an Agent Loop in Typescript: Part 1, The Agent Loop",
+  description:
+    "Let’s build a real agent loop in Typescript — no frameworks, no magic.",
+  thumbnailUrl: "https://img.youtube.com/vi/67faupn3G4g/maxresdefault.jpg",
+  contentUrl: "https://youtu.be/67faupn3G4g",
+};
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: videoMetadata.name,
+  description: videoMetadata.description,
+  thumbnailUrl: videoMetadata.thumbnailUrl,
+  contentUrl: videoMetadata.contentUrl,
+  duration: videoMetadata.duration,
+})} />
+
 import { YouTube } from '@astro-community/astro-embed-youtube';
 
 

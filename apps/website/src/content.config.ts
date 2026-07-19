@@ -6,7 +6,7 @@ export const BLOG_PATH = "src/data/blog/";
 
 const blog = defineCollection({
   loader: glob({ pattern: "**/*.(md|mdx|astro)", base: `./${BLOG_PATH}` }),
-  schema: ({ image }) =>
+    schema: ({ image }) =>
     z.object({
       title: z.string(),
       date: z.date(),
@@ -16,6 +16,8 @@ const blog = defineCollection({
       draft: z.boolean().optional(),
       tags: z.array(z.string()).default(["others"]),
       ogImage: image().or(z.string()).optional(),
+      coverImage: image().or(z.string()).optional(),
+      coverImageInPost: z.boolean().optional().default(true),
       description: z.string().optional(),
       canonicalURL: z.string().optional(),
       timezone: z.string().optional(),

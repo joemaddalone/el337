@@ -4,7 +4,27 @@ date: 2026-04-16
 tags: ['ai']
 excerpt: 'Build llama.cpp from source'
 short: 'llama.cpp'
+coverImage: "https://img.youtube.com/vi/7IDhNLZVfq0/maxresdefault.jpg"
+coverImageInPost: false
 ---
+
+
+export const videoMetadata = {
+  name: "Build a responsive terminal UI in OpenTUI",
+  description: "OpenTUI.",
+  thumbnailUrl: "https://img.youtube.com/vi/7IDhNLZVfq0/maxresdefault.jpg",
+  contentUrl: "https://youtu.be/7IDhNLZVfq0",
+};
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: videoMetadata.name,
+  description: videoMetadata.description,
+  thumbnailUrl: videoMetadata.thumbnailUrl,
+  contentUrl: videoMetadata.contentUrl,
+  duration: videoMetadata.duration,
+})} />
 
 import { YouTube } from '@astro-community/astro-embed-youtube';
 

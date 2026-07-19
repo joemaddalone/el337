@@ -13,6 +13,7 @@ import { slugifyStr } from "@/utils/slugify";
 import IconChevronLeft from "@/assets/icons/IconChevronLeft.svg";
 import IconChevronRight from "@/assets/icons/IconChevronRight.svg";
 import { SITE } from "@/config";
+import { Image } from "astro:assets";
 
 export interface Props {
   post: CollectionEntry<"blog">;
@@ -29,6 +30,8 @@ const {
   date,
   timezone,
   tags,
+  coverImage,
+  coverImageInPost,
 } = post.data;
 
 const { Content } = await render(post);
@@ -97,6 +100,21 @@ const nextPost =
     <div class="my-2 flex items-center gap-2">
       <Datetime {date} {timezone} size="lg" />
     </div>
+    {
+      coverImage && coverImageInPost && (
+        <div class="my-6 overflow-hidden rounded-lg">
+          <Image
+            src={coverImage}
+            alt={title}
+            width={1200}
+            height={675}
+            loading="lazy"
+            decoding="async"
+            class="h-auto w-full object-cover"
+          />
+        </div>
+      )
+    }
     <article
       id="article"
       class="app-prose mx-auto mt-8 max-w-app prose-pre:bg-(--shiki-light-bg) dark:prose-pre:bg-(--shiki-dark-bg)"
