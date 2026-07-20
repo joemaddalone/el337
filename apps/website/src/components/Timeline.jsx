@@ -21,7 +21,8 @@ const Timeline = ({ data, className = '' }) => {
 
     // Handle full date (e.g., "2023-01-17")
     if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
-      return new Date(dateStr).getTime();
+      const [year, month, day] = dateStr.split('-');
+      return new Date(parseInt(year), parseInt(month) - 1, parseInt(day)).getTime();
     }
 
     return 0;
@@ -42,7 +43,8 @@ const Timeline = ({ data, className = '' }) => {
     }
 
     if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
-      const date = new Date(dateStr);
+      const [year, month, day] = dateStr.split('-');
+      const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
       return date.toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'short',
