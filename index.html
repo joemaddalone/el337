@@ -48,4 +48,12 @@ More
   }
   gtag("js", new Date());
   gtag("config", id);
-})();</script></body></html> <script type="module">document.addEventListener("astro:page-load",()=>{document.querySelector("#main-content")?.dataset?.layout&&sessionStorage.setItem("backUrl","/")});</script>
+})();</script></body></html> <!-- <script>
+  document.addEventListener("astro:page-load", () => {
+    const indexLayout = (document.querySelector("#main-content") as HTMLElement)
+      ?.dataset?.layout;
+    if (indexLayout) {
+      sessionStorage.setItem("backUrl", "/");
+    }
+  });
+</script> -->
