@@ -5,10 +5,16 @@ const BookWidget = ({ bookData, compact = false, className = "" }) => {
     return author;
   };
 
+  const Wrapper = bookData.link ? "a" : "div";
+  const wrapperProps = bookData.link
+    ? { href: bookData.link, target: "_blank", rel: "noopener noreferrer" }
+    : {};
+
   // Compact mode render
   if (compact) {
     return (
-      <div
+      <Wrapper
+        {...wrapperProps}
         className={`max-w-[200px] bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden ${className} not-prose`}
       >
         <div className="relative group cursor-pointer overflow-hidden">
@@ -35,13 +41,14 @@ const BookWidget = ({ bookData, compact = false, className = "" }) => {
             </p>
           )}
         </div>
-      </div>
+      </Wrapper>
     );
   }
 
   // Full mode render
   return (
-    <div
+    <Wrapper
+      {...wrapperProps}
       className={`bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden ${className} not-prose`}
     >
       {/* Cover Section */}
@@ -92,7 +99,7 @@ const BookWidget = ({ bookData, compact = false, className = "" }) => {
           </p>
         )}
       </div>
-    </div>
+    </Wrapper>
   );
 };
 
