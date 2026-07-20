@@ -25,11 +25,13 @@ import { SITE } from "../config";
     const backButton: HTMLAnchorElement | null =
       document.querySelector("#back-button");
 
-    const backUrl = sessionStorage.getItem("backUrl");
-
-    if (backUrl && backButton) {
-      backButton.href = backUrl;
+    // make it a regular back button
+    if (backButton) {
+      backButton.href = "javascript:history.back()";
+      return;
     }
+
+
   }
 
   document.addEventListener("astro:page-load", updateGoBackUrl);
