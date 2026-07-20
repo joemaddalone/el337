@@ -3,6 +3,7 @@ title: "OliveTin Node"
 date: 2023-12-28
 tags: ["software"]
 excerpt: "olivetin + nvm"
+coverImage: "./index.png"
 ---
 
 _[OliveTin](https://www.olivetin.app/) gives safe and simple access to predefined shell commands from a web interface._

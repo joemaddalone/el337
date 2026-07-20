@@ -4,6 +4,7 @@ date: 2023-02-17
 tags: ["film"]
 excerpt: "I like physical media for movies."
 short: "Discs"
+coverImage: "./index.png"
 ---
 
 There's a lot of stuff on them there discs that you won't find on a streaming service.

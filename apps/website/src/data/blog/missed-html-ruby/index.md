@@ -4,6 +4,7 @@ date: 2022-12-28
 tags: ["html"]
 excerpt: "A quick win for otherwise complicated typography."
 short: "HTML: ruby"
+coverImage: "./index.webp"
 ---
 
 ## &lt;ruby&gt;

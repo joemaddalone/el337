@@ -3,6 +3,7 @@ title: "Ollama + Pi"
 date: 2026-02-20
 tags: ["software", "ai"]
 excerpt: "pi coding agent + ollama"
+coverImage: "./index.png"
 ---
 
 ## What is Pi?
@@ -123,9 +124,3 @@ pi-coding-agent comes with tools grouped into two presets.
   - grep
   - find
   - ls
-
-
-
-
-
-

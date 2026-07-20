@@ -3,6 +3,7 @@ title: "How I UI"
 date: 2025-08-03
 tags: ["development"]
 excerpt: "A very loose process I mostly follow..."
+coverImage: "./index.webp"
 ---
 
 ## Make sure I understand the requirements.

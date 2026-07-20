@@ -4,6 +4,7 @@ date: 2021-12-13
 tags: ["html"]
 excerpt: "The details tag is often overlooked and reinvented."
 short: "HTML: details"
+coverImage: "./index.webp"
 ---
 
 ## &lt;details&gt;

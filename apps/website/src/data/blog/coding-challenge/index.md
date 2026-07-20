@@ -4,6 +4,7 @@ date: 2023-11-17
 tags: ["interviewing"]
 excerpt: "joe tells you stuff like he really knows..."
 short: "Code challenge"
+coverImage: "./index.png"
 ---
 
 ## The important stuff:

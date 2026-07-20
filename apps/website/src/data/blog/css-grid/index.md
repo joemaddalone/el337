@@ -3,6 +3,7 @@ title: "CSS Grid"
 date: 2023-07-24
 tags: ["css"]
 excerpt: "clever thing."
+coverImage: "./image.webp"
 ---
 
 <style>

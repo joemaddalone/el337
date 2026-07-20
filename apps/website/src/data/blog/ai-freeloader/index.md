@@ -3,6 +3,7 @@ title: "I am an AI Freeloader"
 date: 2026-01-22
 tags: ["code", "ai"]
 excerpt: "and I dont feel bad about it at all."
+coverImage: "./index.png"
 ---
 
 ## The landscape just to start

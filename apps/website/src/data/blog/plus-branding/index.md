@@ -4,6 +4,7 @@ date: 2023-05-02
 tags: ["branding"]
 excerpt: "Thoughts on lazy branding (+)."
 short: "+ brands"
+coverImage: "./image.webp"
 ---
 
 A phenomena certain to be lost in the marketing machine mythos, in the year 2023 we have a plethora of services conforming to a peculiarly similar naming convention.

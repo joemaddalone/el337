@@ -3,6 +3,7 @@ title: "Handy DOM"
 date: 2023-01-18
 tags: ["code", "javascript"]
 excerpt: "handy dom stuff."
+coverImage: "./index.png"
 ---
 
 ## valueAsNumber

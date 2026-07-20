@@ -4,6 +4,7 @@ date: 2023-12-23
 tags: ["crockford"]
 excerpt: "Douglas Crockford tells us how to say letters."
 short: "Crockford ABC"
+coverImage: "./index.png"
 ---
 
 The alphabet is a set of symbols that represent sounds. The letters of the alphabet are the symbols that we use to represent the sounds of our language. The letters are not the sounds. The letters are the symbols of the sounds.

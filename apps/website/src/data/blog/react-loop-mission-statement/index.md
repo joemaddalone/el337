@@ -4,6 +4,7 @@ date: 2023-11-18
 tags: ["project"]
 excerpt: "A mission statement I wrote"
 short: "Mission statement"
+coverImage: './image.webp'
 ---
 
 In 2019 I hastily threw together what turned out to be a very successful developer conference. It was called React Loop.

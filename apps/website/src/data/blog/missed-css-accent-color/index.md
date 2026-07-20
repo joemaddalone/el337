@@ -4,6 +4,7 @@ date: 2025-09-23
 tags: ["css"]
 excerpt: "dead simple."
 short: "CSS: accent"
+coverImage: "./index.webp"
 ---
 
 ## accent-color

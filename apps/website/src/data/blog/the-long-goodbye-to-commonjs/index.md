@@ -4,6 +4,7 @@ date: 2021-11-29
 tags: ["code"]
 excerpt: "With the advent of HTTP/2, ES Modules, and other technologies the future of web development is ripe for major shifts."
 short: "commonjs"
+coverImage: "./image.webp"
 ---
 
 **TLDR;**

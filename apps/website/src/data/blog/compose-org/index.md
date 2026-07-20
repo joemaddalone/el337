@@ -4,6 +4,7 @@ date: 2025-12-07
 tags: ["docker", "docker-compose"]
 excerpt: "Manage a shit-ton of smaller docker-compose files"
 short: "docker-compose lists"
+coverImage: "./index.png"
 ---
 
 ## The problem

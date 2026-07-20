@@ -4,6 +4,7 @@ date: 2023-12-27
 tags: ["code"]
 excerpt: "Dumb app + automation I did today"
 short: "fin app"
+coverImage: "./index.png"
 ---
 
 I hate most financial snapshot apps... eventually.

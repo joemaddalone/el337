@@ -4,6 +4,7 @@ date: 2023-11-24
 tags: ["software", "code", "ai"]
 excerpt: "ollama + langchain"
 short: "Ollama"
+coverImage: "./index.png"
 ---
 
 ## What is Ollama?

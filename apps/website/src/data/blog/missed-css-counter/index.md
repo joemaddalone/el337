@@ -4,6 +4,7 @@ date: 2023-10-23
 tags: ["css"]
 excerpt: "Numbering without ordered lists."
 short: "CSS: Counters"
+coverImage: "./index.webp"
 ---
 
 ## CSS Counters

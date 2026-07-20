@@ -6,8 +6,8 @@ export const SITE = {
   title: "el337",
   ogImage: "el337-og.jpg",
   lightAndDarkMode: true,
-  postPerIndex: 12,
-  postPerPage: 12,
+  postPerIndex: 9,
+  postPerPage: 9,
   scheduledPostMargin: 15 * 60 * 1000, // 15 minutes
   showArchives: false,
   showBackButton: true, // show back button in post detail
