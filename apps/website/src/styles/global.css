@@ -71,3 +71,8 @@ html[data-theme="dark"] {
 :target {
   scroll-margin-block: 1rem;
 }
+
+
+.ytp-puase-overlay {
+    display: none;
+}
