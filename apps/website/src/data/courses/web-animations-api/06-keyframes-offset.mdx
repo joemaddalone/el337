@@ -1,0 +1,84 @@
+---
+title: "Multiple Keyframes and Offset"
+date: 2026-07-16
+tags: ["javascript", "waapi"]
+excerpt: "Master Web Animations API keyframe animations to create a smooth bouncing effect without relying on easing functions"
+coverImage: "https://img.youtube.com/vi/cAOVOBbx_nM/maxresdefault.jpg"
+coverImageInPost: false
+courseOrder: 6
+---
+
+export const videoMetadata = {
+  name: "Web Animations API: Multiple Keyframes and Offset",
+  description: "Master Web Animations API keyframe animations to create a smooth bouncing effect without relying on easing functions",
+  thumbnailUrl: "https://img.youtube.com/vi/cAOVOBbx_nM/maxresdefault.jpg",
+  contentUrl: "https://youtu.be/cAOVOBbx_nM",
+};
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: videoMetadata.name,
+  description: videoMetadata.description,
+  thumbnailUrl: videoMetadata.thumbnailUrl,
+  contentUrl: videoMetadata.contentUrl,
+  duration: videoMetadata.duration,
+})} />
+
+
+import { YouTube } from '@astro-community/astro-embed-youtube';
+
+<div class="py-6">
+<YouTube id="cAOVOBbx_nM" />
+</div>
+
+Master Web Animations API keyframe animations to create a smooth bouncing effect without relying on easing functions. This tutorial shows how to use precise positioning, offsets, and timing to control animation speed and create complex motion paths.
+
+```html title="index.html"
+<html>
+<head>
+  <style>
+    body {
+      background-color: #222;
+    }
+    .container {
+      position: relative;
+      width: 500px;
+      height: 500px;
+      border: 1px solid #fff;
+      margin: 0 auto;
+    }
+    .piece {
+      position: absolute;
+      background-color: white;
+      border-radius: 100%;
+      width: 15px;
+      height: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="piece"></div>
+  </div>
+
+  <script>
+    const pieceKeyframes = [
+      { left: "50%", top: 0 },
+      { left: "calc(100% - 12px)", top: "50%" },
+      { left: "50%", top: "calc(100% - 12px)", offset: 0.3 },
+      { left: 0, top: "50%" },
+      { left: "50%", top: 0 }
+    ];
+
+    const pieceAnimation = document.querySelector(".piece").animate(
+      pieceKeyframes,
+      {
+        duration: 1500,
+        iterations: Infinity
+      }
+    );
+  </script>
+</body>
+</html>
+```

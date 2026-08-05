@@ -1,0 +1,94 @@
+---
+title: "Reverse"
+date: 2026-07-16
+tags: ["javascript", "waapi"]
+excerpt: "Learn how to create a smooth loading spinner with reverse playback functionality using waapi."
+coverImage: "https://img.youtube.com/vi/SDqKDPxBoOQ/maxresdefault.jpg"
+coverImageInPost: false
+courseOrder: 3
+---
+
+export const videoMetadata = {
+  name: "Web Animations API: Reverse",
+  description: "Learn how to create a smooth loading spinner with reverse playback functionality using waapi.",
+  thumbnailUrl: "https://img.youtube.com/vi/SDqKDPxBoOQ/maxresdefault.jpg",
+  contentUrl: "https://youtu.be/SDqKDPxBoOQ",
+};
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: videoMetadata.name,
+  description: videoMetadata.description,
+  thumbnailUrl: videoMetadata.thumbnailUrl,
+  contentUrl: videoMetadata.contentUrl,
+  duration: videoMetadata.duration,
+})} />
+
+
+import { YouTube } from '@astro-community/astro-embed-youtube';
+
+<div class="py-6">
+<YouTube id="SDqKDPxBoOQ" />
+</div>
+
+Learn how to create a smooth loading spinner with reverse playback functionality using waapi. Build an engaging interface element with a rotating border animation that responds to user interaction.
+
+```html title="index.html"
+<html>
+<head>
+  <style>
+    body {
+      background-color: #222;
+    }
+    .container {
+      display: flex;
+      justify-content: center;
+    }
+    .circle {
+      width: 200px;
+      height: 200px;
+      border-radius: 100%;
+      border: 4px solid #fff;
+      border-top: 4px solid blue;
+    }
+    button {
+      font-size: 48px;
+      margin-bottom: 25px;
+    }
+  </style>
+</head>
+<body>
+  <button class="pause">Pause</button>
+  <button class="play">Play</button>
+  <button class="reverse">Reverse</button>
+  <div class="container">
+    <div class="circle"></div>
+  </div>
+
+  <script>
+    const myAnimation = document.querySelector(".circle").animate(
+      [
+        {
+          transform: "rotate(0)"
+        },
+        {
+          transform: "rotate(359deg)"
+        }
+      ],
+      {
+        duration: 1000,
+        iterations: Infinity
+      }
+    );
+
+    document.querySelector(".pause")
+      .addEventListener("click", () => myAnimation.pause());
+    document.querySelector(".play")
+      .addEventListener("click", () => myAnimation.play());
+    document.querySelector(".reverse")
+      .addEventListener("click", () => myAnimation.reverse());
+  </script>
+</body>
+</html>
+```

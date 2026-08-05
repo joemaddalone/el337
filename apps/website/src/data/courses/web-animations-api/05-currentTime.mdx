@@ -1,0 +1,103 @@
+---
+title: "currentTime"
+date: 2026-07-16
+tags: ["javascript", "waapi"]
+excerpt: "This lesson shows you to pause, set initial states, and build custom playback controls for precise front-end animation management."
+coverImage: "https://img.youtube.com/vi/tlJ9hOcBSVw/maxresdefault.jpg"
+coverImageInPost: false
+courseOrder: 5
+---
+
+export const videoMetadata = {
+  name: "Web Animations API: currentTime",
+  description: "This lesson shows you to pause, set initial states, and build custom playback controls for precise front-end animation management.",
+  thumbnailUrl: "https://img.youtube.com/vi/tlJ9hOcBSVw/maxresdefault.jpg",
+  contentUrl: "https://youtu.be/tlJ9hOcBSVw",
+};
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: videoMetadata.name,
+  description: videoMetadata.description,
+  thumbnailUrl: videoMetadata.thumbnailUrl,
+  contentUrl: videoMetadata.contentUrl,
+  duration: videoMetadata.duration,
+})} />
+
+
+import { YouTube } from '@astro-community/astro-embed-youtube';
+
+<div class="py-6">
+<YouTube id="tlJ9hOcBSVw" />
+</div>
+
+Learn how to control and scrub through Web Animations API timelines in JavaScript like a pro. This tutorial shows you to pause, set initial states, and build custom playback controls for precise front-end animation management.
+
+```html title="index.html"
+<html>
+<head>
+  <style>
+    body {
+      background-color: #222;
+    }
+    .container {
+      display: flex;
+      justify-content: center;
+    }
+    .circle {
+      width: 200px;
+      height: 200px;
+      border-radius: 100%;
+      border: 4px solid #fff;
+      border-top: 4px solid blue;
+    }
+    #playback {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    #current {
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="circle"></div>
+  </div>
+  <div id="playback">
+    <div>
+      <input value="0" id="range" type="range" min="0" max="1000" step="1">
+    </div>
+    <div id="current">0</div>
+  </div>
+
+  <script>
+    const myAnimation = document.querySelector(".circle").animate(
+      [
+        {
+          transform: "rotate(0)"
+        },
+        {
+          transform: "rotate(359deg)"
+        }
+      ],
+      {
+        duration: 1000,
+        iterations: Infinity
+      }
+    );
+
+    myAnimation.pause();
+
+    document.getElementById("range").addEventListener("input", e => {
+      const value = e.target.value;
+      document.getElementById("current").innerText = value;
+      myAnimation.currentTime = +value;
+    });
+  </script>
+</body>
+</html>
+```

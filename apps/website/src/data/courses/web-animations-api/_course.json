@@ -1,0 +1,5 @@
+{
+  "slug": "web-animations-api",
+  "title": "Web Animations API",
+  "description": "Learn how to create smooth, performant, and fully scriptable animations using the native Web Animations API. This course covers the essentials—keyframes, timing options, playback control, and sequencing—without relying on external libraries. You’ll gain a solid understanding of how the browser handles animation under the hood and how to use JavaScript to bring motion to any element with precision and control."
+}

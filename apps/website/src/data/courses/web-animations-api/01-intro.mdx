@@ -1,0 +1,82 @@
+---
+title: "Introduction"
+date: 2026-07-16
+tags: ["javascript", "waapi"]
+excerpt: "Animate DOM elements with CSS properties like transforms and colors without downloading external tools"
+coverImage: "https://img.youtube.com/vi/Ge2gLXt-Q_U/maxresdefault.jpg"
+coverImageInPost: false
+courseOrder: 1
+---
+
+export const videoMetadata = {
+  name: "Web Animations API: Introduction",
+  description: "Animate DOM elements with CSS properties like transforms and colors without downloading external tools",
+  thumbnailUrl: "https://img.youtube.com/vi/Ge2gLXt-Q_U/maxresdefault.jpg",
+  contentUrl: "https://youtu.be/Ge2gLXt-Q_U",
+};
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: videoMetadata.name,
+  description: videoMetadata.description,
+  thumbnailUrl: videoMetadata.thumbnailUrl,
+  contentUrl: videoMetadata.contentUrl,
+  duration: videoMetadata.duration,
+})} />
+
+
+import { YouTube } from '@astro-community/astro-embed-youtube';
+
+<div class="py-6">
+<YouTube id="Ge2gLXt-Q_U" />
+</div>
+
+Stop wrestling with heavy animation libraries by building smooth, performant JavaScript animations directly in the browser using the native Web Animations API. This tutorial shows you how to animate DOM elements with CSS properties like transforms and colors without downloading external tools, giving you lightweight frontend development solutions for modern web design.
+
+
+
+```html title="index.html"
+<html>
+<head>
+  <style>
+    body {
+      background-color: #222;
+      display: flex;
+      justify-content: center;
+    }
+
+    .circle {
+      border-radius: 100%;
+      height: 200px;
+      width: 200px;
+      background-color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="circle"></div>
+
+  <script>
+    document.querySelector('.circle').animate(
+      [
+        {
+          marginTop: 0,
+          backgroundColor: 'blue'
+        },
+        {
+          marginTop: '450px',
+          backgroundColor: 'red'
+        }
+      ],
+      {
+        duration: 1000,
+        iterations: Infinity,
+        direction: 'alternate',
+        easing: 'ease-in-out'
+      }
+    );
+  </script>
+</body>
+</html>
+```

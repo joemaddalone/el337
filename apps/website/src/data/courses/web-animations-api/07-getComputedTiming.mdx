@@ -1,0 +1,95 @@
+---
+title: "Sync Animations with getComputedTiming"
+date: 2026-07-16
+tags: ["javascript", "waapi"]
+excerpt: "Master computed timing to keep your keyframe animations flexible and error-free."
+coverImage: "https://img.youtube.com/vi/ktEWIMZdvqI/maxresdefault.jpg"
+coverImageInPost: false
+courseOrder: 7
+---
+
+export const videoMetadata = {
+  name: "Web Animations API: Sync Animations with getComputedTiming",
+  description: "Master computed timing to keep your keyframe animations flexible and error-free.",
+  thumbnailUrl: "https://img.youtube.com/vi/ktEWIMZdvqI/maxresdefault.jpg",
+  contentUrl: "https://youtu.be/ktEWIMZdvqI",
+};
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: videoMetadata.name,
+  description: videoMetadata.description,
+  thumbnailUrl: videoMetadata.thumbnailUrl,
+  contentUrl: videoMetadata.contentUrl,
+  duration: videoMetadata.duration,
+})} />
+
+
+import { YouTube } from '@astro-community/astro-embed-youtube';
+
+<div class="py-6">
+<YouTube id="ktEWIMZdvqI" />
+</div>
+
+Sync animations perfectly without hardcoding durations. Master computed timing to keep your keyframe animations flexible and error-free.
+
+```html title="index.html"
+<html>
+<head>
+  <style>
+    body {
+      background-color: #222;
+    }
+    .container {
+      position: relative;
+      width: 500px;
+      height: 500px;
+      border: 1px solid #fff;
+      margin: 0 auto;
+    }
+    .piece {
+      position: absolute;
+      background-color: white;
+      border-radius: 100%;
+      width: 15px;
+      height: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="piece"></div>
+  </div>
+
+  <script>
+    const pieceKeyframes = [
+      { left: "50%", top: 0 },
+      { left: "calc(100% - 12px)", top: "50%" },
+      { left: "50%", top: "calc(100% - 12px)" },
+      { left: 0, top: "50%" },
+      { left: "50%", top: 0 }
+    ];
+
+    const pieceAnimate = document.querySelector(".piece").animate(
+      pieceKeyframes,
+      {
+        duration: 3500,
+        iterations: Infinity
+      }
+    );
+
+    const containerAnimate = document.querySelector(".container").animate(
+      [
+        { borderColor: "orange" },
+        { borderColor: "white" }
+      ],
+      {
+        duration: pieceAnimate.effect.getComputedTiming().duration / 4,
+        iterations: Infinity
+      }
+    );
+  </script>
+</body>
+</html>
+```

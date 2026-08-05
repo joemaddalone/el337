@@ -1,0 +1,93 @@
+---
+title: "Pause & Play"
+date: 2026-07-16
+tags: ["javascript", "waapi"]
+excerpt: "Unlock precise control over browser animations by mastering the Web Animations API pause & play"
+coverImage: "https://img.youtube.com/vi/1cH9fH6OJQA/maxresdefault.jpg"
+coverImageInPost: false
+courseOrder: 2
+---
+
+export const videoMetadata = {
+  name: "Web Animations API: Pause & Play",
+  description: "Unlock precise control over browser animations by mastering the Web Animations API pause & play",
+  thumbnailUrl: "https://img.youtube.com/vi/1cH9fH6OJQA/maxresdefault.jpg",
+  contentUrl: "https://youtu.be/1cH9fH6OJQA",
+};
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: videoMetadata.name,
+  description: videoMetadata.description,
+  thumbnailUrl: videoMetadata.thumbnailUrl,
+  contentUrl: videoMetadata.contentUrl,
+  duration: videoMetadata.duration,
+})} />
+
+
+import { YouTube } from '@astro-community/astro-embed-youtube';
+
+<div class="py-6">
+<YouTube id="1cH9fH6OJQA" />
+</div>
+
+Unlock precise control over browser animations by mastering the Web Animations API, enabling you to build interactive experiences that pause, play, and reverse on command. Solve the frustration of static CSS keyframes with dynamic JavaScript playback controls for a smoother, more responsive frontend development workflow.
+
+```html title="index.html"
+<html>
+<head>
+  <style>
+    body {
+      background-color: #222;
+    }
+    .container {
+      display: flex;
+      justify-content: center;
+    }
+    .circle {
+      width: 200px;
+      height: 200px;
+      border-radius: 100%;
+      background-color: #fff;
+    }
+    button {
+      font-size: 48px;
+    }
+  </style>
+</head>
+<body>
+  <button class="pause">Pause</button>
+  <button class="play">Play</button>
+  <div class="container">
+    <div class="circle"></div>
+  </div>
+
+  <script>
+    const myAnimation = document.querySelector(".circle").animate(
+      [
+        {
+          transform: "translateY(0)",
+          backgroundColor: "red"
+        },
+        {
+          transform: "translateY(450px)",
+          backgroundColor: "blue"
+        }
+      ],
+      {
+        duration: 1000,
+        iterations: Infinity,
+        direction: "alternate",
+        easing: "ease-in-out"
+      }
+    );
+
+    document.querySelector(".pause")
+      .addEventListener("click", () => myAnimation.pause());
+    document.querySelector(".play")
+      .addEventListener("click", () => myAnimation.play());
+  </script>
+</body>
+</html>
+```
