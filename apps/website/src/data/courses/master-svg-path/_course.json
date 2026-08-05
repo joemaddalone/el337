@@ -1,0 +1,5 @@
+{
+	"slug": "master-svg-path",
+	"title": "Master SVG Path: From Basics to Beautiful Curves",
+	"description": "Learn to truly understand the SVG path d attribute—the language of vector geometry on the web. This course walks you through each command (M, L, C, Q, A, and more) step by step, explaining what they do, how they relate, and how to visualize their effects. By the end, you’ll be able to read, write, and debug any SVG path with confidence—and see the structure behind every curve."
+}

@@ -1,0 +1,65 @@
+---
+title: "Drawing Lines (M, L, H, V, Z Commands)"
+date: 2026-07-16
+tags: ["javascript", "waapi"]
+excerpt: "If you can draw lines, you can draw anything."
+coverImage: "https://img.youtube.com/vi/zvBY6dTe9is/maxresdefault.jpg"
+coverImageInPost: false
+courseOrder: 1
+---
+
+export const videoMetadata = {
+  name: "Master SVG Path: Drawing Lines (M, L, H, V, Z Commands)",
+  description: "If you can draw lines, you can draw anything.",
+  thumbnailUrl: "https://img.youtube.com/vi/zvBY6dTe9is/maxresdefault.jpg",
+  contentUrl: "https://youtu.be/zvBY6dTe9is",
+};
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: videoMetadata.name,
+  description: videoMetadata.description,
+  thumbnailUrl: videoMetadata.thumbnailUrl,
+  contentUrl: videoMetadata.contentUrl,
+  duration: videoMetadata.duration,
+})} />
+
+
+import { YouTube } from '@astro-community/astro-embed-youtube';
+
+<div class="py-6">
+<YouTube id="zvBY6dTe9is" />
+</div>
+
+If you can draw lines, you can draw anything. In this lesson, we break down the foundation of the SVG path d attribute by mastering straight-line commands: M (Move To), L (Line To), H (Horizontal Line), V (Vertical Line), and Z (Close Path).
+
+You'll learn the difference between absolute and relative commands, how paths connect behind the scenes, how to visualize direction and coordinate flow, and how shapes like rectangles and polygons are really just sequences of lines.
+
+
+
+```html title="index.html"
+<html>
+  <head>
+    <style>
+      body {
+        background-color: #222;
+      }
+      path {
+        stroke: #fff;
+        fill: none;
+        stroke-width: 3px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <svg width="500" height="500">
+      <path d="M10 10 L100 10 L100 100 L10 100 z"></path>
+      <path d="M110 10 l90 0 l0 90 l-90 0 z"></path>
+      <path d="M10 110 H100 V200 H10 z"></path>
+      <path d="M200 200 h90 v90 h-90 z"></path>
+    </svg>
+  </body>
+</html>
+```

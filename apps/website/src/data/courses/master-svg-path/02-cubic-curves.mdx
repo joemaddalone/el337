@@ -1,0 +1,76 @@
+---
+title: "Drawing Cubic Curves (C, S Commands)"
+date: 2026-07-16
+tags: ["javascript", "waapi"]
+excerpt: "Cubic Bézier curves power most of the web's vector graphics"
+coverImage: "https://img.youtube.com/vi/GXeN47Old74/maxresdefault.jpg"
+coverImageInPost: false
+courseOrder: 1
+---
+
+export const videoMetadata = {
+  name: "Master SVG Path: Drawing Cubic Curves (C, S Commands)",
+  description: "Cubic Bézier curves power most of the web's vector graphics",
+  thumbnailUrl: "https://img.youtube.com/vi/GXeN47Old74/maxresdefault.jpg",
+  contentUrl: "https://youtu.be/GXeN47Old74",
+};
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: videoMetadata.name,
+  description: videoMetadata.description,
+  thumbnailUrl: videoMetadata.thumbnailUrl,
+  contentUrl: videoMetadata.contentUrl,
+  duration: videoMetadata.duration,
+})} />
+
+
+import { YouTube } from '@astro-community/astro-embed-youtube';
+
+<div class="py-6">
+<YouTube id="GXeN47Old74" />
+</div>
+
+Cubic Bézier curves power most of the web's vector graphics. In this lesson, we break down the C and S commands and explain how two control points shape a curve.
+
+You'll learn why cubic curves are more flexible than quadratic curves, how control handles influence direction and tension, how smooth continuation (S) works, and how to read complex path data without guessing.
+
+
+
+```html title="index.html"
+<html>
+  <head>
+    <style>
+      body {
+        background-color: #222;
+      }
+      path {
+        stroke: #fff;
+        fill: none;
+        stroke-width: 3px;
+      }
+      circle {
+        fill: yellow;
+      }
+    </style>
+  </head>
+
+  <body>
+    <svg width="550" height="800">
+      <path d="M10 100, C10 10, 100 10, 100 100, S10 190, 10 100"></path>
+      <path d="M250 100, c0 -90, 90 -90, 90 0, s-90 90, -90 0"></path>
+
+      <!-- control points -->
+      <circle cx="10" cy="10" r="3"></circle>
+      <circle cx="100" cy="10" r="3"></circle>
+      <circle cx="100" cy="190" r="3"></circle>
+      <circle cx="10" cy="190" r="3"></circle>
+
+      <!-- start/end -->
+      <circle cx="10" cy="100" r="3"></circle>
+      <circle cx="100" cy="100" r="3"></circle>
+    </svg>
+  </body>
+</html>
+```

@@ -1,0 +1,73 @@
+---
+title: "Drawing Arcs (A Command)"
+date: 2026-07-16
+tags: ["javascript", "waapi"]
+excerpt: "Arcs are the most misunderstood SVG path command — and the most intimidating."
+coverImage: "https://img.youtube.com/vi/OsnWoinNAzQ/maxresdefault.jpg"
+coverImageInPost: false
+courseOrder: 1
+---
+
+export const videoMetadata = {
+  name: "Master SVG Path: Drawing Arcs (A Command)",
+  description: "Arcs are the most misunderstood SVG path command — and the most intimidating.",
+  thumbnailUrl: "https://img.youtube.com/vi/OsnWoinNAzQ/maxresdefault.jpg",
+  contentUrl: "https://youtu.be/OsnWoinNAzQ",
+};
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: videoMetadata.name,
+  description: videoMetadata.description,
+  thumbnailUrl: videoMetadata.thumbnailUrl,
+  contentUrl: videoMetadata.contentUrl,
+  duration: videoMetadata.duration,
+})} />
+
+
+import { YouTube } from '@astro-community/astro-embed-youtube';
+
+<div class="py-6">
+<YouTube id="OsnWoinNAzQ" />
+</div>
+
+Arcs are the most misunderstood SVG path command — and the most intimidating. In this lesson, we demystify the A command and show you exactly how to draw precise arcs in SVG.
+
+
+```html title="index.html"
+<html>
+  <head>
+    <style>
+      body {
+        background-color: #222;
+      }
+      path {
+        stroke: #fff;
+        fill: none;
+        stroke-width: 3px;
+      }
+      circle {
+        fill: yellow;
+      }
+    </style>
+  </head>
+
+  <body>
+    <svg width="550" height="800">
+      <path d="M10 100, C10 10, 100 10, 100 100, S10 190, 10 100"></path>
+      <path d="M250 100, c0 -90, 90 -90, 90 0, s-90 90, -90 0"></path>
+
+      <!-- control points -->
+      <circle cx="10" cy="10" r="3"></circle>
+      <circle cx="100" cy="10" r="3"></circle>
+      <circle cx="100" cy="190" r="3"></circle>
+      <circle cx="10" cy="190" r="3"></circle>
+
+      <!-- start/end -->
+      <circle cx="10" cy="100" r="3"></circle>
+      <circle cx="100" cy="100" r="3"></circle>
+    </svg>
+  </body>
+</html>
+```

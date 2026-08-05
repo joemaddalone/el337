@@ -1,0 +1,69 @@
+---
+title: "Drawing Quadratic Curves (Q, T Commands)"
+date: 2026-07-16
+tags: ["javascript", "waapi"]
+excerpt: "Quadratic curves are your first step into real vector geometry."
+coverImage: "https://img.youtube.com/vi/qwI_cVs8yy0/maxresdefault.jpg"
+coverImageInPost: false
+courseOrder: 1
+---
+
+export const videoMetadata = {
+  name: "Master SVG Path: Drawing Quadratic Curves (Q, T Commands)",
+  description: "Quadratic curves are your first step into real vector geometry.",
+  thumbnailUrl: "https://img.youtube.com/vi/qwI_cVs8yy0/maxresdefault.jpg",
+  contentUrl: "https://youtu.be/qwI_cVs8yy0",
+};
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: videoMetadata.name,
+  description: videoMetadata.description,
+  thumbnailUrl: videoMetadata.thumbnailUrl,
+  contentUrl: videoMetadata.contentUrl,
+  duration: videoMetadata.duration,
+})} />
+
+
+import { YouTube } from '@astro-community/astro-embed-youtube';
+
+<div class="py-6">
+<YouTube id="qwI_cVs8yy0" />
+</div>
+
+Quadratic curves are your first step into real vector geometry. In this lesson, we focus on the Q and T commands and how a single control point bends a path.
+
+You'll learn what a control point actually does, how to predict the shape of a curve before you draw it, the difference between Q and T, and how smooth curves work under the hood.
+
+We visualize everything step-by-step so you can see how the math affects the shape. Once you understand quadratic curves, cubic curves will make much more sense.
+
+
+```html title="index.html"
+<html>
+  <head>
+    <style>
+      body {
+        background-color: #222;
+      }
+      path {
+        stroke: #fff;
+        fill: none;
+        stroke-width: 3px;
+      }
+      circle {
+        fill: yellow;
+      }
+    </style>
+  </head>
+
+  <body>
+    <svg width="500" height="500">
+      <path d="M10 10 Q10 100 100 100 T200 200"></path>
+      <circle cx="10" cy="100" r="3"></circle>
+      <circle cx="200" cy="100" r="3"></circle>
+      <path d="M10 250 q0 90 90 90 t100 100 "></path>
+    </svg>
+  </body>
+</html>
+```
