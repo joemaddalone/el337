@@ -33,3 +33,30 @@ import { YouTube } from '@astro-community/astro-embed-youtube';
 </div>
 
 Backreferences let you match a second occurrence of text captured by an earlier group. This lesson covers the syntax \1, \2, etc., and shows practical use cases: finding duplicate words (like "the the"), stripping HTML tags by matching opening and closing tags together, and removing duplicate patterns from text. You'll also learn named backreferences  and how they integrate with named capturing groups for cleaner, more maintainable regex.
+
+## app.js
+
+```js title="app.ts"
+import output from "./output.js";
+// ─── Backreferences ──────────────────────────────────
+
+let str = "it was the the thing";
+let regex = /(the)\s?/g;
+regex = /(the)\s?\1/g;
+regex = /(the)\s?(?=\1)/g;
+console.log(str.replace(regex, ""));
+str = "it was the the thing thing";
+regex = /(\w+)\s?(?=\1)/g;
+console.log(str.replace(regex, ""));
+
+str = `<b>Bold text</b>`;
+regex = /<(\w+)>(.*)<\/\1>/g;
+console.log(str.replace(regex, "$2"));
+
+str = `<b>Bold text</b>`;
+regex = /<(?<tag>\w+)>(.*?)<\/\k<tag>/g;
+match = regex.exec(str);
+console.log("tag ->", match.groups.tag);
+
+output(str, regex);
+```

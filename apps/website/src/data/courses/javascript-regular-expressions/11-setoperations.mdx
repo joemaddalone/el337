@@ -33,3 +33,17 @@ import { YouTube } from '@astro-community/astro-embed-youtube';
 </div>
 
 Set operations are a modern addition to JavaScript regex, enabled by the V flag. This lesson covers two powerful operations: subtraction (minus sign -) and intersection (ampersand &&). You'll learn to subtract character sets — like excluding ambiguous characters (0, 1, I, O) from a license plate pattern — and intersect sets to find characters common to both. We also cover how the V flag enables Unicode property escapes (`\p{...}`) and works alongside them.
+
+## app.js
+
+```js title="app.ts"
+import output from "./output.js";
+
+let str = `AIC03Z`;
+// do not allow 0,1,I,O
+let regex = /(?![01IO])[A-Z0-9]/g;
+regex = /[[A-Z0-9]--[01IO]]/gv;
+regex = /[[A-Z0-9]&&[01IO]]/gv;
+
+output(str, regex);
+```

@@ -33,3 +33,53 @@ import { YouTube } from '@astro-community/astro-embed-youtube';
 </div>
 
 This lesson covers the most commonly-used character class shorthands and the powerful Unicode property escapes. Learn `\w`, `\d`, and `\s` (and their negated forms `\W`, `\D`, `\S`), then we'll dive deep into Unicode property escapes with `\p{...}`. You'll explore symbols (`\p{Symbol}`), punctuation (`\p{Punctuation}`, `\p{PS}`, `\p{PE}`, `\p{PI}`, `\p{PF}`), letters (`\p{Letter}`), numbers (`\p{Number}`), and even scripts (`\p{Script=Cyrillic}`, `\p{Script=Greek}`). These features let you match characters by their semantic meaning rather than by range.
+
+## app.js
+
+```js title="app.ts"
+import output from "./output.js";
+
+const str = `Aeiou (vowels)
+$100 × 0.5% = €0.43
+¼ ÷ ½ = ¾
+😀 “Καλημέρα”
+😴 “Спокойной”`;
+
+let regex = /[a-zA-Z0-9]/g;
+regex = /\w/g; // only alpha numeric
+// regex = /[^\w]/gu; // no alpha numeric
+// regex = /\W/gu; // no alpha numeric
+
+// regex = /\d/gu; // only digits
+// regex = /[^\d]/gu; // only digits
+// regex = /\D/gu; // no digits
+
+// regex = /\s/gu; // only whitespace
+// regex = /[^\s]/gu; // only whitespace
+// regex = /\S/gu; // no whitespace
+
+// regex = /\p{Symbol}/gu; // only symbols
+// regex = /\p{S}/gu; // only symbols
+// regex = /\p{Sm}/gu; // only symbols math
+// regex = /\p{Sc}/gu; // only symbols currency
+// regex = /\p{Punctuation}/gu; // only puncutation
+// regex = /\p{P}/gu; // only puncutation
+// regex = /\p{Ps}/gu; // only puncutation start or open
+// regex = /\p{Pe}/gu; // only puncutation end or close
+// regex = /\p{Pi}/gu; // only initial puncutation
+// regex = /\p{Pf}/gu; // only final puncutation
+// regex = /[\p{Pi}\p{Pf}]/gu; // only initial and final puncutation
+// regex = /\p{Letter}/gu; // only letters
+// regex = /\p{L}/gu; // only letters
+// regex = /\p{Lu}/gu; // only letters uppercase
+// regex = /\p{Ll}/gu; // only letters lowercase
+
+// regex = /\p{Number}/gu; // only numbers
+// regex = /\p{N}/gu; // only letters
+// regex = /\p{No}/gu; // only letters
+// regex = /\p{Script=Cyrillic}/gu;
+// regex = /\p{Script=Greek}/gu;
+// regex = /\p{sc=Greek}/gu;
+
+output(str, regex);
+```

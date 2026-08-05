@@ -33,3 +33,34 @@ import { YouTube } from '@astro-community/astro-embed-youtube';
 </div>
 
 Character classes let you match sets of characters using square brackets. This lesson covers the fundamentals: listing specific characters, negating with a caret (^), defining ranges like a-z or 0-9, and combining multiple ranges. You'll learn how to build flexible patterns that match any character from a defined set — whether it's letters, digits, or a mix.
+
+## app.js
+
+```js title="app.ts"
+import output from "./output.js";
+
+const str = `cat mat bat Hat ?at 0at`;
+// Character classes in regular expressions allow
+// us to identify specific sets of characters
+// that we're willing to accept as part of
+// our matches
+let regex = /at/g;
+regex = /.at/g;
+regex = /[bc]at/g;
+regex = /[cb]at/g;
+regex = /[^cb]at/g;
+// character class ranges
+regex = /[a-z]at/g;
+// union character class ranges
+regex = /[a-zA-Z]at/g;
+// union character class partial ranges
+regex = /[a-dA-Z]at/g;
+// negate character classes
+regex = /[^a-zA-Z]at/g;
+// digits
+regex = /[a-zA-Z0-9]at/g;
+// union the ? char
+regex = /[a-zA-Z0-9?]at/g;
+
+output(str, regex);
+```

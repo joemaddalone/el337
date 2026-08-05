@@ -33,3 +33,43 @@ import { YouTube } from '@astro-community/astro-embed-youtube';
 </div>
 
 Quantifiers let you match repeating patterns without writing them out by hand. This lesson covers the full spectrum: exact counts with `{n}`, ranges with `{n,m}`, and the three most common shorthand quantifiers — asterisk (*) for zero or more, plus (+) for one or more, and question mark (?) for zero or one. We also tackle the critical distinction between greedy and lazy quantifiers, showing how adding a question mark after any greedy quantifier makes it lazy.
+
+## app.js
+
+```js title="app.ts"
+import output from "./output.js";
+
+// ─── Quantifiers — How Many ─────────────────────────────
+
+const str = `aaaaaaa`;
+const str = `color or colour`;
+const str = `http://el337.com
+not a web address
+http://
+https://www.el337.com`;
+const str = `The "answer" was "perfect" again`;
+
+let regex = /aaaa/g;
+regex = /a{4}/g;
+regex = /a{5}/g;
+regex = /a{5,}/g;
+regex = /a{5,6}/g;
+regex = /a{0,}/g; // * (zero or more)
+regex = /a*/g;
+regex = /a{1,}/g; // + (one or more)
+regex = /a+/g;
+regex = /a{0,1}/g; //? (zero or one)
+regex = /a?/g;
+// update str.
+regex = /colou?r/g;
+regex = /https{0,1}/g;
+regex = /https{0,1}:\/\/.{1,}/g;
+regex = /https?:\/\/.+/g;
+// add "more"
+regex = /https?:\/\/.+\.com/g;
+// change str
+regex = /".+"/g;
+regex = /".+?"/g;
+
+output(str, regex);
+```

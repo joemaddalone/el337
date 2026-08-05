@@ -33,3 +33,67 @@ import { YouTube } from '@astro-community/astro-embed-youtube';
 </div>
 
 What IS a regular expression, and why should you care? In this first lesson of our 11-part series, we cover the fundamentals: what regex is, the two ways to create a regex in JavaScript (constructor vs. literal), and the core string methods that work with patterns — test(), exec(), match(), search(), and replace(). We also cover the global and case-insensitive flags, and why exec() is state-aware. By the end, you'll have a working visualization tool to see regex matching in action.
+
+## base html
+
+```html title="index.html"
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>JS Regular Expressions: Introduction</title>
+    <style>
+      pre {
+        line-height: 2;
+      }
+      span {
+        background-color: #eee;
+        padding: 1px;
+        outline: 1px solid #999;
+      }
+     </style>
+  </head>
+  <body>
+    <pre></pre>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
+```
+
+
+
+## Our output helper
+
+```js title="output.js"
+export default (str, regex) => {
+  document.querySelector("pre").innerHTML = str.replace(regex, (str) =>
+    str ? `<span>${str}</span>` : "",
+  );
+};
+```
+
+## Creating a regular expression
+
+```js title="app.ts"
+// JS Regular Expressions: Introduction
+import output from "./output.js";
+let str = `Is this This?`;
+
+// let regex0 = new RegExp("is", "gi");
+let regex = /is/gi;
+
+// console.log(regex.test(str));
+// console.log(regex.exec(str));
+// console.log(regex.exec(str));
+// console.log(regex.exec(str));
+
+// console.log("match", str.match(regex));
+
+// console.log("search", str.search(/T/));
+
+console.log("replace", str.replace(regex, "X"));
+output(str, regex);
+```
+
+
+From here on out `index.html` and `output.js` will be referenced, but not shown, we are done with any changes there.

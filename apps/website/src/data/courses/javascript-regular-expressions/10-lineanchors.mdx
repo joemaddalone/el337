@@ -33,3 +33,46 @@ import { YouTube } from '@astro-community/astro-embed-youtube';
 </div>
 
 Line anchors let you match the beginning or end of a line, not just the beginning or end of the entire string. This lesson covers the caret (^) and dollar sign ($) as line anchors, and the critical difference between matching a string's boundaries versus matching individual lines. You'll learn about the multi-line flag (m) that makes ^ and $ match at each line break, and build a pattern that matches lines starting with one value and ending with another.
+
+## app.js
+
+```js title="app.ts"
+import output from "./output.js";
+// When we want to capture the beginning
+// or end of a line we can use something
+// called a line anchor
+let str = `12/1/30`;
+let regex = /12/g;
+
+str = `12/1/30 12-30-35`;
+regex = /^12/g;
+
+// we've used carets in the past
+// inside of character classes where
+// they represent the negation of
+// whatever characters are inside of
+// that character class. Outside of a
+// character class a caret is used
+// as a line beginning operator
+
+str = `12/1/30
+12-30-35`;
+regex = /^12/g;
+
+console.log(regex.exec(str));
+
+str = `12/1/30
+12-30-35`;
+regex = /^12/gm;
+
+str = `12/1/30
+12-30-35
+11/12/30
+12-12-2030`;
+regex = /^12/gm;
+
+regex = /^12.+30/gm;
+regex = /^12.+30$/gm;
+
+output(str, regex);
+```

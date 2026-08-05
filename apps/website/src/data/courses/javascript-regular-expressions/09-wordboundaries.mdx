@@ -33,3 +33,22 @@ import { YouTube } from '@astro-community/astro-embed-youtube';
 </div>
 
 Word boundaries help you match whole words rather than substrings. This lesson covers the \b anchor, which matches at the boundary between a word character and a non-word character. You'll see how to match a specific word ("is") without matching it inside words like "island" or "history." We also cover negated word boundaries (\B) for matching patterns that are NOT at word boundaries — useful for finding words containing a pattern but not starting or ending with it.
+
+## app.js
+
+```js title="app.ts"
+import output from "./output.js";
+
+let str = `This is his island history`;
+
+let regex = /is/g;
+regex = /is(?=\s)/g;
+regex = /is(?=\s)?/g;
+regex = /\bis/g;
+regex = /\bis\b/g;
+regex = /\Bis/g;
+regex = /is\B/g;
+regex = /\Bis\B/g;
+
+output(str, regex);
+```

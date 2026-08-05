@@ -33,3 +33,41 @@ import { YouTube } from '@astro-community/astro-embed-youtube';
 </div>
 
 Capturing groups let you group parts of a pattern together and reference them later. This lesson covers parentheses for grouping, alternation with the pipe (|), applying quantifiers to groups, and referencing captured content with $1, $2, etc. You'll learn about non-capturing groups (?:...) to avoid memory overhead, and the powerful named groups syntax and .groups. A practical phone number parsing example ties it all together.
+
+## app.js
+
+```js title="app.ts"
+import output from "./output.js";
+// ─── Positional Groups ──────────────────────────────────
+
+let str = `foo
+foobar
+foobaz
+fooboo`;
+
+let regex = /foo/g;
+// regex = /foobar/g;
+// regex = /foo(bar|boo)/g;
+// regex = /foo(bar|boo)?/g;
+// regex = /foo(bar|boo)/g;
+// console.log(str.replace(regex, "**$1**"));
+// regex = /foo(?:bar|boo)/g;
+// console.log(str.match(regex));
+
+str = `555-867-5309`;
+regex = /(\d{3})-(\d{3})-(\d{4})/;
+let match = regex.exec(str);
+console.log("full match", match[0]);
+console.log("area code", match[1]);
+console.log("exchange", match[2]);
+console.log("line", match[3]);
+
+regex = /(?<area>\d{3})-(?<exchange>\d{3})-(?<line>\d{4})/;
+match = regex.exec(str);
+console.log("area code", match.groups.area);
+console.log("exchange", match.groups.exchange);
+console.log("line", match.groups.line);
+
+output(str, regex);
+
+```

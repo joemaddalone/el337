@@ -33,3 +33,28 @@ import { YouTube } from '@astro-community/astro-embed-youtube';
 </div>
 
 Matching plain text with regular expressions is simpler than you think. This lesson covers the building blocks: matching literal text, using the global flag to find all occurrences, and the dot (.) meta character for matching any single character. We also cover the dot-all flag (s flag) that lets the dot match line breaks, and how to escape meta characters when you need to match them literally.
+
+## app.js
+
+```js title="app.ts"
+import output from "./output.js";
+// . [ ] ( ) { } * + ? ^ $ | \ /
+
+// finding a plain text patters with regexp is fairly trivial
+
+const str = `Cat sat on the mat.`;
+
+// Match literal text
+let regex = /Cat/; // easy
+// regex = /at/g; // all the at add g
+// regex = /.at/g; // all the .at
+// metacharacter dot identifies any character letters,
+// digits, dashes, but not line breaks
+// regex = /./g; // all the .at
+// regex = /.../gi; // any set of 3 chars
+// regex = /..../gi; // any set of 4 chars, no line breaks
+// regex = /..../gis; // include line breaks with dotAll
+// regex = /\./; // literal .
+
+output(str, regex);
+```

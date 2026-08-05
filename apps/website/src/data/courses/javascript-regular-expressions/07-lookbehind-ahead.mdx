@@ -33,3 +33,28 @@ import { YouTube } from '@astro-community/astro-embed-youtube';
 </div>
 
 Lookaheads and lookbehinds are zero-width assertions that check what's before or after a position without consuming characters. This lesson covers positive lookahead (?=...), negative lookahead, positive lookbehind, and negative lookbehind. You'll build a real-world password validator that enforces uppercase letters, lowercase letters, digits, and a minimum length — all using nothing but lookaheads.
+
+## app.js
+
+```js title="app.ts"
+import output from "./output.js";
+
+let str = `foo
+foobar
+foobaz
+fooboo`;
+
+let regex = /foo(bar)/g;
+// lookahead asserts what's on the right
+regex = /foo(?=bar|boo)/g; // is foo followed by bar?
+regex = /foo(?!bar|boo)/g; // is foo NOT followed by bar?
+// lookabehind asserts what's on the left
+regex = /(?<=foo)(bar)/g;
+regex = /(?<!foo)(bar)/g;
+
+regex = /(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}/;
+str = `Password1`;
+console.log(regex.test(str));
+
+output(str, regex);
+```
