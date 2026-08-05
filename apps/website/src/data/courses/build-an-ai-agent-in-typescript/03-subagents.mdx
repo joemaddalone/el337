@@ -33,3 +33,157 @@ import { YouTube } from '@astro-community/astro-embed-youtube';
 </div>
 
 Unlock scalable AI automation by teaching your local coding agent to deploy sub-agents, solving context window blowup and enabling true delegation. Build multi-agent systems on Apple Silicon Macs that handle complex software development tasks without performance bottlenecks.
+
+## First we'll move some stuff around to make it more modular
+
+```ts title="index.ts" del={1, 8-16, 24} ins={6, 25}
+import { createOpenAI } from "@ai-sdk/openai";
+import { generateText, isLoopFinished } from "ai";
+import type { ModelMessage } from "ai";
+import * as readline from "readline";
+import { TOOLS } from './tools'
+import { api, MODEL, WORKDIR } from './config'
+
+/** CONSTANTS */
+const WORKDIR = process.cwd();
+const MODEL = "qwen3.5:35b-a3b-coding-nvfp4";
+
+/** API */
+const ollama = createOpenAI({
+  baseURL: "http://localhost:11434/v1",
+  apiKey: "ollama",
+});
+
+...
+
+/** AGENT LOOP */
+
+const agentLoop = async (messages: ModelMessage[]): Promise<string> => {
+  const { text } = await generateText({
+    model: ollama.chat(MODEL),
+    model: api.chat(MODEL),
+    system: `You are a coding agent at ${WORKDIR}. Use tools to solve tasks.  Act, dont explain.`,
+    messages,
+    tools: TOOLS,
+    stopWhen: isLoopFinished(),
+  });
+  return text;
+};
+
+prompt();
+
+```
+
+## And we'll create a new module called config.ts
+
+```ts title="config.ts"
+import { createOpenAI, generateText } from "@ai-sdk/openai";
+
+/** CONSTANTS */
+export const WORKDIR = process.cwd();
+export const MODEL = "qwen3.5:35b-a3b-coding-nvfp4";
+
+/** API */
+export const api = createOpenAI({ // renamed from ollama -> api
+  baseURL: "http://localhost:11434/v1",
+  apiKey: "ollama",
+});
+```
+
+## Now we'll create our new tool in tools.ts
+
+```typescript title="tools.ts" ins={5, 2, 32-60} del={1,8}
+import { tool, zodSchema } from "ai";
+import { tool, zodSchema, generateText, isLoopFinished } from "ai";
+import {z} from "zod":
+import { spawnSync } from "node: child_process";
+import { api, MODEL, WORKDIR } from './config'
+
+/** CONSTANTS */
+const WORKDIR = process.cwd();
+const BLOCKED_COMMANDS = ["rm -rf /", "sudo", "shutdown", "reboot", "> /dev/"];
+
+const safePath = (p: string) => {
+	const resolved = path.resolve(WORKDIR, p);
+	if (!resolved.startsWith(WORKDIR)) {
+		throw new Error(`Path is not in ${WORKDIR}`);
+	}
+	return resolved;
+};
+
+/** TOOLS */
+const runBash = (command: string): string => {/* ... */};
+
+const runRead = (filePath: string, limit?: number) => {/* ... */};
+
+const runWrite = (filePath: string, content: string) => {/* ... */};
+
+const runEdit = (filePath: string, oldText: string, newText: string) => {/* ... */};
+
+export const TOOLS = {
+	/* ... */
+};
+
+const runSubagent = async (prompt: string): Promise<string> => {
+	const { text } = await generateText({
+		model: api.chat(MODEL),
+		system: `You are a coding subagent at ${WORKDIR}. Complete your given task, then summarize your findings.`,
+		messages: [
+			{
+				role: "user",
+				content: prompt,
+			},
+		],
+		tools: TOOLS,
+		stopWhen: isLoopFinished(),
+	});
+	return text;
+};
+
+export const PARENT_TOOLS = {
+	...TOOLS,
+	task: tool({
+		description:
+			"Spawn a subagent with fresh context, it shares the file system, but not the conversation history",
+		inputSchema: zodSchema(
+			z.object({
+				task: z.string(),
+			}),
+		),
+		execute: async ({ task }) => await runSubagent(task),
+	}),
+};
+```
+
+## Finally we'll add our new PARENT_TOOLS to the index.ts
+
+```ts title="index.ts" del={5, 18} ins={6, 19}
+import { createOpenAI } from "@ai-sdk/openai";
+import { generateText, isLoopFinished } from "ai";
+import type { ModelMessage } from "ai";
+import * as readline from "readline";
+import { TOOLS } from './tools'
+import { PARENT_TOOLS, TOOLS } from './tools'
+import { api, MODEL, WORKDIR } from './config'
+
+...
+
+/** AGENT LOOP */
+
+const agentLoop = async (messages: ModelMessage[]): Promise<string> => {
+  const { text } = await generateText({
+    model: api.chat(MODEL),
+    system: `You are a coding agent at ${WORKDIR}. Use tools to solve tasks.  Act, dont explain.`,
+    messages,
+    tools: TOOLS,
+    tools: PARENT_TOOLS,
+    stopWhen: isLoopFinished(),
+  });
+  return text;
+};
+
+```
+
+
+
+
