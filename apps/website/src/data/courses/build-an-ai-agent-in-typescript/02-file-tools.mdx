@@ -1,0 +1,37 @@
+---
+title: "File Tools"
+date: 2026-07-16
+tags: ["javascript", "regular expressions"]
+excerpt: "Let's add structured file tools — read_file, write_file, and edit_file"
+coverImage: "https://img.youtube.com/vi/OB9tbGY2Rm4/maxresdefault.jpg"
+coverImageInPost: false
+courseOrder: 2
+---
+
+export const videoMetadata = {
+  name: "Build an Agent Loop in Typescript: Part 2, File Tools",
+  description: "Let's add structured file tools — read_file, write_file, and edit_file",
+  thumbnailUrl: "https://img.youtube.com/vi/OB9tbGY2Rm4/maxresdefault.jpg",
+  contentUrl: "https://youtu.be/OB9tbGY2Rm4",
+};
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: videoMetadata.name,
+  description: videoMetadata.description,
+  thumbnailUrl: videoMetadata.thumbnailUrl,
+  contentUrl: videoMetadata.contentUrl,
+  duration: videoMetadata.duration,
+})} />
+
+
+import { YouTube } from '@astro-community/astro-embed-youtube';
+
+<div class="py-6">
+<YouTube id="OB9tbGY2Rm4" />
+</div>
+
+Let's add structured file tools — read_file, write_file, and edit_file — so the agent can understand and modify your codebase safely and predictably.
+
+Instead of blindly executing shell commands, we give it precise capabilities. The result is more reliable edits, better reasoning, and cleaner iterations.

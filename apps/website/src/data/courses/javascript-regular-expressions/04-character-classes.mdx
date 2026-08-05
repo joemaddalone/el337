@@ -1,0 +1,35 @@
+---
+title: "Character Classes"
+date: 2026-07-16
+tags: ["javascript", "regular expressions"]
+excerpt: "Character classes let you match sets of characters using square brackets."
+coverImage: "https://img.youtube.com/vi/sBMXXbPZVOs/maxresdefault.jpg"
+coverImageInPost: false
+courseOrder: 4
+---
+
+export const videoMetadata = {
+  name: "JavaScript Regular Expressions: Character Classes",
+  description: "Character classes let you match sets of characters using square brackets.",
+  thumbnailUrl: "https://img.youtube.com/vi/vKIcWJdhlec/maxresdefault.jpg",
+  contentUrl: "https://youtu.be/vKIcWJdhlec",
+};
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: videoMetadata.name,
+  description: videoMetadata.description,
+  thumbnailUrl: videoMetadata.thumbnailUrl,
+  contentUrl: videoMetadata.contentUrl,
+  duration: videoMetadata.duration,
+})} />
+
+
+import { YouTube } from '@astro-community/astro-embed-youtube';
+
+<div class="py-6">
+<YouTube id="vKIcWJdhlec" />
+</div>
+
+Character classes let you match sets of characters using square brackets. This lesson covers the fundamentals: listing specific characters, negating with a caret (^), defining ranges like a-z or 0-9, and combining multiple ranges. You'll learn how to build flexible patterns that match any character from a defined set — whether it's letters, digits, or a mix.

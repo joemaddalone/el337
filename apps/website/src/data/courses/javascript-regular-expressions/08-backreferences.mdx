@@ -1,0 +1,35 @@
+---
+title: "Backreferences"
+date: 2026-07-16
+tags: ["javascript", "regular expressions"]
+excerpt: "Backreferences let you match a second occurrence of text captured by an earlier group."
+coverImage: "https://img.youtube.com/vi/kd1fP1n287U/maxresdefault.jpg"
+coverImageInPost: false
+courseOrder: 8
+---
+
+export const videoMetadata = {
+  name: "JavaScript Regular Expressions: Backreferences",
+  description: "Backreferences let you match a second occurrence of text captured by an earlier group.",
+  thumbnailUrl: "https://img.youtube.com/vi/kd1fP1n287U/maxresdefault.jpg",
+  contentUrl: "https://youtu.be/kd1fP1n287U",
+};
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: videoMetadata.name,
+  description: videoMetadata.description,
+  thumbnailUrl: videoMetadata.thumbnailUrl,
+  contentUrl: videoMetadata.contentUrl,
+  duration: videoMetadata.duration,
+})} />
+
+
+import { YouTube } from '@astro-community/astro-embed-youtube';
+
+<div class="py-6">
+<YouTube id="kd1fP1n287U" />
+</div>
+
+Backreferences let you match a second occurrence of text captured by an earlier group. This lesson covers the syntax \1, \2, etc., and shows practical use cases: finding duplicate words (like "the the"), stripping HTML tags by matching opening and closing tags together, and removing duplicate patterns from text. You'll also learn named backreferences  and how they integrate with named capturing groups for cleaner, more maintainable regex.

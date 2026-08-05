@@ -1,0 +1,26 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import CoursePostLayout from "@/layouts/CoursePost.astro";
+import { slugifyStr } from "@/utils/slugify";
+import { courseSlugFromEntry } from "@/utils/getCourse";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("courses", ({ data }) => !data.draft);
+
+  return entries.map((post) => ({
+    params: {
+      courseSlug: courseSlugFromEntry(post),
+      postSlug: slugifyStr(post.data.title),
+    },
+    props: { post },
+  }));
+}
+
+export interface Props {
+  post: CollectionEntry<"courses">;
+}
+
+const { post } = Astro.props;
+---
+
+<CoursePostLayout post={post} />

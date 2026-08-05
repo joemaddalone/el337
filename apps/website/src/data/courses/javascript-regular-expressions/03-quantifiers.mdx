@@ -1,0 +1,35 @@
+---
+title: "Quantifiers"
+date: 2026-07-16
+tags: ["javascript", "regular expressions"]
+excerpt: "Quantifiers let you match repeating patterns without writing them out by hand."
+coverImage: "https://img.youtube.com/vi/sBMXXbPZVOs/maxresdefault.jpg"
+coverImageInPost: false
+courseOrder: 3
+---
+
+export const videoMetadata = {
+  name: "JavaScript Regular Expressions: Quantifiers",
+  description: "Quantifiers let you match repeating patterns without writing them out by hand.",
+  thumbnailUrl: "https://img.youtube.com/vi/1418Yp-lIPk/maxresdefault.jpg",
+  contentUrl: "https://youtu.be/1418Yp-lIPk",
+};
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: videoMetadata.name,
+  description: videoMetadata.description,
+  thumbnailUrl: videoMetadata.thumbnailUrl,
+  contentUrl: videoMetadata.contentUrl,
+  duration: videoMetadata.duration,
+})} />
+
+
+import { YouTube } from '@astro-community/astro-embed-youtube';
+
+<div class="py-6">
+<YouTube id="1418Yp-lIPk" />
+</div>
+
+Quantifiers let you match repeating patterns without writing them out by hand. This lesson covers the full spectrum: exact counts with `{n}`, ranges with `{n,m}`, and the three most common shorthand quantifiers — asterisk (*) for zero or more, plus (+) for one or more, and question mark (?) for zero or one. We also tackle the critical distinction between greedy and lazy quantifiers, showing how adding a question mark after any greedy quantifier makes it lazy.

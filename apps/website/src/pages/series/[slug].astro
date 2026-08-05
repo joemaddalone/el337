@@ -21,24 +21,28 @@ if (!series) return Astro.redirect("/404");
 
     {series.description && <p>{series.description}</p>}
 
-    {series.youtube_playlist_id && (
-      <a
-        href={`https://www.youtube.com/playlist?list=${series.youtube_playlist_id}`}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Watch full playlist on YouTube
-      </a>
-    )}
+    {
+      series.youtube_playlist_id && (
+        <a
+          href={`https://www.youtube.com/playlist?list=${series.youtube_playlist_id}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Watch full playlist on YouTube
+        </a>
+      )
+    }
 
-    {series.videos && series.videos.length > 0 && (
-      <ol>
-        {series.videos.map((video) => (
-          <li>
-            <a href={`/videos/${video.slug}`}>{video.title}</a>
-          </li>
-        ))}
-      </ol>
-    )}
+    {
+      series.videos && series.videos.length > 0 && (
+        <ol>
+          {series.videos.map((video) => (
+            <li>
+              <a href={`/videos/${video.slug}`}>{video.title}</a>
+            </li>
+          ))}
+        </ol>
+      )
+    }
   </body>
 </html>

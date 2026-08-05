@@ -1,0 +1,35 @@
+---
+title: "Capturing Groups"
+date: 2026-07-16
+tags: ["javascript", "regular expressions"]
+excerpt: "Capturing groups let you group parts of a pattern together and reference them later."
+coverImage: "https://img.youtube.com/vi/sBMXXbPZVOs/maxresdefault.jpg"
+coverImageInPost: false
+courseOrder: 6
+---
+
+export const videoMetadata = {
+  name: "JavaScript Regular Expressions: Capturing Groups",
+  description: "Capturing groups let you group parts of a pattern together and reference them later.",
+  thumbnailUrl: "https://img.youtube.com/vi/Vgx34Utknwo/maxresdefault.jpg",
+  contentUrl: "https://youtu.be/Vgx34Utknwo",
+};
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: videoMetadata.name,
+  description: videoMetadata.description,
+  thumbnailUrl: videoMetadata.thumbnailUrl,
+  contentUrl: videoMetadata.contentUrl,
+  duration: videoMetadata.duration,
+})} />
+
+
+import { YouTube } from '@astro-community/astro-embed-youtube';
+
+<div class="py-6">
+<YouTube id="Vgx34Utknwo" />
+</div>
+
+Capturing groups let you group parts of a pattern together and reference them later. This lesson covers parentheses for grouping, alternation with the pipe (|), applying quantifiers to groups, and referencing captured content with $1, $2, etc. You'll learn about non-capturing groups (?:...) to avoid memory overhead, and the powerful named groups syntax and .groups. A practical phone number parsing example ties it all together.

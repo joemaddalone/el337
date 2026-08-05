@@ -1,0 +1,35 @@
+---
+title: "Word Boundaries"
+date: 2026-07-16
+tags: ["javascript", "regular expressions"]
+excerpt: "Word boundaries help you match whole words rather than substrings."
+coverImage: "https://img.youtube.com/vi/sBMXXbPZVOs/maxresdefault.jpg"
+coverImageInPost: false
+courseOrder: 9
+---
+
+export const videoMetadata = {
+  name: "JavaScript Regular Expressions: Word Boundaries",
+  description: "Word boundaries help you match whole words rather than substrings.",
+  thumbnailUrl: "https://img.youtube.com/vi/mP7Nwhc4ROs/maxresdefault.jpg",
+  contentUrl: "https://youtu.be/mP7Nwhc4ROs",
+};
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: videoMetadata.name,
+  description: videoMetadata.description,
+  thumbnailUrl: videoMetadata.thumbnailUrl,
+  contentUrl: videoMetadata.contentUrl,
+  duration: videoMetadata.duration,
+})} />
+
+
+import { YouTube } from '@astro-community/astro-embed-youtube';
+
+<div class="py-6">
+<YouTube id="mP7Nwhc4ROs" />
+</div>
+
+Word boundaries help you match whole words rather than substrings. This lesson covers the \b anchor, which matches at the boundary between a word character and a non-word character. You'll see how to match a specific word ("is") without matching it inside words like "island" or "history." We also cover negated word boundaries (\B) for matching patterns that are NOT at word boundaries — useful for finding words containing a pattern but not starting or ending with it.

@@ -1,0 +1,35 @@
+---
+title: "Introduction"
+date: 2026-07-16
+tags: ["javascript", "regular expressions"]
+excerpt: "What IS a regular expression, and why should you care?"
+coverImage: "https://img.youtube.com/vi/sBMXXbPZVOs/maxresdefault.jpg"
+coverImageInPost: false
+courseOrder: 1
+---
+
+export const videoMetadata = {
+  name: "JavaScript Regular Expressions: Introduction to Regex",
+  description: "What IS a regular expression, and why should you care? In this first lesson of our 11-part series, we cover the fundamentals.",
+  thumbnailUrl: "https://img.youtube.com/vi/sBMXXbPZVOs/maxresdefault.jpg",
+  contentUrl: "https://youtu.be/sBMXXbPZVOs",
+};
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: videoMetadata.name,
+  description: videoMetadata.description,
+  thumbnailUrl: videoMetadata.thumbnailUrl,
+  contentUrl: videoMetadata.contentUrl,
+  duration: videoMetadata.duration,
+})} />
+
+
+import { YouTube } from '@astro-community/astro-embed-youtube';
+
+<div class="py-6">
+<YouTube id="sBMXXbPZVOs" />
+</div>
+
+What IS a regular expression, and why should you care? In this first lesson of our 11-part series, we cover the fundamentals: what regex is, the two ways to create a regex in JavaScript (constructor vs. literal), and the core string methods that work with patterns — test(), exec(), match(), search(), and replace(). We also cover the global and case-insensitive flags, and why exec() is state-aware. By the end, you'll have a working visualization tool to see regex matching in action.

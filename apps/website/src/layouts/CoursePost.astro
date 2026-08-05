@@ -1,0 +1,220 @@
+---
+import { render, type CollectionEntry } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Tag from "@/components/Tag.astro";
+import Datetime from "@/components/Datetime.astro";
+import ShareLinks from "@/components/ShareLinks.astro";
+import BackButton from "@/components/BackButton.astro";
+import BackToTopButton from "@/components/BackToTopButton.astro";
+import CourseNav from "@/components/CourseNav.astro";
+import { slugifyStr } from "@/utils/slugify";
+import {
+  courseSlugFromEntry,
+  getCourseDefinition,
+  getCoursePosts,
+} from "@/utils/getCourse";
+import IconChevronLeft from "@/assets/icons/IconChevronLeft.svg";
+import IconChevronRight from "@/assets/icons/IconChevronRight.svg";
+import { SITE } from "@/config";
+import { Image } from "astro:assets";
+
+export interface Props {
+  post: CollectionEntry<"courses">;
+}
+
+const { post } = Astro.props;
+
+const {
+  title,
+  excerpt,
+  ogImage: initOgImage,
+  canonicalURL,
+  date,
+  timezone,
+  tags,
+  coverImage,
+  coverImageInPost,
+} = post.data;
+
+const courseSlug = courseSlugFromEntry(post);
+const courseDefinition = await getCourseDefinition(courseSlug);
+const coursePosts = await getCoursePosts(courseSlug);
+
+const { Content } = await render(post);
+
+let ogImageUrl: string | undefined;
+if (typeof initOgImage === "string") {
+  ogImageUrl = initOgImage;
+} else if (initOgImage?.src) {
+  ogImageUrl = initOgImage.src;
+}
+const ogImage = ogImageUrl
+  ? new URL(ogImageUrl, Astro.url.origin).href
+  : undefined;
+
+const layoutProps = {
+  title: `${title} | ${SITE.title}`,
+  description: excerpt,
+  canonicalURL,
+  ogImage,
+  scrollSmooth: true,
+};
+
+/* ========== Prev/Next within the course ========== */
+const currentIndex = coursePosts.findIndex((p) => p.id === post.id);
+const prevPost = currentIndex > 0 ? coursePosts[currentIndex - 1] : null;
+const nextPost =
+  currentIndex < coursePosts.length - 1 ? coursePosts[currentIndex + 1] : null;
+
+const postHref = (p: CollectionEntry<"courses">) =>
+  `/courses/${courseSlugFromEntry(p)}/${slugifyStr(p.data.title)}`;
+---
+
+<Layout {...layoutProps}>
+  <Header />
+  <div class="mb-8"></div>
+  {
+    courseDefinition && coursePosts.length > 0 && (
+      <CourseNav
+        course={courseDefinition}
+        posts={coursePosts}
+        currentPostId={post.id}
+      />
+    )
+  }
+  <main
+    id="main-content"
+    class:list={[
+      "mx-auto w-full max-w-app px-4 pb-12 mt-8"
+    ]}
+    data-pagefind-body
+  >
+    <h1
+      transition:name={slugifyStr(title)}
+      class="inline-block text-2xl font-bold text-accent sm:text-3xl"
+    >
+      {title}
+    </h1>
+    <p>{excerpt}</p>
+    {
+      coverImage && coverImageInPost && (
+        <div class="my-6 overflow-hidden rounded-lg">
+          <Image
+            src={coverImage}
+            alt={title}
+            width={1200}
+            height={675}
+            loading="lazy"
+            decoding="async"
+            class="h-auto w-full object-cover"
+          />
+        </div>
+      )
+    }
+    <article
+      id="article"
+      class="app-prose mx-auto mt-8 max-w-app prose-pre:bg-(--shiki-light-bg) dark:prose-pre:bg-(--shiki-dark-bg)"
+    >
+      <Content />
+    </article>
+
+    <hr class="my-8 border-dashed" />
+
+
+    <BackToTopButton />
+
+    <ShareLinks />
+
+    <hr class="my-6 border-dashed" />
+
+    <!-- Previous/Next within course -->
+    <div data-pagefind-ignore class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+      {
+        prevPost && (
+          <a
+            href={postHref(prevPost)}
+            class="flex w-full gap-1 hover:opacity-75"
+          >
+            <IconChevronLeft class="inline-block flex-none rtl:rotate-180" />
+            <div>
+              <span>Previous</span>
+              <div class="text-sm text-accent/85">{prevPost.data.title}</div>
+            </div>
+          </a>
+        )
+      }
+      {
+        nextPost && (
+          <a
+            href={postHref(nextPost)}
+            class="flex w-full justify-end gap-1 text-end hover:opacity-75 sm:col-start-2"
+          >
+            <div>
+              <span>Next</span>
+              <div class="text-sm text-accent/85">{nextPost.data.title}</div>
+            </div>
+            <IconChevronRight class="inline-block flex-none rtl:rotate-180" />
+          </a>
+        )
+      }
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<script is:inline data-astro-rerun>
+  function createProgressBar() {
+    const progressContainer = document.createElement("div");
+    progressContainer.className =
+      "progress-container fixed top-0 z-10 h-1 w-full bg-background";
+    const progressBar = document.createElement("div");
+    progressBar.className = "progress-bar h-1 w-0 bg-accent";
+    progressBar.id = "myBar";
+    progressContainer.appendChild(progressBar);
+    document.body.appendChild(progressContainer);
+  }
+  createProgressBar();
+
+  function updateScrollProgress() {
+    document.addEventListener("scroll", () => {
+      const winScroll =
+        document.body.scrollTop || document.documentElement.scrollTop;
+      const height =
+        document.documentElement.scrollHeight -
+        document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      if (document) {
+        const myBar = document.getElementById("myBar");
+        if (myBar) {
+          myBar.style.width = scrolled + "%";
+        }
+      }
+    });
+  }
+  updateScrollProgress();
+
+  function addHeadingLinks() {
+    const headings = Array.from(
+      document.querySelectorAll("h2, h3, h4, h5, h6"),
+    );
+    for (const heading of headings) {
+      heading.classList.add("group");
+      const link = document.createElement("a");
+      link.className =
+        "heading-link ms-2 no-underline opacity-75 md:opacity-0 md:group-hover:opacity-100 md:focus:opacity-100";
+      link.href = "#" + heading.id;
+      const span = document.createElement("span");
+      span.ariaHidden = "true";
+      span.innerText = "#";
+      link.appendChild(span);
+      heading.appendChild(link);
+    }
+  }
+  addHeadingLinks();
+
+  document.addEventListener("astro:after-swap", () =>
+    window.scrollTo({ left: 0, top: 0, behavior: "instant" }),
+  );
+</script>

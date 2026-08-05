@@ -1,0 +1,64 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { slugifyStr } from "@/utils/slugify";
+import { courseSlugFromEntry } from "@/utils/getCourse";
+import type { CourseDefinition } from "@/utils/getCourse";
+
+export interface Props {
+  course: CourseDefinition;
+  posts: CollectionEntry<"courses">[];
+  currentPostId: string;
+}
+
+const { course, posts, currentPostId } = Astro.props;
+---
+
+<nav
+  class="course-nav mx-auto w-full max-w-app px-4 mb-6"
+  aria-label={`${course.title} course navigation`}
+>
+  <div class="rounded-lg border border-border/60 bg-muted/30 px-4 py-3">
+    <div class="mb-2 flex items-center justify-between gap-2">
+      <a
+        href={`/courses/${course.slug}`}
+        class="text-xs font-semibold uppercase tracking-widest text-accent/80 hover:text-accent transition-colors"
+      >
+        Course
+      </a>
+      <span class="text-xs text-foreground/50">
+        {course.title}
+      </span>
+    </div>
+
+    <ol class="flex flex-col gap-1">
+      {
+        posts.map((post, index) => {
+          const courseSlug = courseSlugFromEntry(post);
+          // id is "local-ai/running-ollama-locally" — take the filename segment
+          const postSlug = post.id.split("/").slice(1).join("/");
+          const href = `/courses/${courseSlug}/${slugifyStr(post.data.title)}`;
+          const isActive = post.id === currentPostId;
+          return (
+            <li>
+              <a
+                href={href}
+                aria-current={isActive ? "page" : undefined}
+                class:list={[
+                  "flex items-start gap-2 rounded-md px-2 py-1.5 text-sm transition-colors",
+                  isActive
+                    ? "bg-accent/10 font-semibold text-accent"
+                    : "text-foreground/80 hover:bg-muted hover:text-foreground",
+                ]}
+              >
+                <span class="mt-0.5 shrink-0 text-xs text-foreground/40 tabular-nums">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span class="leading-snug">{post.data.title}</span>
+              </a>
+            </li>
+          );
+        })
+      }
+    </ol>
+  </div>
+</nav>

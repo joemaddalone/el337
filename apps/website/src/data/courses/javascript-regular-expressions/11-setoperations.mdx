@@ -1,0 +1,35 @@
+---
+title: "Set Operations"
+date: 2026-07-16
+tags: ["javascript", "regular expressions"]
+excerpt: "Set operations are a modern addition to JavaScript regex, enabled by the V flag."
+coverImage: "https://img.youtube.com/vi/Jkto_x0byDU/maxresdefault.jpg"
+coverImageInPost: false
+courseOrder: 11
+---
+
+export const videoMetadata = {
+  name: "JavaScript Regular Expressions: Set Operations",
+  description: "Set operations are a modern addition to JavaScript regex, enabled by the V flag.",
+  thumbnailUrl: "https://img.youtube.com/vi/7jTY9UV95dg/maxresdefault.jpg",
+  contentUrl: "https://youtu.be/Jkto_x0byDU",
+};
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: videoMetadata.name,
+  description: videoMetadata.description,
+  thumbnailUrl: videoMetadata.thumbnailUrl,
+  contentUrl: videoMetadata.contentUrl,
+  duration: videoMetadata.duration,
+})} />
+
+
+import { YouTube } from '@astro-community/astro-embed-youtube';
+
+<div class="py-6">
+<YouTube id="Jkto_x0byDU" />
+</div>
+
+Set operations are a modern addition to JavaScript regex, enabled by the V flag. This lesson covers two powerful operations: subtraction (minus sign -) and intersection (ampersand &&). You'll learn to subtract character sets — like excluding ambiguous characters (0, 1, I, O) from a license plate pattern — and intersect sets to find characters common to both. We also cover how the V flag enables Unicode property escapes (`\p{...}`) and works alongside them.

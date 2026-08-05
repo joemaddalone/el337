@@ -1,0 +1,90 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Datetime from "@/components/Datetime.astro";
+import { slugifyStr } from "@/utils/slugify";
+import {
+  getAllCourseDefinitions,
+  getCourseDefinition,
+  getCoursePosts,
+} from "@/utils/getCourse";
+import { SITE } from "@/config";
+
+export async function getStaticPaths() {
+  const courses = await getAllCourseDefinitions();
+  return courses.map((c) => ({ params: { slug: c.slug } }));
+}
+
+const { slug } = Astro.params;
+const course = await getCourseDefinition(slug!);
+if (!course) return Astro.redirect("/404");
+
+const posts = await getCoursePosts(slug!);
+---
+
+<Layout
+  title={`${course.title} | ${SITE.title}`}
+  description={course.description}
+>
+  <Header />
+  <main
+    id="main-content"
+    class="mx-auto w-full max-w-app px-4 pt-10 pb-16"
+  >
+    <!-- Course header -->
+    <div class="mb-8 border-b border-border/50 pb-6">
+      <p class="mb-1 text-xs font-semibold uppercase tracking-widest text-accent/80">
+        Course
+      </p>
+      <h1 class="text-3xl font-bold text-accent sm:text-4xl">
+        {course.title}
+      </h1>
+      {
+        course.description && (
+          <p class="mt-3 max-w-2xl text-base text-foreground/70">
+            {course.description}
+          </p>
+        )
+      }
+      <p class="mt-2 text-sm text-foreground/50">
+        {posts.length} {posts.length === 1 ? "lesson" : "lessons"}
+      </p>
+    </div>
+
+    <!-- Post list -->
+    <ol class="flex flex-col gap-4">
+      {
+        posts.map((post, index) => {
+          const href = `/courses/${slug}/${slugifyStr(post.data.title)}`;
+          return (
+            <li>
+              <a
+                href={href}
+                class="group flex items-start gap-4 rounded-lg border border-border/40 bg-muted/20 px-4 py-4 transition-colors hover:border-accent/30 hover:bg-muted/50"
+              >
+                <span class="mt-1 shrink-0 text-sm font-semibold tabular-nums text-foreground/30 group-hover:text-accent/60">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <div class="min-w-0">
+                  <h2 class="text-lg font-semibold decoration-dashed group-hover:underline group-hover:text-accent leading-snug">
+                    {post.data.title}
+                  </h2>
+                  {post.data.excerpt && (
+                    <p class="mt-1 text-sm text-foreground/60 leading-relaxed">
+                      {post.data.excerpt}
+                    </p>
+                  )}
+                  <!-- <div class="mt-2">
+                    <Datetime date={post.data.date} timezone={post.data.timezone} size="sm" />
+                  </div> -->
+                </div>
+              </a>
+            </li>
+          );
+        })
+      }
+    </ol>
+  </main>
+  <Footer />
+</Layout>

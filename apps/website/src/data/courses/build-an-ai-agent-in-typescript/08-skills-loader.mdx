@@ -1,0 +1,35 @@
+---
+title: "Build a Skills Loader"
+date: 2026-07-16
+tags: ["javascript", "regular expressions"]
+excerpt: "Stop rewriting tools for every new task"
+coverImage: "https://img.youtube.com/vi/ZLvZbsazmHg/maxresdefault.jpg"
+coverImageInPost: false
+courseOrder: 8
+---
+
+export const videoMetadata = {
+  name: "Build an Agent Loop in Typescript: Part 8, Build a Skills Loader",
+  description: "Stop rewriting tools for every new task",
+  thumbnailUrl: "https://img.youtube.com/vi/ZLvZbsazmHg/maxresdefault.jpg",
+  contentUrl: "https://youtu.be/ZLvZbsazmHg",
+};
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: videoMetadata.name,
+  description: videoMetadata.description,
+  thumbnailUrl: videoMetadata.thumbnailUrl,
+  contentUrl: videoMetadata.contentUrl,
+  duration: videoMetadata.duration,
+})} />
+
+
+import { YouTube } from '@astro-community/astro-embed-youtube';
+
+<div class="py-6">
+<YouTube id="ZLvZbsazmHg" />
+</div>
+
+Stop rewriting tools for every new task. This guide shows you how to teach an AI coding agent reusable skills using markdown files, making it easier to manage specialized knowledge without constant code changes. Perfect for developers building local AI agents with TypeScript and Ollama.

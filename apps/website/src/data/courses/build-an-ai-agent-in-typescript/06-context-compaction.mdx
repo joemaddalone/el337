@@ -1,0 +1,35 @@
+---
+title: "Context Compaction"
+date: 2026-07-16
+tags: ["javascript", "regular expressions"]
+excerpt: "Stop blowing through your context window with this automated AI memory management system."
+coverImage: "https://img.youtube.com/vi/EOIiUr6Im_Y/maxresdefault.jpg"
+coverImageInPost: false
+courseOrder: 6
+---
+
+export const videoMetadata = {
+  name: "Build an Agent Loop in Typescript: Part 6, Context Compaction",
+  description: "Stop blowing through your context window with this automated AI memory management system.",
+  thumbnailUrl: "https://img.youtube.com/vi/EOIiUr6Im_Y/maxresdefault.jpg",
+  contentUrl: "https://youtu.be/EOIiUr6Im_Y",
+};
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: videoMetadata.name,
+  description: videoMetadata.description,
+  thumbnailUrl: videoMetadata.thumbnailUrl,
+  contentUrl: videoMetadata.contentUrl,
+  duration: videoMetadata.duration,
+})} />
+
+
+import { YouTube } from '@astro-community/astro-embed-youtube';
+
+<div class="py-6">
+<YouTube id="EOIiUr6Im_Y" />
+</div>
+
+Stop blowing through your context window with this automated AI memory management system. We build a local coding agent that dynamically compresses message history, preventing context overflow while preserving critical tool calls and reasoning. This approach enables infinite-context workflows for large codebases without hitting token limits.

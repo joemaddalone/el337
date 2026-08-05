@@ -1,0 +1,35 @@
+---
+title: "Shorthand Unicode Properties"
+date: 2026-07-16
+tags: ["javascript", "regular expressions"]
+excerpt: "What IS a regular expression, and why should you care?"
+coverImage: "https://img.youtube.com/vi/sBMXXbPZVOs/maxresdefault.jpg"
+coverImageInPost: false
+courseOrder: 5
+---
+
+export const videoMetadata = {
+  name: "JavaScript Regular Expressions: Shorthand Unicode Properties",
+  description: "This lesson covers the most commonly-used character class shorthands and the powerful Unicode property escapes.",
+  thumbnailUrl: "https://img.youtube.com/vi/htKJ1cw_voo/maxresdefault.jpg",
+  contentUrl: "https://youtu.be/htKJ1cw_voo",
+};
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: videoMetadata.name,
+  description: videoMetadata.description,
+  thumbnailUrl: videoMetadata.thumbnailUrl,
+  contentUrl: videoMetadata.contentUrl,
+  duration: videoMetadata.duration,
+})} />
+
+
+import { YouTube } from '@astro-community/astro-embed-youtube';
+
+<div class="py-6">
+<YouTube id="htKJ1cw_voo" />
+</div>
+
+This lesson covers the most commonly-used character class shorthands and the powerful Unicode property escapes. Learn `\w`, `\d`, and `\s` (and their negated forms `\W`, `\D`, `\S`), then we'll dive deep into Unicode property escapes with `\p{...}`. You'll explore symbols (`\p{Symbol}`), punctuation (`\p{Punctuation}`, `\p{PS}`, `\p{PE}`, `\p{PI}`, `\p{PF}`), letters (`\p{Letter}`), numbers (`\p{Number}`), and even scripts (`\p{Script=Cyrillic}`, `\p{Script=Greek}`). These features let you match characters by their semantic meaning rather than by range.

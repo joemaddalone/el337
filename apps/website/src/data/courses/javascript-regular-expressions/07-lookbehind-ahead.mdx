@@ -1,0 +1,35 @@
+---
+title: "Lookaheads and LookBehinds"
+date: 2026-07-16
+tags: ["javascript", "regular expressions"]
+excerpt: "Lookaheads and lookbehinds are zero-width assertions that check what's before or after a position without consuming characters."
+coverImage: "https://img.youtube.com/vi/sBMXXbPZVOs/maxresdefault.jpg"
+coverImageInPost: false
+courseOrder: 7
+---
+
+export const videoMetadata = {
+  name: "JavaScript Regular Expressions: Lookaheads and LookBehinds",
+  description: "Lookaheads and lookbehinds are zero-width assertions that check what's before or after a position without consuming characters.",
+  thumbnailUrl: "https://img.youtube.com/vi/vUT8hakCB7U/maxresdefault.jpg",
+  contentUrl: "https://youtu.be/vUT8hakCB7U",
+};
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: videoMetadata.name,
+  description: videoMetadata.description,
+  thumbnailUrl: videoMetadata.thumbnailUrl,
+  contentUrl: videoMetadata.contentUrl,
+  duration: videoMetadata.duration,
+})} />
+
+
+import { YouTube } from '@astro-community/astro-embed-youtube';
+
+<div class="py-6">
+<YouTube id="vUT8hakCB7U" />
+</div>
+
+Lookaheads and lookbehinds are zero-width assertions that check what's before or after a position without consuming characters. This lesson covers positive lookahead (?=...), negative lookahead, positive lookbehind, and negative lookbehind. You'll build a real-world password validator that enforces uppercase letters, lowercase letters, digits, and a minimum length — all using nothing but lookaheads.

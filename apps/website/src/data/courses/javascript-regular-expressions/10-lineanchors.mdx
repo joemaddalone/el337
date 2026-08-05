@@ -1,0 +1,35 @@
+---
+title: "Line Anchors"
+date: 2026-07-16
+tags: ["javascript", "regular expressions"]
+excerpt: "Line anchors let you match the beginning or end of a line, not just the beginning or end of the entire string."
+coverImage: "https://img.youtube.com/vi/sBMXXbPZVOs/maxresdefault.jpg"
+coverImageInPost: false
+courseOrder: 10
+---
+
+export const videoMetadata = {
+  name: "JavaScript Regular Expressions: Line Anchors",
+  description: "Line anchors let you match the beginning or end of a line, not just the beginning or end of the entire string.",
+  thumbnailUrl: "https://img.youtube.com/vi/qvQDzdowKD8/maxresdefault.jpg",
+  contentUrl: "https://youtu.be/qvQDzdowKD8",
+};
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: videoMetadata.name,
+  description: videoMetadata.description,
+  thumbnailUrl: videoMetadata.thumbnailUrl,
+  contentUrl: videoMetadata.contentUrl,
+  duration: videoMetadata.duration,
+})} />
+
+
+import { YouTube } from '@astro-community/astro-embed-youtube';
+
+<div class="py-6">
+<YouTube id="qvQDzdowKD8" />
+</div>
+
+Line anchors let you match the beginning or end of a line, not just the beginning or end of the entire string. This lesson covers the caret (^) and dollar sign ($) as line anchors, and the critical difference between matching a string's boundaries versus matching individual lines. You'll learn about the multi-line flag (m) that makes ^ and $ match at each line break, and build a pattern that matches lines starting with one value and ending with another.

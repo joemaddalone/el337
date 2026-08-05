@@ -1,0 +1,35 @@
+---
+title: "Plain text"
+date: 2026-07-16
+tags: ["javascript", "regular expressions"]
+excerpt: "Matching plain text with regular expressions is simpler than you think."
+coverImage: "https://img.youtube.com/vi/sBMXXbPZVOs/maxresdefault.jpg"
+coverImageInPost: false
+courseOrder: 2
+---
+
+export const videoMetadata = {
+  name: "JavaScript Regular Expressions: Plain Text",
+  description: "Matching plain text with regular expressions is simpler than you think.",
+  thumbnailUrl: "https://img.youtube.com/vi/sBMXXbPZVOs/maxresdefault.jpg",
+  contentUrl: "https://youtu.be/sBMXXbPZVOs",
+};
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: videoMetadata.name,
+  description: videoMetadata.description,
+  thumbnailUrl: videoMetadata.thumbnailUrl,
+  contentUrl: videoMetadata.contentUrl,
+  duration: videoMetadata.duration,
+})} />
+
+
+import { YouTube } from '@astro-community/astro-embed-youtube';
+
+<div class="py-6">
+<YouTube id="sBMXXbPZVOs" />
+</div>
+
+Matching plain text with regular expressions is simpler than you think. This lesson covers the building blocks: matching literal text, using the global flag to find all occurrences, and the dot (.) meta character for matching any single character. We also cover the dot-all flag (s flag) that lets the dot match line breaks, and how to escape meta characters when you need to match them literally.

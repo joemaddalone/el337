@@ -1,0 +1,35 @@
+---
+title: "Task Persistence"
+date: 2026-07-16
+tags: ["javascript", "regular expressions"]
+excerpt: "Stop losing complex project progress when your local AI session ends."
+coverImage: "https://img.youtube.com/vi/oZ6r1gBZjOg/maxresdefault.jpg"
+coverImageInPost: false
+courseOrder: 5
+---
+
+export const videoMetadata = {
+  name: "Build an Agent Loop in Typescript: Part 5, Task Persistence",
+  description: "Stop losing complex project progress when your local AI session ends.",
+  thumbnailUrl: "https://img.youtube.com/vi/oZ6r1gBZjOg/maxresdefault.jpg",
+  contentUrl: "https://youtu.be/oZ6r1gBZjOg",
+};
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: videoMetadata.name,
+  description: videoMetadata.description,
+  thumbnailUrl: videoMetadata.thumbnailUrl,
+  contentUrl: videoMetadata.contentUrl,
+  duration: videoMetadata.duration,
+})} />
+
+
+import { YouTube } from '@astro-community/astro-embed-youtube';
+
+<div class="py-6">
+<YouTube id="oZ6r1gBZjOg" />
+</div>
+
+Stop losing complex project progress when your local AI session ends. This tutorial builds a persistent, disk-based task manager for MLX on Apple Silicon Macs, enabling long-running, multi-step workflows that survive reboots and new sessions. Perfect for developers building local AI apps who need reliable dependency tracking without cloud reliance.

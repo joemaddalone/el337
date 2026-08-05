@@ -1,0 +1,63 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import { getAllCourseDefinitions, getCoursePosts } from "@/utils/getCourse";
+import { SITE } from "@/config";
+
+const courses = await getAllCourseDefinitions();
+
+const coursesWithMeta = await Promise.all(
+  courses.map(async (course) => {
+    const posts = await getCoursePosts(course.slug);
+    return { course, postCount: posts.length };
+  })
+);
+---
+
+<Layout
+  title={`Courses | ${SITE.title}`}
+  description="Multi-part series on software, tools, and ideas."
+>
+  <Header />
+  <main id="main-content" class="mx-auto w-full max-w-app px-4 pt-10 pb-16">
+    <div class="mb-10 border-b border-border/50 pb-6">
+      <h1 class="text-3xl font-bold text-accent sm:text-4xl">Courses</h1>
+      <p class="mt-3 max-w-2xl text-base text-foreground/70">
+        Multi-part series on software, tools, and ideas.
+      </p>
+    </div>
+
+    {
+      coursesWithMeta.length === 0 ? (
+        <p class="text-foreground/50">No courses yet.</p>
+      ) : (
+        <ul class="flex flex-col gap-4">
+          {coursesWithMeta.map(({ course, postCount }) => (
+            <li>
+              <a
+                href={`/courses/${course.slug}`}
+                class="group flex items-start justify-between gap-4 rounded-lg border border-border/40 bg-muted/20 px-5 py-5 transition-colors hover:border-accent/30 hover:bg-muted/50"
+              >
+                <div class="min-w-0">
+                  <h2 class="text-xl font-semibold decoration-dashed group-hover:underline group-hover:text-accent leading-snug">
+                    {course.title}
+                  </h2>
+                  {course.description && (
+                    <p class="mt-1.5 text-sm text-foreground/60 leading-relaxed">
+                      {course.description}
+                    </p>
+                  )}
+                </div>
+                <span class="mt-1 shrink-0 text-xs text-foreground/40 tabular-nums whitespace-nowrap">
+                  {postCount} {postCount === 1 ? "lesson" : "lessons"}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </main>
+  <Footer />
+</Layout>
