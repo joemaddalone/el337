@@ -35,3 +35,247 @@ import { YouTube } from '@astro-community/astro-embed-youtube';
 Let's add structured file tools — read_file, write_file, and edit_file — so the agent can understand and modify your codebase safely and predictably.
 
 Instead of blindly executing shell commands, we give it precise capabilities. The result is more reliable edits, better reasoning, and cleaner iterations.
+
+
+And the first thing we'll do is create a new file called `tools.ts` where we'll copy over our `runBash` function and `TOOLS` object from `index.ts`.
+
+```typescript title="tools.ts" 
+import { tool, zodSchema } from "ai";
+import {z} from "zod":
+import { spawnSync } from "node: child_process";
+
+/** CONSTANTS */
+const WORKDIR = process.cwd();
+const BLOCKED_COMMANDS = ["rm -rf /", "sudo", "shutdown", "reboot", "> /dev/"];
+
+/** TOOLS */
+const runBash = (command: string): string => {
+	if (BLOCKED_COMMANDS.some((c) => command.includes(c))) {
+		return "Error: Danger Will Robinson!!!";
+	}
+	try {
+		const result = spawnSync("sh", ["-c", command], {
+			cwd: WORKDIR,
+			encoding: "utf8",
+			timeout: 120000,
+		});
+		return (result.stdout + result.stderr).trim().slice(0, 50000) || "";
+	} catch (e) {
+		return `Error ${e}`;
+	}
+};
+
+export const TOOLS = { // <-- NOTE: we need to export
+	bash: tool({
+		description: "Run a shell command",
+		inputSchema: zodSchema(z.object({ command: z.string() })),
+		execute: async ({ command }: { command: string; }) => {
+			const output = runBash(command);
+			return output;
+		},
+	})
+};
+```
+
+Next we'll update our `index.ts` to utilize the new `tools.ts`.
+
+```typescript title="index.ts" del={4, 23-50, 15,7-8} ins={10, 5}
+#!/usr/bin/env bun
+
+import { createOpenAI } from "@ai-sdk/openai";
+import { generateText, isLoopFinished, tool, zodSchema } from "ai";
+import { generateText, isLoopFinished } from "ai";
+import type { ModelMessage } from "ai";
+import { z } from "zod";
+import { spawnSync } from "child_process";
+import * as readline from "readline";
+import { TOOLS } from './tools
+
+/** CONSTANTS */
+const WORKDIR = process.cwd();
+const MODEL = "qwen3.5:35b-a3b-coding-nvfp4";
+const BLOCKED_COMMANDS = ["rm -rf /", "sudo", "shutdown", "reboot", "> /dev/"];
+
+/** API */
+const ollama = createOpenAI({
+  baseURL: "http://localhost:11434/v1",
+  apiKey: "ollama",
+});
+
+/** TOOLS */
+const runBash = (command: string): string => {
+  if (BLOCKED_COMMANDS.some((c) => command.includes(c))) {
+    return "Error: Danger Will Robinson!!!";
+  }
+  try {
+    const result = spawnSync("sh", ["-c", command], {
+      cwd: WORKDIR,
+      encoding: "utf8",
+      timeout: 120000
+    });
+    return (result.stdout + result.stderr).trim().slice(0, 50000) || "";
+
+  } catch (e) {
+    return `Error ${e}`;
+  }
+};
+
+const TOOLS = {
+  bash: tool({
+    description: "Run a shell command",
+    inputSchema: zodSchema(z.object({ command: z.string() })),
+    execute: async ({ command }: { command: string; }) => {
+      const output = runBash(command);
+      return output;
+    }
+  })
+};
+
+...
+
+prompt();
+```
+
+Let's double check that the agent loop still functions.
+
+```bash
+bun run index.ts
+input >> what is 2+2?
+4
+```
+
+Excellent, it's still working.  Now lets create our specific file tools for reading, writing, and editing files.
+
+```typescript title="tools.ts" ins={9-15, 34-67, 78-103} 
+import { tool, zodSchema } from "ai";
+import {z} from "zod":
+import { spawnSync } from "node: child_process";
+
+/** CONSTANTS */
+const WORKDIR = process.cwd();
+const BLOCKED_COMMANDS = ["rm -rf /", "sudo", "shutdown", "reboot", "> /dev/"];
+
+const safePath = (p: string) => {
+	const resolved = path.resolve(WORKDIR, p);
+	if (!resolved.startsWith(WORKDIR)) {
+		throw new Error(`Path is not in ${WORKDIR}`);
+	}
+	return resolved;
+};
+
+/** TOOLS */
+const runBash = (command: string): string => {
+	if (BLOCKED_COMMANDS.some((c) => command.includes(c))) {
+		return "Error: Danger Will Robinson!!!";
+	}
+	try {
+		const result = spawnSync("sh", ["-c", command], {
+			cwd: WORKDIR,
+			encoding: "utf8",
+			timeout: 120000,
+		});
+		return (result.stdout + result.stderr).trim().slice(0, 50000) || "";
+	} catch (e) {
+		return `Error ${e}`;
+	}
+};
+
+const runRead = (filePath: string, limit?: number) => {
+	try {
+		const fp = safePath(filePath);
+		const lines = fs.readFileSync(fp, "utf8").split("\n");
+		return (limit ? lines.slice(0, limit) : lines).join("\n").slice(0, 50000);
+	} catch (e) {
+		return `Error ${e}`;
+	}
+};
+
+const runWrite = (filePath: string, content: string) => {
+	try {
+		const fp = safePath(filePath);
+		fs.mkdirSync(path.dirname(fp), { recursive: true });
+		fs.writeFileSync(fp, content);
+		return `Wrote the file: ${fp}`;
+	} catch (e) {
+		return `Error ${e}`;
+	}
+};
+
+const runEdit = (filePath: string, oldText: string, newText: string) => {
+	try {
+		const fp = safePath(filePath);
+		const content = fs.readFileSync(fp, "utf8");
+		if (!content.includes(oldText)) {
+			return `Error: ${oldText} not found in ${fp}`;
+		}
+		fs.writeFileSync(fp, content.replaceAll(oldText, newText));
+		return `Edited the file: ${fp}`;
+	} catch (e) {
+		return `Error ${e}`;
+	}
+};
+
+export const TOOLS = { // <-- NOTE: we need to export
+	bash: tool({
+		description: "Run a shell command",
+		inputSchema: zodSchema(z.object({ command: z.string() })),
+		execute: async ({ command }: { command: string; }) => {
+			const output = runBash(command);
+			return output;
+		},
+	}),
+	read_file: tool({
+		description: "Read a file",
+		inputSchema: zodSchema(
+			z.object({ filePath: z.string(), limit: z.number().optional() }),
+		),
+		execute: async ({ filePath, limit }) => runRead(filePath, limit),
+	}),
+	edit_file: tool({
+		description: "Edit a file",
+		inputSchema: zodSchema(
+			z.object({
+				filePath: z.string(),
+				oldText: z.string(),
+				newText: z.string(),
+			}),
+		),
+		execute: async ({ filePath, oldText, newText }) =>
+			runEdit(filePath, oldText, newText),
+	}),
+	write_file: tool({
+		description: "Write a file",
+		inputSchema: zodSchema(
+			z.object({ filePath: z.string(), content: z.string() }),
+		),
+		execute: async ({ filePath, content }) => runWrite(filePath, content),
+	}),
+};
+```
+
+Now let's make a small change to our agent loop in `index.ts`.  We'll update the system prompt tu `use tools` instead of `use bash`.
+
+```typescript title="index.ts" del={4} ins={5}
+const agentLoop = async (messages: ModelMessage[]): Promise<string> => {
+  const { text } = await generateText({
+    model: ollama.chat(MODEL),
+    system: `You are a coding agent at ${WORKDIR}. Use bash to solve tasks.  Act, dont explain.`,
+    system: `You are a coding agent at ${WORKDIR}. Use bash to tools tasks.  Act, dont explain.`,
+    messages,
+    tools: TOOLS,
+    stopWhen: isLoopFinished(),
+  });
+  return text;
+};
+});
+```
+
+Now go ahead and try the agent.
+
+```bash
+→
+bun run index.ts
+input » Create a file called greet.ts with a greet(name: string) function
+input » Edit greet.ts to add a JSdoc comment to the function
+input » Read greet.ts to verify the edit worked
+```

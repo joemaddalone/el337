@@ -101,7 +101,7 @@ const TOOLS = {
 const agentLoop = async (messages: ModelMessage[]): Promise<string> => {
   const { text } = await generateText({
     model: ollama.chat(MODEL),
-    system: `You are a coding agents at ${WORKDIR}. Use bash to solve tasks.  Act, dont explain.`,
+    system: `You are a coding agent at ${WORKDIR}. Use bash to solve tasks.  Act, dont explain.`,
     messages,
     tools: TOOLS,
     stopWhen: isLoopFinished(),
