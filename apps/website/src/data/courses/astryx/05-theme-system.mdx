@@ -1,0 +1,129 @@
+---
+title: "Theme System & Design Tokens"
+date: 2026-08-06
+tags: ["astryx", "theming", "design tokens"]
+excerpt: "Understand the design token scale, semantic colors, elevation shadows, and status variants in Astryx."
+courseOrder: 5
+---
+
+Astryx utilizes a comprehensive CSS custom properties (tokens) engine for colors, elevation, radii, and spatial gaps. In this lesson, we break down token categories and semantic variant mappings.
+
+## Token Categories
+
+### 1. Spacing Scale
+
+Astryx provides a 4px-based spacing scale via CSS variables:
+
+- `var(--spacing-1)` = `4px`
+- `var(--spacing-2)` = `8px`
+- `var(--spacing-3)` = `12px`
+- `var(--spacing-4)` = `16px`
+- `var(--spacing-10)` = `40px`
+
+### 2. Shadows & Elevation
+
+Use elevation shadows to communicate hierarchy and interactive drag states:
+
+- `var(--shadow-low)`: Subtle card resting state.
+- `var(--shadow-med)`: Card hover state.
+- `var(--shadow-high)`: Floating drag overlay element state.
+
+`Card` and `Button` also expose an `elevation` prop (`'none' | 'low' | 'med' | 'high'`) that maps to these same tokens — the idiomatic shortcut. Later lessons use `xstyle` with the raw `--shadow-*` variables to teach the override mechanism, but whenever a built-in prop exists, prefer it.
+
+### 3. Container Radii
+
+- `var(--radius-container)`: Standard container border radius.
+
+### 4. Background Colors
+
+- `var(--color-background-muted)`: Used for empty column shells and drop placeholder slots.
+
+## Semantic Variants
+
+Astryx components like `StatusDot` and `Badge` accept semantic variant props:
+
+| Variant | Purpose | Kanban Board Use Case |
+| :--- | :--- | :--- |
+| `neutral` | Baseline / default state | To-do column, Task reference ID |
+| `accent` | In-progress / primary action | In-progress column status |
+| `warning` | Needs attention / review | In-review column status, Medium priority |
+| `success` | Completed / resolved state | Done column status |
+| `error` | High urgency / blocker | High priority tasks |
+| `teal` | Low urgency / info | Low priority tasks |
+
+> **Variant vocabularies overlap but differ**: `accent` is a `StatusDot` variant. The accent-colored badge variant is named `info` (it uses the same `--color-accent` token), so a badge equivalent of the "In progress" dot is `<Badge variant="info" />`.
+
+### Example: Status Dot & Badge Mapping
+
+```tsx title="StatusExample.tsx"
+import { StatusDot } from '@astryxdesign/core/StatusDot';
+import { Badge } from '@astryxdesign/core/Badge';
+import { HStack } from '@astryxdesign/core/Layout';
+
+export function StatusExample() {
+  return (
+    <HStack gap={2} vAlign="center">
+      <StatusDot variant="accent" label="In progress status" />
+      <Badge label="High Priority" variant="error" />
+      <Badge label="Low Priority" variant="teal" />
+    </HStack>
+  );
+}
+```
+
+---
+
+`StatusExample.tsx` above is **reference only** — you don't need to save it. The page below is what actually runs.
+
+## See It in Action
+
+Update `src/app/page.tsx` to preview all semantic variants and status tokens in your browser:
+
+```tsx title="src/app/page.tsx"
+'use client';
+
+import { Card } from '@astryxdesign/core/Card';
+import { Heading } from '@astryxdesign/core/Text';
+import { VStack, HStack } from '@astryxdesign/core/Layout';
+import { StatusDot } from '@astryxdesign/core/StatusDot';
+import { Badge } from '@astryxdesign/core/Badge';
+
+export default function Page() {
+  return (
+    <Card padding={4}>
+      <VStack gap={4}>
+        <Heading level={3}>Astryx Semantic Tokens Matrix</Heading>
+        
+        <HStack gap={3} vAlign="center" wrap="wrap">
+          <StatusDot variant="neutral" label="Neutral" />
+          <Badge label="To-do (Neutral)" variant="neutral" />
+        </HStack>
+
+        <HStack gap={3} vAlign="center" wrap="wrap">
+          <StatusDot variant="accent" label="Accent" />
+          <Badge label="In Progress (Info)" variant="info" />
+        </HStack>
+
+        <HStack gap={3} vAlign="center" wrap="wrap">
+          <StatusDot variant="warning" label="Warning" />
+          <Badge label="In Review / Medium (Warning)" variant="warning" />
+        </HStack>
+
+        <HStack gap={3} vAlign="center" wrap="wrap">
+          <StatusDot variant="success" label="Success" />
+          <Badge label="Done (Success)" variant="success" />
+        </HStack>
+
+        <HStack gap={3} vAlign="center" wrap="wrap">
+          <Badge label="High Priority (Error)" variant="error" />
+          <Badge label="Low Priority (Teal)" variant="teal" />
+        </HStack>
+      </VStack>
+    </Card>
+  );
+}
+```
+
+Run `npm run dev` and open `http://localhost:3000` to inspect semantic status variants live.
+
+Now that we have covered Astryx fundamentals in Module 1, Module 2 will focus on constructing our production Kanban application across modular components!

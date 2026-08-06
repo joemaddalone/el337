@@ -1,0 +1,141 @@
+---
+title: "Interactive Cards & the xstyle Prop"
+date: 2026-08-06
+tags: ["astryx", "components", "stylex"]
+excerpt: "Wrap work items in interactive Card elements with custom StyleX elevation and pointer listeners."
+courseOrder: 8
+---
+
+In this lesson, we create our centralized application stylesheet (`styles.ts`) and construct `BoardCard.tsx`—the interactive wrapper that applies custom hover elevation through the `xstyle` prop and forwards pointer press events.
+
+**Astryx this lesson:** `Card` deep-dive — the `xstyle` prop for safe style overrides, StyleX pseudo-classes (`:hover`), and how `Card` forwards its DOM node and `onPointerDown` for custom interactions.
+
+## 1. Centralized Application Stylesheet (`styles.ts`)
+
+Create `styles.ts` to manage StyleX rules across all Kanban components:
+
+```typescript title="src/app/styles.ts"
+import * as stylex from '@stylexjs/stylex';
+import { COLUMN_WIDTH } from './data';
+
+export const styles = stylex.create({
+  boardColumns: {
+    overflowX: 'auto',
+    overflowY: 'hidden',
+    height: '100%',
+    padding: 'var(--spacing-4)',
+  },
+  columnShell: {
+    flexShrink: 0,
+    flexBasis: COLUMN_WIDTH,
+    height: '100%',
+  },
+  card: {
+    cursor: 'grab',
+    userSelect: 'none',
+    touchAction: 'none',
+    transition: 'box-shadow 120ms ease',
+    ':hover': {
+      boxShadow: 'var(--shadow-med)',
+    },
+  },
+  floating: {
+    position: 'fixed',
+    insetBlockStart: 0,
+    insetInlineStart: 0,
+    pointerEvents: 'none',
+    cursor: 'grabbing',
+    boxShadow: 'var(--shadow-high)',
+    zIndex: 1000,
+  },
+  floatingAt: (x: number, y: number, width: number) => ({
+    width,
+    transform: `translate(${x}px, ${y}px)`,
+  }),
+  ghost: (height: number) => ({
+    height,
+    borderRadius: 'var(--radius-container)',
+    backgroundColor: 'var(--color-background-muted)',
+  }),
+  toolbarDivider: {
+    height: 'auto',
+    marginBlock: 'var(--spacing-1)',
+    alignSelf: 'stretch',
+  },
+  columnEmptyState: {
+    paddingBlock: 'var(--spacing-10)',
+  },
+});
+```
+
+## 2. Interactive Card Component (`BoardCard.tsx`)
+
+`BoardCard` wraps `BoardCardBody` with an Astryx `Card` container. It binds `onPointerDown` to initiate drags and forwards its underlying DOM element via `cardRef`.
+
+Create `BoardCard.tsx`:
+
+```tsx title="src/app/BoardCard.tsx"
+import type { PointerEvent as ReactPointerEvent } from 'react';
+import { Card } from '@astryxdesign/core/Card';
+import { BoardCardBody } from './BoardCardBody';
+import { styles } from './styles';
+import type { ColumnId, WorkItem } from './types';
+
+interface BoardCardProps {
+  item: WorkItem;
+  cardRef: (el: HTMLDivElement | null) => void;
+  onPointerDown: (e: ReactPointerEvent, id: string) => void;
+  onMove: (id: string, to: ColumnId) => void;
+}
+
+export function BoardCard({
+  item,
+  cardRef,
+  onPointerDown,
+  onMove,
+}: BoardCardProps) {
+  return (
+    <Card
+      ref={cardRef}
+      padding={3}
+      xstyle={styles.card}
+      onPointerDown={e => onPointerDown(e, item.id)}>
+      <BoardCardBody item={item} onMove={onMove} />
+    </Card>
+  );
+}
+```
+
+---
+
+## See It in Action
+
+Update `src/app/page.tsx` to test interactive task cards in your browser. Keep `styles.ts` (above) and `BoardCardBody.tsx` (lesson 7) in `src/app/`:
+
+```tsx title="src/app/page.tsx"
+'use client';
+
+import { VStack } from '@astryxdesign/core/Layout';
+import { BoardCard } from './BoardCard';
+import { INITIAL_ITEMS } from './data';
+
+export default function Page() {
+  return (
+    <VStack gap={3} padding={4} width={320}>
+      {INITIAL_ITEMS.slice(0, 2).map(item => (
+        <BoardCard
+          key={item.id}
+          item={item}
+          cardRef={el => console.log('Card registered DOM element:', el)}
+          onPointerDown={(e, id) => console.log('Pointer down on card:', id)}
+          onMove={(id, to) => alert(`Moved ${id} to ${to}`)}
+        />
+      ))}
+    </VStack>
+  );
+}
+```
+
+Run `npm run dev` and open `http://localhost:3000` to test card hover elevation and pointer press triggers live.
+
+In the next lesson, we will build the column container shell with Astryx headers, counts, and empty states.

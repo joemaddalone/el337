@@ -1,0 +1,139 @@
+---
+title: "Application Toolbars with Selector & IconButton"
+date: 2026-08-06
+tags: ["astryx", "toolbar", "components"]
+excerpt: "Build the top application control toolbar using Astryx Toolbar, Selector, Divider, IconButton, and Button."
+courseOrder: 10
+---
+
+In this lesson, we build `BoardToolbar.tsx`—the top application bar containing board headers, metrics, sprint controls, action buttons, and primary actions.
+
+**Astryx this lesson:** `Toolbar`, `Heading`, `Badge`, `Selector`, `Divider` (vertical), `IconButton`, `Icon`, `Button`. Concepts: application action bars, single-select dropdowns, divider separation, and primary action buttons.
+
+## Toolbar Components
+
+- **`Toolbar`**: Container providing flex layout slotting via `startContent` and `endContent`.
+- **`Selector`**: Single-select dropdown control for switching active sprints.
+- **`Divider`**: Vertical divider (`orientation="vertical"`) with custom height styling.
+- **`IconButton` & `Icon`**: Icon-only action triggers for sorting, filtering, and searching.
+- **`Button`**: Primary CTA button with an integrated leading icon.
+
+## Implementation: `BoardToolbar.tsx`
+
+Create `BoardToolbar.tsx`:
+
+```tsx title="src/app/BoardToolbar.tsx"
+import { Toolbar } from '@astryxdesign/core/Toolbar';
+import { Heading } from '@astryxdesign/core/Text';
+import { Badge } from '@astryxdesign/core/Badge';
+import { Selector } from '@astryxdesign/core/Selector';
+import { Divider } from '@astryxdesign/core/Divider';
+import { IconButton } from '@astryxdesign/core/IconButton';
+import { Button } from '@astryxdesign/core/Button';
+import { Icon } from '@astryxdesign/core/Icon';
+import { HStack } from '@astryxdesign/core/Layout';
+import {
+  ArrowsUpDownIcon,
+  FunnelIcon,
+  MagnifyingGlassIcon,
+  PlusIcon,
+} from '@heroicons/react/24/outline';
+import { styles } from './styles';
+
+interface BoardToolbarProps {
+  totalTasks: number;
+  sprint: string;
+  onSprintChange: (sprint: string) => void;
+}
+
+export function BoardToolbar({
+  totalTasks,
+  sprint,
+  onSprintChange,
+}: BoardToolbarProps) {
+  return (
+    <Toolbar
+      label="Board actions"
+      gap={2}
+      startContent={
+        <>
+          <Heading level={3}>Sprint Board</Heading>
+          <Badge label={totalTasks} variant="neutral" />
+        </>
+      }
+      endContent={
+        <HStack gap={2}>
+          <Selector
+            label="Sprint"
+            width={200}
+            isLabelHidden
+            value={sprint}
+            onChange={onSprintChange}
+            options={[
+              { value: '003', label: 'Sprint 003' },
+              { value: '002', label: 'Sprint 002' },
+              { value: '001', label: 'Sprint 001' },
+            ]}
+          />
+          <Divider
+            variant="strong"
+            orientation="vertical"
+            xstyle={styles.toolbarDivider}
+          />
+          <HStack gap={1} vAlign="center">
+            <IconButton
+              icon={<Icon icon={ArrowsUpDownIcon} size="sm" />}
+              label="Sort"
+            />
+            <IconButton
+              icon={<Icon icon={FunnelIcon} size="sm" />}
+              label="Filter"
+            />
+            <IconButton
+              icon={<Icon icon={MagnifyingGlassIcon} size="sm" />}
+              label="Search"
+            />
+          </HStack>
+          <Button
+            label="Add task"
+            variant="primary"
+            icon={<Icon icon={PlusIcon} size="sm" />}
+          />
+        </HStack>
+      }
+    />
+  );
+}
+```
+
+---
+
+## See It in Action
+
+Update `src/app/page.tsx` to preview the top action toolbar in your browser. Keep `BoardToolbar.tsx` (above) and `styles.ts` (lesson 8) in `src/app/`:
+
+```tsx title="src/app/page.tsx"
+'use client';
+
+import { useState } from 'react';
+import { Card } from '@astryxdesign/core/Card';
+import { BoardToolbar } from './BoardToolbar';
+
+export default function Page() {
+  const [sprint, setSprint] = useState('003');
+
+  return (
+    <Card padding={4}>
+      <BoardToolbar
+        totalTasks={7}
+        sprint={sprint}
+        onSprintChange={setSprint}
+      />
+    </Card>
+  );
+}
+```
+
+Run `npm run dev` and open `http://localhost:3000` to interact with the sprint selector, icon buttons, and action toolbar live.
+
+In the next lesson, we will extract the pointer interaction engine into a custom React hook: `useKanbanDrag`.

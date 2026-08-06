@@ -1,0 +1,114 @@
+---
+title: "Introduction, Setup & Architecture"
+date: 2026-08-06
+tags: ["astryx", "react", "nextjs"]
+excerpt: "Get started with Astryx: installation, Next.js setup, CSS layer imports, and client provider configuration."
+courseOrder: 1
+---
+
+Welcome to **Mastering Astryx**! Astryx is a modern, open-source design system built on top of StyleX. It combines zero-runtime performance with a fully customizable, type-safe suite of React primitives.
+
+In this introductory lesson, we will set up an Astryx project using Next.js, configure CSS import layers, and wrap our application in the client provider boundaries.
+
+## Why Next.js + Astryx?
+
+Astryx ships with pre-compiled CSS and JS bundles, allowing you to consume `@astryxdesign/core` seamlessly in Next.js applications without setting up custom StyleX compiler plugins on day 1.
+
+Key highlights include:
+- **Zero-Config CSS**: Pre-compiled CSS layer imports handle resets, component bases, and theme variables.
+- **Client Boundaries**: Full compatibility with Next.js App Router using `'use client'` provider boundaries.
+- **Composable Primitives**: Structural elements like `HStack`, `VStack`, and `Layout` streamline spatial arrangement.
+
+## Setup Steps
+
+### 1. Initialize Next.js Application
+
+First, create a new Next.js project using `create-next-app` with TypeScript and the App Router enabled:
+
+```bash
+npx create-next-app@latest my-astryx-app --typescript --app --src-dir --no-tailwind --no-eslint
+cd my-astryx-app
+```
+
+### 2. Install Dependencies
+
+Install `@astryxdesign/core`, `@astryxdesign/theme-neutral`, `@heroicons/react`, and `@stylexjs/stylex`:
+
+```bash
+npm install @astryxdesign/core @astryxdesign/theme-neutral @heroicons/react @stylexjs/stylex
+```
+
+### 3. Configure CSS Layer Imports
+
+Open the generated `src/app/globals.css` file and replace its contents with the reset, component base styles, and theme variables in the exact required order:
+
+```css title="src/app/globals.css"
+@import '@astryxdesign/core/reset.css';
+@import '@astryxdesign/core/astryx.css';
+@import '@astryxdesign/theme-neutral/theme.css';
+```
+
+The CSS import order is critical for CSS layer precedence:
+1. `reset.css`: Baseline resets (`@layer reset`)
+2. `astryx.css`: All component styles (`@layer astryx-base`)
+3. `theme.css`: Theme token overrides (`@layer astryx-theme`)
+
+Import `globals.css` inside your root layout:
+
+```tsx title="src/app/layout.tsx"
+import './globals.css';
+import { Providers } from './providers';
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body>
+        <Providers>{children}</Providers>
+      </body>
+    </html>
+  );
+}
+```
+
+### 4. Create Client Providers Boundary
+
+Because interactive components and themes run on the client side in Next.js App Router, create a `providers.tsx` component marked with `'use client'`:
+
+```tsx title="src/app/providers.tsx"
+'use client';
+
+import type { ReactNode } from 'react';
+
+export function Providers({ children }: { children: ReactNode }) {
+  return <>{children}</>;
+}
+```
+
+### 5. Verification: Rendering Your First Component
+
+Test your setup by importing Astryx primitives in a page component:
+
+```tsx title="src/app/page.tsx"
+'use client';
+
+import { Card } from '@astryxdesign/core/Card';
+import { Heading, Text } from '@astryxdesign/core/Text';
+
+export default function HomePage() {
+  return (
+    <Card padding={4}>
+      <Heading level={2}>Hello Astryx</Heading>
+      <Text color="secondary">Welcome to the design system.</Text>
+    </Card>
+  );
+}
+```
+
+Open `http://localhost:3000` — you should see a card titled **Hello Astryx** with supporting secondary text. If it renders with correct spacing, typography, and shadows, your Astryx baseline is live and demo-able.
+
+In the next lesson, we will explore Astryx's spatial layout engine primitives.
+

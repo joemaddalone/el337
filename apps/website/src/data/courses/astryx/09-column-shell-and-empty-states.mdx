@@ -1,0 +1,158 @@
+---
+title: "Column Shells with StatusDot, Tooltip & EmptyState"
+date: 2026-08-06
+tags: ["astryx", "components", "layout"]
+excerpt: "Build column shells with status dots, tooltips, tabular task counters, and compact empty state fallbacks."
+courseOrder: 9
+---
+
+In this lesson, we create `BoardColumn.tsx`—the container component for board columns. Each column utilizes a muted Astryx `Card` shell hosting an internal full-height `Layout`.
+
+**Astryx this lesson:** `Card` (muted variant), nested `Layout`/`LayoutHeader`/`LayoutContent`, `StatusDot`, `Heading`, `Tooltip`, `Icon`, `Text`, `EmptyState`. Concepts: status dots, tooltip overlays, tabular counters (`hasTabularNumbers`), and compact empty states.
+
+## Component Design
+
+1. **Header**:
+   - `StatusDot`: Visual variant indicator (`neutral`, `accent`, `warning`, `success`).
+   - `Heading level={4}`: Column title.
+   - `Tooltip` & `Icon`: Informational tooltip describing column purpose.
+   - `Text hasTabularNumbers`: Live item counter.
+2. **Content Area**:
+   - Scrollable container hosting task cards or a compact `EmptyState` fallback when no items are present.
+
+## Implementation: `BoardColumn.tsx`
+
+Create `BoardColumn.tsx`:
+
+```tsx title="src/app/BoardColumn.tsx"
+import type { ReactNode } from 'react';
+import { Card } from '@astryxdesign/core/Card';
+import { Layout, LayoutHeader, LayoutContent, HStack } from '@astryxdesign/core/Layout';
+import { StatusDot } from '@astryxdesign/core/StatusDot';
+import { Heading, Text } from '@astryxdesign/core/Text';
+import { Tooltip } from '@astryxdesign/core/Tooltip';
+import { Icon } from '@astryxdesign/core/Icon';
+import { EmptyState } from '@astryxdesign/core/EmptyState';
+import { InformationCircleIcon } from '@heroicons/react/24/outline';
+import { styles } from './styles';
+import type { ColumnMeta } from './types';
+
+interface BoardColumnProps {
+  meta: ColumnMeta;
+  count: number;
+  contentRef: (el: HTMLDivElement | null) => void;
+  children: ReactNode;
+}
+
+export function BoardColumn({
+  meta,
+  count,
+  contentRef,
+  children,
+}: BoardColumnProps) {
+  return (
+    <Card variant="muted" padding={0} xstyle={styles.columnShell}>
+      <Layout
+        height="fill"
+        header={
+          <LayoutHeader hasDivider padding={3}>
+            <HStack hAlign="between" vAlign="center">
+              <HStack gap={2} vAlign="center">
+                <StatusDot
+                  variant={meta.variant}
+                  label={`${meta.title} status`}
+                />
+                <Heading level={4}>{meta.title}</Heading>
+                <Tooltip content={meta.tooltip}>
+                  <Icon
+                    icon={InformationCircleIcon}
+                    size="sm"
+                    color="secondary"
+                  />
+                </Tooltip>
+              </HStack>
+              <Text type="supporting" color="secondary" hasTabularNumbers>
+                {count}
+              </Text>
+            </HStack>
+          </LayoutHeader>
+        }
+        content={
+          <LayoutContent ref={contentRef} padding={2}>
+            {children ?? (
+              <EmptyState
+                isCompact
+                xstyle={styles.columnEmptyState}
+                icon={
+                  <Icon icon={meta.emptyIcon} size="lg" color="secondary" />
+                }
+                title={meta.emptyTitle}
+                description={meta.emptyDescription}
+              />
+            )}
+          </LayoutContent>
+        }
+      />
+    </Card>
+  );
+}
+```
+
+---
+
+## See It in Action
+
+Update `src/app/page.tsx` to view columns with tasks and empty state fallbacks in your browser. Keep `BoardColumn.tsx` (above), `BoardCard.tsx` + `styles.ts` (lesson 8), and `data.ts` + `types.ts` (lesson 6) in `src/app/`:
+
+```tsx title="src/app/page.tsx"
+'use client';
+
+import { HStack } from '@astryxdesign/core/Layout';
+import { Section } from '@astryxdesign/core/Section';
+import { BoardColumn } from './BoardColumn';
+import { BoardCard } from './BoardCard';
+import { COLUMNS, INITIAL_ITEMS } from './data';
+import { styles } from './styles';
+
+export default function Page() {
+  const todoCol = COLUMNS[0];
+  const inReviewCol = COLUMNS[2];
+  const todoItems = INITIAL_ITEMS.filter(it => it.column === 'todo');
+
+  return (
+    <Section height="100dvh" padding={4}>
+      <HStack gap={4} xstyle={styles.boardColumns}>
+        {/* Populated Column */}
+        <BoardColumn
+          meta={todoCol}
+          count={todoItems.length}
+          contentRef={el => {}}
+        >
+          {todoItems.map(item => (
+            <BoardCard
+              key={item.id}
+              item={item}
+              cardRef={() => {}}
+              onPointerDown={() => {}}
+              onMove={() => {}}
+            />
+          ))}
+        </BoardColumn>
+
+        {/* Empty Column */}
+        <BoardColumn
+          meta={inReviewCol}
+          count={0}
+          contentRef={el => {}}
+        >
+          {null}
+        </BoardColumn>
+      </HStack>
+    </Section>
+  );
+}
+```
+
+Run `npm run dev` and open `http://localhost:3000` to preview populated column shells and compact empty states live.
+
+In the next lesson, we will construct the top application action toolbar (`BoardToolbar.tsx`).

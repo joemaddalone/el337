@@ -1,0 +1,135 @@
+---
+title: "Styling Components & StyleX Integration"
+date: 2026-08-06
+tags: ["astryx", "stylex", "css"]
+excerpt: "Learn how Astryx leverages StyleX for zero-runtime CSS-in-JS and custom component overrides via xstyle."
+courseOrder: 4
+---
+
+Astryx relies on Meta's **StyleX** (`@stylexjs/stylex`) for styling. StyleX compiles styles down to atomic, collision-free CSS classes at build time.
+
+In this lesson, we will explore how to create custom stylesheets using `stylex.create`, apply pseudo-classes, write dynamic style functions, and pass style overrides to Astryx components using the `xstyle` prop.
+
+## Defining Styles with `stylex.create`
+
+Use `stylex.create` to define type-safe style rules:
+
+```tsx title="src/app/styles.ts"
+import * as stylex from '@stylexjs/stylex';
+
+export const styles = stylex.create({
+  boardColumns: {
+    overflowX: 'auto',
+    overflowY: 'hidden',
+    height: '100%',
+    padding: 'var(--spacing-4)',
+  },
+  columnShell: {
+    flexShrink: 0,
+    flexBasis: 300,
+    height: '100%',
+  },
+  card: {
+    cursor: 'grab',
+    userSelect: 'none',
+    touchAction: 'none',
+    transition: 'box-shadow 120ms ease',
+    ':hover': {
+      boxShadow: 'var(--shadow-med)',
+    },
+  },
+});
+```
+
+> **Note**: This stylesheet seeds the Kanban app's centralized styles — lesson 8 recreates the same `src/app/styles.ts` for the modular board (identical content, no conflict).
+
+## The `xstyle` Prop
+
+Every core Astryx component accepts an `xstyle` prop. This allows you to apply custom StyleX rules directly onto Astryx elements without breaking their design system encapsulations.
+
+```tsx title="src/app/CustomCard.tsx"
+import { Card } from '@astryxdesign/core/Card';
+import { styles } from './styles';
+
+export function CustomCard({ children }: { children: React.ReactNode }) {
+  return (
+    <Card padding={3} xstyle={styles.card}>
+      {children}
+    </Card>
+  );
+}
+```
+
+### Passing Array of Styles
+
+You can pass multiple StyleX objects or dynamic outputs in an array:
+
+```tsx
+<Card xstyle={[styles.floating, styles.floatingAt(x, y, width)]}>
+  {children}
+</Card>
+```
+
+## Dynamic Style Functions in StyleX
+
+StyleX allows functions that receive runtime arguments and return style objects. This is useful for positioning overlays, drag feedback, or dynamic dimensions.
+
+```tsx title="src/app/DynamicStyles.ts"
+import * as stylex from '@stylexjs/stylex';
+
+export const styles = stylex.create({
+  // Dynamic floating element position
+  floatingAt: (x: number, y: number, width: number) => ({
+    width,
+    transform: `translate(${x}px, ${y}px)`,
+  }),
+
+  // Dynamic ghost container height matching target slot
+  ghost: (height: number) => ({
+    height,
+    borderRadius: 'var(--radius-container)',
+    backgroundColor: 'var(--color-background-muted)',
+  }),
+});
+```
+
+### Usage in Components
+
+```tsx
+// Applying dynamic ghost slot
+<VStack xstyle={styles.ghost(120)} />
+```
+
+---
+
+## See It in Action
+
+Update `src/app/page.tsx` to view custom StyleX overrides in your browser. Keep `styles.ts`, `CustomCard.tsx`, and `DynamicStyles.ts` from the examples above in `src/app/`:
+
+```tsx title="src/app/page.tsx"
+'use client';
+
+import { Card } from '@astryxdesign/core/Card';
+import { Heading, Text } from '@astryxdesign/core/Text';
+import { VStack } from '@astryxdesign/core/Layout';
+import { CustomCard } from './CustomCard';
+import { styles } from './DynamicStyles';
+
+export default function Page() {
+  return (
+    <VStack gap={4} padding={4}>
+      <CustomCard>
+        <Heading level={4}>Hover Over Me</Heading>
+        <Text color="secondary">This card uses xstyle to apply elevation on hover.</Text>
+      </CustomCard>
+
+      <Heading level={4}>Dynamic StyleX Ghost Slot (Height 100px):</Heading>
+      <VStack xstyle={styles.ghost(100)} />
+    </VStack>
+  );
+}
+```
+
+Run `npm run dev` and open `http://localhost:3000` to test hover shadows and dynamic StyleX slots live.
+
+In the next lesson, we will examine the Astryx theme system and design tokens.

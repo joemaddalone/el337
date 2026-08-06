@@ -1,0 +1,235 @@
+---
+title: "Data Modeling with Astryx Icons & Semantic Variants"
+date: 2026-08-06
+tags: ["astryx", "typescript", "kanban"]
+excerpt: "Define the TypeScript domain models, column metadata, priority mappings, and initial state for our modular Kanban app."
+courseOrder: 6
+---
+
+Starting with this lesson, we begin building our modular Kanban application. In this step, we establish our TypeScript contracts, data models, column metadata configurations, and initial state objects.
+
+**Astryx this lesson:** Heroicons integration (`InboxIcon`, `ArrowPathIcon`, `ClipboardDocumentCheckIcon`, `CheckCircleIcon`), the semantic variant vocabulary (`neutral`/`accent`/`warning`/`success` for columns, `error`/`warning`/`teal` for priorities) that flows straight into `StatusDot` and `Badge`, and design-system-aware data modeling.
+
+We will create two modular files inside `src/app/` (next to `page.tsx`):
+1. `types.ts`: TypeScript interfaces and type aliases.
+2. `data.ts`: Data arrays, column configurations, and constants.
+
+Every Kanban module file from this lesson through lesson 13 lives in `src/app/`, right next to `page.tsx` — that keeps the demo imports (`./data`, `./BoardCard`, …) working exactly as shown.
+
+## 1. Domain Types (`types.ts`)
+
+Create `types.ts` to define the domain contracts for tasks, columns, priorities, and drag states:
+
+```typescript title="src/app/types.ts"
+import type { ComponentType } from 'react';
+
+export type ColumnId = 'todo' | 'in-progress' | 'in-review' | 'done';
+export type Priority = 'high' | 'medium' | 'low';
+
+export interface WorkItem {
+  id: string;
+  column: ColumnId;
+  ref: string;
+  priority: Priority;
+  title: string;
+  description: string;
+  lastEdited: string;
+  dueDate: string;
+}
+
+export interface ColumnMeta {
+  id: ColumnId;
+  title: string;
+  variant: 'neutral' | 'accent' | 'warning' | 'success';
+  tooltip: string;
+  emptyTitle: string;
+  emptyDescription: string;
+  emptyIcon: ComponentType<{ className?: string }>;
+}
+
+export interface DropTarget {
+  column: ColumnId;
+  index: number;
+}
+
+export interface DragState {
+  id: string;
+  width: number;
+  height: number;
+  offsetX: number;
+  offsetY: number;
+  pointerX: number;
+  pointerY: number;
+  target: DropTarget | null;
+}
+```
+
+## 2. Columns Metadata & Initial Data (`data.ts`)
+
+Create `data.ts` to export static configuration metadata and sample data:
+
+```typescript title="src/app/data.ts"
+import {
+  ArrowPathIcon,
+  CheckCircleIcon,
+  ClipboardDocumentCheckIcon,
+  InboxIcon,
+} from '@heroicons/react/24/outline';
+import type { ColumnMeta, Priority, WorkItem } from './types';
+
+export const DRAG_THRESHOLD = 5;
+export const COLUMN_WIDTH = 300;
+
+export const COLUMNS: ColumnMeta[] = [
+  {
+    id: 'todo',
+    title: 'To-do',
+    variant: 'neutral',
+    tooltip: 'Items assigned to this sprint, waiting to be picked up.',
+    emptyTitle: 'To-do is empty',
+    emptyDescription: 'Items pulled into this sprint appear here.',
+    emptyIcon: InboxIcon,
+  },
+  {
+    id: 'in-progress',
+    title: 'In progress',
+    variant: 'accent',
+    tooltip: 'Items currently in progress.',
+    emptyTitle: 'Nothing in progress',
+    emptyDescription: 'Items being worked on appear here.',
+    emptyIcon: ArrowPathIcon,
+  },
+  {
+    id: 'in-review',
+    title: 'In review',
+    variant: 'warning',
+    tooltip: 'Items waiting for your review.',
+    emptyTitle: 'Nothing in review',
+    emptyDescription: 'Items awaiting your review appear here.',
+    emptyIcon: ClipboardDocumentCheckIcon,
+  },
+  {
+    id: 'done',
+    title: 'Done',
+    variant: 'success',
+    tooltip: 'Items that have been handled.',
+    emptyTitle: 'Nothing done yet',
+    emptyDescription: 'Completed items appear here.',
+    emptyIcon: CheckCircleIcon,
+  },
+];
+
+export const PRIORITY_META: Record<
+  Priority,
+  { label: string; variant: 'error' | 'warning' | 'teal' }
+> = {
+  high: { label: 'High', variant: 'error' },
+  medium: { label: 'Medium', variant: 'warning' },
+  low: { label: 'Low', variant: 'teal' },
+};
+
+export const INITIAL_ITEMS: WorkItem[] = [
+  {
+    id: 't1',
+    column: 'todo',
+    ref: 'Task 4821',
+    priority: 'low',
+    title: 'Draft project kickoff brief',
+    description: 'Write a short brief outlining goals, scope, and success criteria.',
+    lastEdited: '2h ago',
+    dueDate: 'Jul 8',
+  },
+  {
+    id: 'p1',
+    column: 'in-progress',
+    ref: 'Task 4825',
+    priority: 'high',
+    title: 'Design the landing page layout',
+    description: 'Create a first-pass layout for the landing page.',
+    lastEdited: '18m ago',
+    dueDate: 'Jul 3',
+  },
+  {
+    id: 'r1',
+    column: 'done',
+    ref: 'Task 4788',
+    priority: 'low',
+    title: 'Write the weekly status update',
+    description: 'Summarize progress, blockers, and next steps for the team.',
+    lastEdited: 'Yesterday',
+    dueDate: 'Jul 1',
+  },
+];
+```
+
+## Astryx Concepts: Icons & Semantic Variants
+
+This lesson's data layer is deliberately *design-system-aware* — the models are shaped by Astryx's vocabulary so they flow straight into components without translation:
+
+- **Heroicons integration**: Astryx components accept Heroicons icons out of the box. `ColumnMeta.emptyIcon` stores the icon *component* (typed as `ComponentType<{ className?: string }>`), so each column can render its own empty-state icon later (lesson 9). The four icons introduced here — `InboxIcon`, `ArrowPathIcon`, `ClipboardDocumentCheckIcon`, `CheckCircleIcon` — each describe a column's state.
+- **Semantic variant vocabulary**: `ColumnMeta.variant` is typed to exactly the variants `StatusDot` accepts (`neutral`, `accent`, `warning`, `success`), and `PRIORITY_META` maps priorities to badge variants (`error`, `warning`, `teal`). Because the types match the design system's variants, an invalid combination is a compile error instead of a runtime surprise.
+- **One nuance**: `Badge` and `StatusDot` share `neutral`, `warning`, and `success`, but `accent` exists only on `StatusDot` — the accent-colored badge is `info`. That's why the demo below maps `accent → info` when rendering columns as badges; the column shell in lesson 9 passes `meta.variant` straight to `StatusDot`, where `accent` is valid.
+
+This is the Astryx way to model domain data: define your contracts against the design system's tokens and variants, not against ad-hoc strings.
+
+---
+
+## See It in Action
+
+Update `src/app/page.tsx` to verify your domain models and column metadata in your browser:
+
+```tsx title="src/app/page.tsx"
+'use client';
+
+import { Card } from '@astryxdesign/core/Card';
+import { Heading, Text } from '@astryxdesign/core/Text';
+import { VStack, HStack } from '@astryxdesign/core/Layout';
+import { Badge } from '@astryxdesign/core/Badge';
+import { COLUMNS, INITIAL_ITEMS } from './data';
+
+export default function Page() {
+  return (
+    <Card padding={4}>
+      <VStack gap={4}>
+        <Heading level={3}>Kanban Domain Data Model Inspector</Heading>
+        
+        <Heading level={4}>Configured Columns ({COLUMNS.length}):</Heading>
+        <HStack gap={2}>
+          {COLUMNS.map(colMeta => (
+            <Badge
+              key={colMeta.id}
+              label={colMeta.title}
+              variant={colMeta.variant === 'accent' ? 'info' : colMeta.variant}
+            />
+          ))}
+        </HStack>
+
+        <Heading level={4}>Column Icons ({COLUMNS.length}):</Heading>
+        <HStack gap={2} vAlign="center">
+          {COLUMNS.map(colMeta => {
+            // A capitalized local variable — JSX treats it as a component.
+            const ColIcon = colMeta.emptyIcon;
+            return <ColIcon key={colMeta.id} />;
+          })}
+        </HStack>
+
+        <Heading level={4}>Initial Sprint Tasks ({INITIAL_ITEMS.length}):</Heading>
+        <VStack gap={2}>
+          {INITIAL_ITEMS.map(item => (
+            <Card key={item.id} padding={2} variant="muted">
+              <HStack hAlign="between" vAlign="center">
+                <Text><strong>[{item.ref}]</strong> {item.title}</Text>
+                <Badge label={item.column} variant="neutral" />
+              </HStack>
+            </Card>
+          ))}
+        </VStack>
+      </VStack>
+    </Card>
+  );
+}
+```
+
+Run `npm run dev` and open `http://localhost:3000` to inspect your data models live.
+
+In the next lesson, we will construct our task presentation component: `BoardCardBody`.

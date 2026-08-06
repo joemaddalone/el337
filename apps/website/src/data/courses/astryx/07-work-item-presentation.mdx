@@ -1,0 +1,114 @@
+---
+title: "Presenting Work Items: Card, Badge & MoreMenu"
+date: 2026-08-06
+tags: ["astryx", "components", "react"]
+excerpt: "Build the presentation component for Kanban work items using Card, Badge, Heading, Text, and MoreMenu."
+courseOrder: 7
+---
+
+In this lesson, we build `BoardCardBody.tsx`—the presentation component responsible for rendering a work item's details.
+
+**Astryx this lesson:** `Card`, `Badge`, `Heading`, `Text`, `MoreMenu`. Concepts: content hierarchy (heading levels, `type="supporting"`/`color="secondary"`), line clamping (`maxLines`), and the `MoreMenu` items contract (actions + dividers).
+
+By decoupling `BoardCardBody` from the draggable container, we can render the exact same body UI both inside column lists and inside the floating drag preview clone.
+
+## Component Features
+
+1. **Header Row**: Task reference badge (`Badge variant="neutral"`), priority badge (`Badge variant={priority.variant}`), and contextual actions dropdown (`MoreMenu`).
+2. **Title & Description**: `Heading level={4}` and clamped description `Text maxLines={2}`.
+3. **Metadata Footer**: Secondary text displaying last edited time and due date.
+4. **Move Actions**: Dynamically generates `"Move to [Column]"` menu items for non-current columns.
+5. **`MoreMenu` items contract**: each item is either an action (`{ label, onClick }`) or a separator (`{ type: 'divider' }`) — the same contract Astryx's menu system uses across the design system.
+
+## Implementation: `BoardCardBody.tsx`
+
+Create `BoardCardBody.tsx`:
+
+```tsx title="src/app/BoardCardBody.tsx"
+import { HStack, VStack } from '@astryxdesign/core/Layout';
+import { Heading, Text } from '@astryxdesign/core/Text';
+import { Badge } from '@astryxdesign/core/Badge';
+import { MoreMenu } from '@astryxdesign/core/MoreMenu';
+import { COLUMNS, PRIORITY_META } from './data';
+import type { ColumnId, WorkItem } from './types';
+
+interface BoardCardBodyProps {
+  item: WorkItem;
+  onMove: (id: string, to: ColumnId) => void;
+}
+
+export function BoardCardBody({ item, onMove }: BoardCardBodyProps) {
+  const priority = PRIORITY_META[item.priority];
+
+  // Dynamic move options for the MoreMenu dropdown
+  const moveTargets = COLUMNS
+    .filter(c => c.id !== item.column)
+    .map(c => ({
+      label: `Move to ${c.title}`,
+      onClick: () => onMove(item.id, c.id),
+    }));
+
+  return (
+    <VStack gap={2}>
+      <HStack hAlign="between" vAlign="start">
+        <HStack gap={1} vAlign="center" wrap="wrap">
+          <Badge label={item.ref} variant="neutral" />
+          <Badge label={priority.label} variant={priority.variant} />
+        </HStack>
+        <MoreMenu
+          label="Work item actions"
+          size="sm"
+          items={[
+            { label: 'Open', onClick: () => {} },
+            { label: 'Assign to me', onClick: () => {} },
+            { type: 'divider' },
+            ...moveTargets,
+          ]}
+        />
+      </HStack>
+
+      <VStack gap={1}>
+        <Heading level={4}>{item.title}</Heading>
+        <Text type="supporting" color="secondary" maxLines={2}>
+          {item.description}
+        </Text>
+      </VStack>
+
+      <Text type="supporting" color="secondary">
+        Edited {item.lastEdited} · Due {item.dueDate}
+      </Text>
+    </VStack>
+  );
+}
+```
+
+---
+
+## See It in Action
+
+Update `src/app/page.tsx` to view your rendered `BoardCardBody` with task actions in your browser. Keep `BoardCardBody.tsx` (above) and `data.ts` + `types.ts` (lesson 6) in `src/app/`:
+
+```tsx title="src/app/page.tsx"
+'use client';
+
+import { Card } from '@astryxdesign/core/Card';
+import { BoardCardBody } from './BoardCardBody';
+import { INITIAL_ITEMS } from './data';
+
+export default function Page() {
+  const sampleTask = INITIAL_ITEMS[0];
+
+  return (
+    <Card padding={4} width={340}>
+      <BoardCardBody
+        item={sampleTask}
+        onMove={(id, to) => alert(`Move task ${id} to column ${to}`)}
+      />
+    </Card>
+  );
+}
+```
+
+Run `npm run dev` and open `http://localhost:3000` to test the work item body and contextual action menu live.
+
+In the next lesson, we will wrap this body inside `BoardCard.tsx` with custom StyleX elevation and pointer drag listeners.

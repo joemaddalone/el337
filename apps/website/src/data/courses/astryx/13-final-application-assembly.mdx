@@ -1,0 +1,192 @@
+---
+title: "Final Assembly: Composing the Astryx Application"
+date: 2026-08-06
+tags: ["astryx", "react", "kanban"]
+excerpt: "Assemble all modular components, hook state, and layout shells into the final production Kanban board."
+courseOrder: 13
+---
+
+In this final lesson, we assemble all our modular pieces—data models, StyleX stylesheets, hook logic, toolbar, cards, columns, and drag overlays—into `KanbanBoard.tsx`.
+
+**Astryx this lesson:** full composition — `Section` + `Layout` as the root shell, assembling every component from lessons 6–12 over Astryx primitives. Concepts: composition over configuration, and the complete Astryx vocabulary (recapped below).
+
+## Architecture Overview
+
+```
+kanban/
+├── types.ts              # Domain interfaces
+├── data.ts               # Configuration metadata & initial items
+├── styles.ts             # StyleX stylesheet
+├── BoardCardBody.tsx     # Card content presentation
+├── BoardCard.tsx         # Interactive card shell
+├── BoardColumn.tsx       # Column shell & empty state
+├── BoardToolbar.tsx      # Top action bar
+├── FloatingCard.tsx      # Fixed drag overlay clone
+├── useKanbanDrag.ts      # Pointer interaction hook
+└── KanbanBoard.tsx       # Root container component
+```
+
+All of these files live in `src/app/`, next to `page.tsx`, as created in lessons 6–12. `KanbanBoard` owns hooks (`useState`, `useKanbanDrag`), so it declares `'use client'` itself rather than relying on the page to make it client-side.
+
+## Implementation: `KanbanBoard.tsx`
+
+`renderColumnCards` is the trickiest function in the course — three ideas to hold onto as you read the code:
+
+- **`visible`** — the column's cards, minus the one currently being dragged (it's following the pointer, not sitting in the list).
+- **`ghostTarget`** — only the column the pointer is over (per `drag.target`) gets the ghost slot, spliced in at the drop index.
+- **Returning `null`** for an empty, non-target column lets `BoardColumn` fall back to its `EmptyState`.
+
+Create `KanbanBoard.tsx`:
+
+```tsx title="src/app/KanbanBoard.tsx"
+'use client';
+
+import { useState, type ReactNode } from 'react';
+import { Section } from '@astryxdesign/core/Section';
+import { Layout, LayoutHeader, LayoutContent, HStack, VStack } from '@astryxdesign/core/Layout';
+import { COLUMNS, INITIAL_ITEMS } from './data';
+import { styles } from './styles';
+import { BoardCard } from './BoardCard';
+import { BoardColumn } from './BoardColumn';
+import { BoardToolbar } from './BoardToolbar';
+import { FloatingCard } from './FloatingCard';
+import { useKanbanDrag } from './useKanbanDrag';
+import type { ColumnId, WorkItem } from './types';
+
+export default function KanbanBoard() {
+  const [items, setItems] = useState<WorkItem[]>(INITIAL_ITEMS);
+  const [sprint, setSprint] = useState('003');
+
+  const {
+    drag,
+    itemsByColumn,
+    getColumnRef,
+    getCardRef,
+    onCardPointerDown,
+  } = useKanbanDrag(items, setItems);
+
+  const moveItem = (id: string, to: ColumnId) => {
+    setItems(prev =>
+      prev.map(item => (item.id === id ? { ...item, column: to } : item)),
+    );
+  };
+
+  const renderColumnCards = (colId: ColumnId): ReactNode => {
+    const colItems = itemsByColumn[colId];
+    const visible = drag ? colItems.filter(it => it.id !== drag.id) : colItems;
+    const ghostTarget =
+      drag && drag.target && drag.target.column === colId ? drag : null;
+
+    if (visible.length === 0 && !ghostTarget) {
+      return null;
+    }
+
+    const nodes: ReactNode[] = visible.map(it => (
+      <BoardCard
+        key={it.id}
+        item={it}
+        cardRef={getCardRef(it.id)}
+        onPointerDown={onCardPointerDown}
+        onMove={moveItem}
+      />
+    ));
+
+    if (ghostTarget && ghostTarget.target) {
+      const index = Math.min(ghostTarget.target.index, nodes.length);
+      nodes.splice(
+        index,
+        0,
+        <VStack key="drag-ghost" xstyle={styles.ghost(ghostTarget.height)} />,
+      );
+    }
+
+    return <VStack gap={2}>{nodes}</VStack>;
+  };
+
+  const draggedItem = drag ? items.find(it => it.id === drag.id) : undefined;
+
+  return (
+    <Section height="100dvh">
+      <Layout
+        height="fill"
+        header={
+          <LayoutHeader hasDivider padding={4}>
+            <BoardToolbar
+              totalTasks={items.length}
+              sprint={sprint}
+              onSprintChange={setSprint}
+            />
+          </LayoutHeader>
+        }
+        content={
+          <LayoutContent padding={0}>
+            <HStack gap={4} xstyle={styles.boardColumns}>
+              {COLUMNS.map(meta => (
+                <BoardColumn
+                  key={meta.id}
+                  meta={meta}
+                  count={itemsByColumn[meta.id].length}
+                  contentRef={getColumnRef(meta.id)}>
+                  {renderColumnCards(meta.id)}
+                </BoardColumn>
+              ))}
+            </HStack>
+          </LayoutContent>
+        }
+      />
+      {drag && draggedItem ? (
+        <FloatingCard drag={drag} item={draggedItem} />
+      ) : null}
+    </Section>
+  );
+}
+```
+
+## Mount in Next.js Page (`src/app/page.tsx`)
+
+Finally, replace `src/app/page.tsx` to render your completed `KanbanBoard` component:
+
+```tsx title="src/app/page.tsx"
+'use client';
+
+import KanbanBoard from './KanbanBoard';
+
+export default function Page() {
+  return <KanbanBoard />;
+}
+```
+
+Run your development server:
+
+```bash
+npm run dev
+```
+
+Visit `http://localhost:3000` — you should see the complete board: the toolbar with the sprint selector, the total task badge, and four columns. Drag any card between columns, drop it at any index to reorder, and use each card's **⋮** menu to move it directly. This is the same production-ready behavior as the reference implementation in `full.tsx`.
+
+---
+
+## Astryx Vocabulary Recap
+
+| Area | Astryx vocabulary | Where you used it |
+| :--- | :--- | :--- |
+| Layout | `Section`, `Layout`, `LayoutHeader`, `LayoutContent`, `HStack`, `VStack` | App shell, column shells, card content (lessons 2, 9, 11–13) |
+| Typography | `Heading`, `Text` — `type`, `color`, `maxLines`, `hasTabularNumbers` | Titles, supporting text, tabular counters (lessons 3, 7, 9) |
+| Feedback | `Card`, `Badge`, `StatusDot`, `EmptyState`, `Tooltip` | Board shells, badges, status dots, empty columns (lessons 7–9) |
+| Actions | `Toolbar`, `Selector`, `Divider`, `IconButton`, `Button`, `Icon`, `MoreMenu` | Top action bar, contextual menus (lessons 7, 9, 10) |
+| Styling | `xstyle` + StyleX — static rules, pseudo-classes, dynamic functions | Hover elevation, floating overlay, ghost slot (lessons 4, 8, 12) |
+| Tokens | `--spacing-*`, `--shadow-*`, `--color-*`, `--radius-*` | Every custom rule in `styles.ts` (lesson 5) |
+
+---
+
+## Course Summary
+
+Congratulations! You have completed the **Mastering Astryx** course.
+
+You learned how to:
+- Configure `@astryxdesign/core` and set up Next.js CSS import layers.
+- Compose spatial flex structures using `Section`, `Layout`, `HStack`, and `VStack`.
+- Build localized typography and status indicators (`StatusDot`, `Badge`, `Text hasTabularNumbers`).
+- Extend design primitives with custom StyleX elevation and dynamic transform functions (`xstyle`).
+- Deconstruct complex applications into modular, single-responsibility components and custom hooks.
+

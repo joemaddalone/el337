@@ -1,0 +1,363 @@
+---
+title: "Drag-and-Drop Interactions & Astryx Ref Forwarding"
+date: 2026-08-06
+tags: ["astryx", "react hooks", "drag and drop"]
+excerpt: "Encapsulate pointer listeners, element hit-testing, threshold calculations, and drop reordering inside a custom hook."
+courseOrder: 11
+---
+
+In this lesson, we extract the drag-and-drop interaction engine into a custom React hook: `useKanbanDrag.ts`.
+
+This hook manages DOM element registration maps, spatial hit-testing math, pointer event movement thresholds, user text-selection suppression, and array state reordering.
+
+**Astryx this lesson:** no new components — this is the *integration* lesson. Concepts: how Astryx primitives forward their DOM nodes (ref access), and how a custom interaction engine feeds state back into Astryx primitives (`StatusDot`, `Text hasTabularNumbers`).
+
+## Key Logic
+
+1. **Element Registries**: Uses `useRef(new Map())` to track live DOM coordinates of columns and cards without causing re-render churn.
+2. **`DRAG_THRESHOLD` (5px)**: Ensures short presses or clicks on nested controls (like the `MoreMenu` action dropdown) fire normal click handlers without triggering drag mode.
+3. **`computeTarget`**: Iterates through column bounding boxes (`getBoundingClientRect`) to determine the target column and vertical card insertion index.
+4. **`commitDrag`**: Inserts the dragged item into its target position while maintaining relative ordering of surrounding items.
+
+## Astryx Ref Access: The Contract Behind Custom Interactions
+
+Why can the hook hit-test columns and cards from anywhere in the tree? Because Astryx primitives forward their underlying DOM elements:
+
+- `Card` forwards its root `div` — that's what `BoardCard` hands to `getCardRef`.
+- `LayoutContent` forwards its scrollable content node — that's what `BoardColumn` hands to `getColumnRef`.
+
+Forwarded refs let a custom engine read live geometry (`getBoundingClientRect`) without reaching outside the component tree. This is the Astryx contract for building custom interactions: primitives give you typed props and styles, while refs are the escape hatch for raw coordinates when you need them (hit-testing, measuring, drag geometry).
+
+## Implementation: `useKanbanDrag.ts`
+
+Create `useKanbanDrag.ts`:
+
+```typescript title="src/app/useKanbanDrag.ts"
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type Dispatch,
+  type PointerEvent as ReactPointerEvent,
+  type SetStateAction,
+} from 'react';
+import { DRAG_THRESHOLD } from './data';
+import type { ColumnId, DragState, DropTarget, WorkItem } from './types';
+
+// ASTRIX: the hook itself imports no Astryx components — it only consumes the
+// forwarded-refs contract. The Astryx work happens where refs are handed in
+// (BoardCard, BoardColumn) and where drag state is consumed (e.g. the StatusDot
+// in the demo below).
+export function useKanbanDrag(
+  items: WorkItem[],
+  setItems: Dispatch<SetStateAction<WorkItem[]>>,
+) {
+  const [drag, setDrag] = useState<DragState | null>(null);
+
+  // Live DOM registries for hit-testing.
+  // ASTRIX: these nodes arrive through forwarded refs — LayoutContent hands us
+  // its scrollable node, Card hands us its root div (see getColumnRef below).
+  const columnEls = useRef(new Map<ColumnId, HTMLElement>());
+  const cardEls = useRef(new Map<string, HTMLElement>());
+  const columnRefCbs = useRef(
+    new Map<ColumnId, (el: HTMLDivElement | null) => void>(),
+  );
+  const cardRefCbs = useRef(
+    new Map<string, (el: HTMLDivElement | null) => void>(),
+  );
+  const teardownRef = useRef<(() => void) | null>(null);
+
+  // ASTRIX CONTRACT: Astryx primitives forward their underlying DOM elements,
+  // so a custom engine can read live geometry without reaching outside the
+// component tree. This callback-ref is passed to BoardColumn's contentRef prop,
+// which wires it to LayoutContent's forwarded scrollable node.
+  const getColumnRef = (id: ColumnId) => {
+    let cb = columnRefCbs.current.get(id);
+    if (!cb) {
+      cb = el => {
+        if (el) columnEls.current.set(id, el);
+        else columnEls.current.delete(id);
+      };
+      columnRefCbs.current.set(id, cb);
+    }
+    return cb;
+  };
+
+  // Same contract, one level down: Card forwards its root div, which BoardCard
+  // hands to this callback via cardRef={getCardRef(id)}.
+  const getCardRef = (id: string) => {
+    let cb = cardRefCbs.current.get(id);
+    if (!cb) {
+      cb = el => {
+        if (el) cardEls.current.set(id, el);
+        else cardEls.current.delete(id);
+      };
+      cardRefCbs.current.set(id, cb);
+    }
+    return cb;
+  };
+
+  const itemsByColumn = useMemo(() => {
+    const map: Record<ColumnId, WorkItem[]> = {
+      todo: [],
+      'in-progress': [],
+      'in-review': [],
+      done: [],
+    };
+    for (const item of items) {
+      map[item.column].push(item);
+    }
+    return map;
+  }, [items]);
+
+  // Hit-tests the pointer against the forwarded Astryx nodes in the registries.
+  // getBoundingClientRect() on Card/LayoutContent nodes is the raw geometry the
+  // ref contract gives us on demand — read at event time, never during render.
+  const computeTarget = (
+    px: number,
+    py: number,
+    draggedId: string,
+  ): DropTarget | null => {
+    for (const [colId, el] of Array.from(columnEls.current.entries())) {
+      const r = el.getBoundingClientRect();
+      if (px < r.left || px > r.right || py < r.top || py > r.bottom) {
+        continue;
+      }
+
+      const ids = itemsByColumn[colId]
+        .filter(it => it.id !== draggedId)
+        .map(it => it.id);
+
+      let index = ids.length;
+      for (let i = 0; i < ids.length; i++) {
+        const cardEl = cardEls.current.get(ids[i]);
+        if (!cardEl) continue;
+        const cr = cardEl.getBoundingClientRect();
+        if (py < cr.top + cr.height / 2) {
+          index = i;
+          break;
+        }
+      }
+      return { column: colId, index };
+    }
+    return null;
+  };
+
+  const commitDrag = (id: string, target: DropTarget) => {
+    setItems(prev => {
+      const moved = prev.find(it => it.id === id);
+      if (!moved) return prev;
+
+      const rest = prev.filter(it => it.id !== id);
+      const updated: WorkItem = { ...moved, column: target.column };
+      const colItems = rest.filter(it => it.column === target.column);
+      const anchor = colItems[target.index];
+
+      if (!anchor) return [...rest, updated];
+      const at = rest.indexOf(anchor);
+      return [...rest.slice(0, at), updated, ...rest.slice(at)];
+    });
+  };
+
+  const onCardPointerDown = (e: ReactPointerEvent, id: string) => {
+    if (e.button !== 0) return;
+    if (
+      (e.target as HTMLElement).closest(
+        'button, [role="menuitem"], [role="menu"]',
+      )
+    ) {
+      return;
+    }
+
+    const el = cardEls.current.get(id);
+    if (!el) return;
+
+    const rect = el.getBoundingClientRect();
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const offsetX = startX - rect.left;
+    const offsetY = startY - rect.top;
+    const { width, height } = rect;
+
+    let started = false;
+    let target: DropTarget | null = null;
+
+    const onMove = (ev: PointerEvent) => {
+      if (
+        !started &&
+        Math.abs(ev.clientX - startX) + Math.abs(ev.clientY - startY) <
+          DRAG_THRESHOLD
+      ) {
+        return;
+      }
+      started = true;
+      target = computeTarget(ev.clientX, ev.clientY, id);
+      setDrag({
+        id,
+        width,
+        height,
+        offsetX,
+        offsetY,
+        pointerX: ev.clientX,
+        pointerY: ev.clientY,
+        target,
+      });
+    };
+
+    const onUp = () => {
+      teardownRef.current?.();
+      if (started && target) commitDrag(id, target);
+      setDrag(null);
+    };
+
+    const teardown = () => {
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+      teardownRef.current = null;
+    };
+    teardownRef.current = teardown;
+
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+  };
+
+  const isDragging = drag !== null;
+
+  useEffect(() => {
+    if (!isDragging) return;
+    const previous = document.body.style.userSelect;
+    document.body.style.userSelect = 'none';
+    return () => {
+      document.body.style.userSelect = previous;
+    };
+  }, [isDragging]);
+
+  useEffect(() => () => teardownRef.current?.(), []);
+
+  // ASTRIX: plain state + callback refs out. Consumers feed them back into
+  // Astryx primitives — refs into Card/LayoutContent, drag state into a
+  // StatusDot variant (see the demo in "See It in Action").
+  return {
+    drag,
+    itemsByColumn,
+    getColumnRef,
+    getCardRef,
+    onCardPointerDown,
+  };
+}
+```
+
+---
+
+## See It in Action
+
+The hook is invisible on its own — it needs real DOM elements to hit-test. Wire it up with the `BoardColumn` and `BoardCard` components you built in lessons 8–9 to get a working drag-and-drop board *without* any floating overlay yet:
+
+```tsx title="src/app/page.tsx"
+'use client';
+
+import { useState } from 'react';
+import { Section } from '@astryxdesign/core/Section';
+import {
+  Layout,
+  LayoutHeader,
+  LayoutContent,
+  HStack,
+  VStack,
+} from '@astryxdesign/core/Layout';
+import { Heading, Text } from '@astryxdesign/core/Text';
+import { StatusDot } from '@astryxdesign/core/StatusDot';
+import { COLUMNS, INITIAL_ITEMS } from './data';
+import { styles } from './styles';
+import { BoardCard } from './BoardCard';
+import { BoardColumn } from './BoardColumn';
+import { useKanbanDrag } from './useKanbanDrag';
+import type { ColumnId, WorkItem } from './types';
+
+export default function Page() {
+  const [items, setItems] = useState<WorkItem[]>(INITIAL_ITEMS);
+
+  const { drag, itemsByColumn, getColumnRef, getCardRef, onCardPointerDown } =
+    useKanbanDrag(items, setItems);
+
+  const moveItem = (id: string, to: ColumnId) => {
+    setItems(prev =>
+      prev.map(item => (item.id === id ? { ...item, column: to } : item)),
+    );
+  };
+
+  return (
+    <Section height="100dvh">
+      <Layout
+        height="fill"
+        header={
+          <LayoutHeader hasDivider padding={4}>
+            <HStack hAlign="between" vAlign="center">
+              <HStack gap={2} vAlign="center">
+                {/* ASTRIX: hook state driving an Astryx variant — flips
+                    neutral → accent while a drag is active */}
+                <StatusDot
+                  variant={drag ? 'accent' : 'neutral'}
+                  label={drag ? 'Drag in progress' : 'Idle'}
+                />
+                <Heading level={3}>Hook Test Harness</Heading>
+              </HStack>
+              <Text type="supporting" color="secondary" hasTabularNumbers>
+                {drag
+                  ? `Dragging ${drag.id} → ${
+                      drag.target
+                        ? `${drag.target.column} #${drag.target.index}`
+                        : 'no target'
+                    }`
+                  : 'Idle — drag a card'}
+              </Text>
+            </HStack>
+          </LayoutHeader>
+        }
+        content={
+          <LayoutContent padding={0}>
+            <HStack gap={4} xstyle={styles.boardColumns}>
+              {COLUMNS.map(meta => {
+                const colItems = itemsByColumn[meta.id];
+                return (
+                  {/* ASTRIX: contentRef wires LayoutContent's forwarded node
+                      into the hook's hit-testing registry */}
+                  <BoardColumn
+                    key={meta.id}
+                    meta={meta}
+                    count={colItems.length}
+                    contentRef={getColumnRef(meta.id)}
+                  >
+                    {colItems.length > 0 ? (
+                      <VStack gap={2}>
+                        {colItems.map(item => (
+                          {/* ASTRIX: Card's forwarded ref feeds hit-testing;
+                              onPointerDown drives the drag engine */}
+                          <BoardCard
+                            key={item.id}
+                            item={item}
+                            cardRef={getCardRef(item.id)}
+                            onPointerDown={onCardPointerDown}
+                            onMove={moveItem}
+                          />
+                        ))}
+                      </VStack>
+                    ) : null}
+                  </BoardColumn>
+                );
+              })}
+            </HStack>
+          </LayoutContent>
+        }
+      />
+    </Section>
+  );
+}
+```
+
+Keep `useKanbanDrag.ts` (above) and the files from lessons 6–9 in `src/app/`, then run `npm run dev` and open `http://localhost:3000`.
+
+Drag any card past the 5px threshold — the header readout updates live with the resolved drop target (`column #index`), and the `StatusDot` flips from `neutral` to `accent` while the drag is active. That's hook state driving Astryx variants — the same wiring `FloatingCard` uses for drag feedback in lesson 12. Release the pointer to commit the move: cards reorder within a column and jump between columns.
+
+In the next lesson, we will build `FloatingCard.tsx` to handle drag clone overlays and landing ghost indicators.

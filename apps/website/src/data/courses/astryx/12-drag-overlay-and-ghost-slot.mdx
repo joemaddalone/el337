@@ -1,0 +1,181 @@
+---
+title: "Floating Drag Overlays & Dynamic StyleX Functions"
+date: 2026-08-06
+tags: ["astryx", "components", "drag and drop"]
+excerpt: "Render floating drag overlays using fixed positioning and dynamic StyleX rules alongside landing ghost slots."
+courseOrder: 12
+---
+
+In this lesson, we build `FloatingCard.tsx` and write column card list rendering functions that dynamically inject placeholder "ghost" slots into target drop columns.
+
+**Astryx this lesson:** `Card` with dynamic StyleX functions (`floating`, `floatingAt`), `VStack` ghost slots. Concepts: fixed-position overlays via `xstyle`, pointer-event passthrough, and z-index layering.
+
+## Drag Feedback Mechanics
+
+1. **Floating Card Overlay**:
+   - Fixed viewport position (`position: 'fixed'`).
+   - Follows pointer coordinates (`transform: translate(x, y)`).
+   - High elevation shadow (`var(--shadow-high)`).
+   - Ignored pointer events (`pointerEvents: 'none'`), allowing underlying columns to respond to hit-testing.
+   - Re-uses `BoardCardBody` to guarantee visual identity with the originating card.
+
+   > **Why dynamic StyleX functions instead of inline styles?** `floatingAt(x, y, width)` is compiled to atomic CSS at build time, so runtime-driven positioning still gets StyleX's type-safety and performance — no `style={{ transform: ... }}` escaping the design system. This is the Astryx way to express runtime geometry.
+2. **Ghost Landing Slot**:
+   - Empty placeholder container (`VStack xstyle={styles.ghost(height)}`).
+   - Dynamically spliced into the active target column's item list at the calculated `index`.
+
+## Implementation: `FloatingCard.tsx`
+
+Create `FloatingCard.tsx`:
+
+```tsx title="src/app/FloatingCard.tsx"
+import { Card } from '@astryxdesign/core/Card';
+import { BoardCardBody } from './BoardCardBody';
+import { styles } from './styles';
+import type { DragState, WorkItem } from './types';
+
+interface FloatingCardProps {
+  drag: DragState;
+  item: WorkItem;
+}
+
+export function FloatingCard({ drag, item }: FloatingCardProps) {
+  return (
+    <Card
+      padding={3}
+      xstyle={[
+        styles.floating,
+        styles.floatingAt(
+          drag.pointerX - drag.offsetX,
+          drag.pointerY - drag.offsetY,
+          drag.width,
+        ),
+      ]}>
+      <BoardCardBody item={item} onMove={() => {}} />
+    </Card>
+  );
+}
+```
+
+---
+
+## See It in Action
+
+`FloatingCard` needs live drag state, but we have not assembled the full board yet. Simulate a mid-drag moment by hand: render a floating clone and inject the ghost slot manually into a target column.
+
+Update `src/app/page.tsx`:
+
+```tsx title="src/app/page.tsx"
+'use client';
+
+import { useState } from 'react';
+import { Section } from '@astryxdesign/core/Section';
+import {
+  Layout,
+  LayoutHeader,
+  LayoutContent,
+  HStack,
+  VStack,
+} from '@astryxdesign/core/Layout';
+import { Heading } from '@astryxdesign/core/Text';
+import { Button } from '@astryxdesign/core/Button';
+import { FloatingCard } from './FloatingCard';
+import { BoardCard } from './BoardCard';
+import { BoardColumn } from './BoardColumn';
+import { COLUMNS, INITIAL_ITEMS } from './data';
+import { styles } from './styles';
+import type { DragState, WorkItem } from './types';
+
+export default function Page() {
+  const [showDrag, setShowDrag] = useState(true);
+
+  const draggedItem: WorkItem = INITIAL_ITEMS[0];
+
+  // A hand-built DragState mimicking an in-flight drag toward the
+  // "In progress" column at insertion index 1.
+  // Adjust pointerX/pointerY to reposition the fixed clone on your screen.
+  const demoDrag: DragState = {
+    id: draggedItem.id,
+    width: 280,
+    height: 140,
+    offsetX: 24,
+    offsetY: 16,
+    pointerX: 360,
+    pointerY: 220,
+    target: { column: 'in-progress', index: 1 },
+  };
+
+  const todoItems = INITIAL_ITEMS.filter(it => it.column === 'todo');
+  const inProgressItems = INITIAL_ITEMS.filter(it => it.column === 'in-progress');
+
+  return (
+    <Section height="100dvh">
+      <Layout
+        height="fill"
+        header={
+          <LayoutHeader hasDivider padding={4}>
+            <HStack hAlign="between" vAlign="center">
+              <Heading level={3}>Drag Overlay & Ghost Slot Preview</Heading>
+              <Button
+                label={showDrag ? 'Hide overlay' : 'Show overlay'}
+                variant="primary"
+                onClick={() => setShowDrag(v => !v)}
+              />
+            </HStack>
+          </LayoutHeader>
+        }
+        content={
+          <LayoutContent padding={0}>
+            <HStack gap={4} xstyle={styles.boardColumns}>
+              <BoardColumn
+                meta={COLUMNS[0]}
+                count={todoItems.length}
+                contentRef={() => {}}
+              >
+                <VStack gap={2}>
+                  {todoItems.map(item => (
+                    <BoardCard
+                      key={item.id}
+                      item={item}
+                      cardRef={() => {}}
+                      onPointerDown={() => {}}
+                      onMove={() => {}}
+                    />
+                  ))}
+                </VStack>
+              </BoardColumn>
+
+              <BoardColumn
+                meta={COLUMNS[1]}
+                count={inProgressItems.length}
+                contentRef={() => {}}
+              >
+                <VStack gap={2}>
+                  {inProgressItems.map(item => (
+                    <BoardCard
+                      key={item.id}
+                      item={item}
+                      cardRef={() => {}}
+                      onPointerDown={() => {}}
+                      onMove={() => {}}
+                    />
+                  ))}
+                  {/* Landing ghost slot, spliced at the drop index */}
+                  {showDrag && <VStack xstyle={styles.ghost(demoDrag.height)} />}
+                </VStack>
+              </BoardColumn>
+            </HStack>
+          </LayoutContent>
+        }
+      />
+      {showDrag && <FloatingCard drag={demoDrag} item={draggedItem} />}
+    </Section>
+  );
+}
+```
+
+Keep `FloatingCard.tsx` (above) and the files from lessons 6–9 in `src/app/`, then run `npm run dev` and open `http://localhost:3000`.
+
+Toggle **Show overlay** on and off: the floating clone is pinned to the viewport (fixed positioning, `pointerEvents: none`) and the muted ghost slot marks the landing index inside the target column. In `KanbanBoard` (next lesson), both of these are driven by real `useKanbanDrag` state instead of hard-coded values.
+
+In the next lesson, we bring all components, hooks, styles, and data together into `KanbanBoard.tsx`.
