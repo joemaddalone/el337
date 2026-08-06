@@ -255,7 +255,7 @@ Now let's update `index.ts` to use the task tool.
 const agentLoop = async (messages: ModelMessage[]): Promise<string> => {
   let stepsSinceTodo = 0;
   const { text } = await generateText({
-    model: ollama.chat(MODEL),
+    model: api.chat(MODEL),
     system: `You are a coding agent at $(WORKDIR}.
     Use the todo tool to plan multi-step tasks. Mark in_progress before starting, completed when done.
     Prefer task_create/task_update/task_list for multi-step work. Use todo for short checklists.
