@@ -33,3 +33,256 @@ import { YouTube } from '@astro-community/astro-embed-youtube';
 </div>
 
 Stop losing complex project progress when your local AI session ends. This tutorial builds a persistent, disk-based task manager for MLX on Apple Silicon Macs, enabling long-running, multi-step workflows that survive reboots and new sessions. Perfect for developers building local AI apps who need reliable dependency tracking without cloud reliance.
+
+
+## The Task Manager
+
+Let's start by creating a new file called `task.ts`.  This is a big file, but the functions are kept very simple so it shoud be fairly easy to follow and maintain.
+
+```typescript title="task.ts"
+import * as fs from "node:fs";
+import * as path from "node:path";
+import { WORKDIR } from "./config";
+import { MARKS, type TodoStatus as TaskStatus } from "./todo";
+
+export type { TaskStatus };
+
+export type Task = {
+	id: number;
+	subject: string;
+	description: string;
+	status: TaskStatus;
+	blockedBy: number[];
+	owner: string;
+};
+
+const TASK_FILE_PREFIX = "task_";
+const TASK_FILE_EXT = ".json";
+const TASK_DIR = path.join(WORKDIR, ".tasks");
+
+/* Helpers */
+
+/** return the full path to a task file */
+const taskFilePath = (id: number): string =>
+	path.join(TASK_DIR, `${TASK_FILE_PREFIX}${id}${TASK_FILE_EXT}`);
+
+/** return a task from a file */
+const readTaskFile = (id: number): Task => {
+	try {
+		return JSON.parse(fs.readFileSync(taskFilePath(id), "utf8"));
+	} catch (error) {
+		throw new Error(`Failed to read task file ${taskFilePath(id)}: ${error}`);
+	}
+};
+
+/** write a task to a file */
+const writeTaskFile = (id: number, task: Task): void =>
+	fs.writeFileSync(taskFilePath(id), JSON.stringify(task, null, 2));
+
+/** validate a task file name */
+const validTaskFileName = (fileName: string): boolean =>
+	fileName.startsWith(TASK_FILE_PREFIX) && fileName.endsWith(TASK_FILE_EXT);
+
+/** return the last task id */
+const lastTaskID = (): number => {
+	const entries = scanTaskFiles();
+	return entries.at(-1) ?? 0;
+};
+
+/** return the task id from a file name */
+const idFromFileName = (fileName: string): number | null => {
+	const id = parseInt(
+		fileName.slice(TASK_FILE_PREFIX.length, -TASK_FILE_EXT.length),
+		10,
+	);
+	return Number.isNaN(id) ? null : id;
+};
+
+/** return a task label */
+const taskLabel = (t: Task, b: string = ""): string =>
+	`${MARKS[t.status]} #${t.id}: ${t.subject}${b}`;
+
+/** scan task files */
+const scanTaskFiles = (
+	dir: string = TASK_DIR,
+): number[] =>
+	fs
+		.readdirSync(dir)
+		.filter(validTaskFileName)
+		.map((f) => idFromFileName(f))
+		.filter((entry): entry is number => entry !== null)
+		.sort((a, b) => a - b);
+
+/* End Helpers */
+
+export class TaskManager {
+	/** constructor */
+	constructor() {
+		fs.mkdirSync(TASK_DIR, { recursive: true });
+	}
+
+	/** create a new task */
+	create(subject: string, description = "") {
+		const t: Task = {
+			id: lastTaskID() + 1,
+			subject,
+			description,
+			status: "pending",
+			blockedBy: [],
+			owner: ""
+		};
+		writeTaskFile(t.id, t);
+		return JSON.stringify(t, null, 2);
+	}
+
+	/** get a task */
+	get(id: number): string {
+		return JSON.stringify(readTaskFile(id), null, 2);
+	}
+
+	/** update a task */
+	update(
+		id: number,
+		status?: TaskStatus,
+		add?: number[],
+		remove?: number[]
+	): string {
+		const t = readTaskFile(id);
+		if (status) t.status = status;
+		if (status === 'completed') this.clearDependency(id);
+		if (add) t.blockedBy = [...new Set([...t.blockedBy, ...add])];
+		if (remove) t.blockedBy = t.blockedBy.filter(b => !remove.includes(b));
+		writeTaskFile(id, t);
+		return JSON.stringify(t, null, 2);
+	}
+
+	/** list all tasks */
+	list() {
+		const entries = scanTaskFiles();
+		return entries.length ?
+			entries.map(tid => {
+				const t = readTaskFile(tid);
+				const b = t.blockedBy.length
+					? ` (blocked by: ${JSON.stringify(t.blockedBy)})`
+					: '';
+				return taskLabel(t, b);
+			})
+			: "no tasks";
+	}
+
+	/** clear a dependency */
+	clearDependency(id: number) {
+		for (const tid of scanTaskFiles()) {
+			const t = readTaskFile(tid);
+			if (t.blockedBy.includes(id)) {
+				t.blockedBy = t.blockedBy.filter(b => b !== id);
+				writeTaskFile(tid, t);
+			}
+		}
+	}
+}
+```
+
+## Add Tasks to Tools
+
+Now let's add our TaskManager tool to `tools.ts`.
+
+
+```typescript title="tools.ts" ins={6,9, 25-55}
+import { tool, zodSchema, generateText, isLoopFinished } from "ai";
+import {z} from "zod":
+import { spawnSync } from "node: child_process";
+import { api, MODEL, WORKDIR } from './config'
+import { TodoManager } from "./todo";
+import { TaskManager } from "./task";
+
+const TODO = new TodoManager();
+const TASK = new TaskManager();
+
+...
+
+/** TOOLS */
+const runBash = (command: string): string => {/* ... */};
+const runRead = (filePath: string, limit?: number) => {/* ... */};
+const runWrite = (filePath: string, content: string) => {/* ... */};
+const runEdit = (filePath: string, oldText: string, newText: string) => {/* ... */};
+
+export const TOOLS = {
+	bash: tool({/* ...  */}),
+	read_file: tool({/* ...  */}),
+	edit_file: tool({/* ...  */}),
+	write_file: tool({/* ...  */}),
+  todo: tool({/* ...  */}),
+  task_create: tool({
+		description: "Create a new task.",
+		inputSchema: zodSchema(
+			z.object({ subject: z.string(), description: z.string().optional() }),
+		),
+		execute: async ({ subject, description }) =>
+			TASK.create(subject, description),
+	}),
+	task_update: tool({
+		description: "Update a task.",
+		inputSchema: zodSchema(
+			z.object({
+				task_id: z.number(),
+				status: z.enum(["pending", "in_progress", "completed"]).optional(),
+				addBlockedBy: z.array(z.number()).optional(),
+				removeBlockedBy: z.array(z.number()).optional(),
+			}),
+		),
+		execute: async ({ task_id, status, addBlockedBy, removeBlockedBy }) =>
+			TASK.update(task_id, status, addBlockedBy, removeBlockedBy),
+	}),
+	task_list: tool({
+		description: "List all tasks.",
+		inputSchema: zodSchema(z.object({})),
+		execute: async () => TASK.list(),
+	}),
+	task_get: tool({
+		description: "Get a task by id.",
+		inputSchema: zodSchema(z.object({ task_id: z.number() })),
+		execute: async ({ task_id }) => TASK.get(task_id),
+	}),
+};
+```
+
+## Update Agent Loop
+
+Now let's update `index.ts` to use the task tool.
+
+```typescript title="index.ts" del={6} ins={7}
+const agentLoop = async (messages: ModelMessage[]): Promise<string> => {
+  let stepsSinceTodo = 0;
+  const { text } = await generateText({
+    model: ollama.chat(MODEL),
+    system: `You are a coding agent at $(WORKDIR}.
+    Use the todo tool to plan multi-step tasks. Mark in_progress before starting, completed when done.
+    Prefer task_create/task_update/task_list for multi-step work. Use todo for short checklists.
+    Use the task tool to delegate exploration or subtasks.`
+    messages,
+    tools: PARENT_TOOLS,
+    stopWhen: isLoopFinished(),
+    onStepFinish: ({ toolCalls, toolResults }) => {
+      const usedTodo = toolCalls.some((tc) => tc.toolName === "todo") ?? false;
+      stepsSinceTodo = usedTodo ? 0 : stepsSinceTodo + 1;
+      if (stepsSinceTodo >= 3) {
+        messages.push({
+          role: "user",
+          content: "<reminder>Updated your todos.</reminder>",
+        });
+      }
+    },
+  });
+  return text;
+};
+```
+
+## Try it out
+
+```bash
+bun run index.ts
+input » Create 3 tasks: "Setup project", "Write code", "Write tests". Make them depend on each other in order.
+input » Complete task 1 and then list tasks
+input » lists tasks
+```

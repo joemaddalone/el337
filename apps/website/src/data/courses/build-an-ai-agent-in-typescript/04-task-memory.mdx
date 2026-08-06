@@ -33,3 +33,134 @@ import { YouTube } from '@astro-community/astro-embed-youtube';
 </div>
 
 Fix AI coding agent drift on multi-step tasks with a built-in to-do manager. This agentic AI solution enforces sequential task execution and state tracking to prevent AI improvisation and keep your coding agent focused on long workflows.
+
+
+## The To-Do Manager
+
+Let's start by creating a new file called `todos.ts`.
+
+```typescript title="todos.ts"
+export type TodoStatus = "pending" | "in_progress" | "completed";
+export type TodoItem = { id: string; text: string; status: TodoStatus; };
+
+export const MARKS: Record<TodoStatus, string> = {
+	pending: "[ ]",
+	in_progress: "[>]",
+	completed: "[x]",
+};
+
+
+export class TodoManager {
+	private items: TodoItem[] = [];
+
+	update(items: TodoItem[]) {
+
+		if (items.length > 20) throw new Error("Max 20 todos allowed");
+		if (items.filter(i => i.status === 'in_progress').length > 1) {
+			throw new Error("Only one task can be in progress at a time");
+		}
+		this.items = items;
+
+		return this.render();
+	}
+
+	render() {
+		if (!this.items.length) return "no todos";
+		const list = this.items
+			.map(i => `${MARKS[i.status]} ${i.id} ${i.text}`)
+			.join('\n');
+		const done = this.items.filter(i => i.status === 'completed').length;
+		return `${list}\n\n(${done}/${this.items.length} completed)`;
+	}
+}
+```
+
+## Add Todo to Tools
+
+Now let's add our TodoManager tool to `tools.ts`.
+
+
+```typescript title="tools.ts" ins={5, 25-43}
+import { tool, zodSchema, generateText, isLoopFinished } from "ai";
+import {z} from "zod":
+import { spawnSync } from "node: child_process";
+import { api, MODEL, WORKDIR } from './config'
+import { TodoManager } from "./todo";
+
+const TODO = new TodoManager();
+
+...
+
+/** TOOLS */
+const runBash = (command: string): string => {/* ... */};
+
+const runRead = (filePath: string, limit?: number) => {/* ... */};
+
+const runWrite = (filePath: string, content: string) => {/* ... */};
+
+const runEdit = (filePath: string, oldText: string, newText: string) => {/* ... */};
+
+export const TOOLS = {
+	bash: tool({/* ...  */}),
+	read_file: tool({/* ...  */}),
+	edit_file: tool({/* ...  */}),
+	write_file: tool({/* ...  */}),
+  todo: tool({
+		description: "Update task list. Track progress on multi-step tasks.",
+		inputSchema: zodSchema(
+			z.object({
+				items: z.array(
+					z.object({
+						id: z.string(),
+						text: z.string(),
+						status: z.enum(["pending", "in_progress", "completed"]),
+					}),
+				),
+			}),
+		),
+		execute: async ({ items }) => {
+			const output = TODO.update(items);
+			console.log(`> todo:\n${output}`);
+			return output;
+		},
+	}),
+};
+```
+
+## Update Agent Loop
+
+Now let's update `index.ts` to use the todo tool.  Here will utilize the hook `onStepFinish` to track when the `todo` tool has been called.
+
+```typescript title="index.ts" del={5} ins={2, 6-8, 12-21}
+const agentLoop = async (messages: ModelMessage[]): Promise<string> => {
+  let stepsSinceTodo = 0;
+  const { text } = await generateText({
+    model: ollama.chat(MODEL),
+    system: `You are a coding agent at ${WORKDIR}. Use bash to solve tasks.  Act, dont explain.`,
+    system: `You are a coding agent at $(WORKDIR}.
+    Use the todo tool to plan multi-step tasks. Mark in_progress before starting, completed when done.
+    Use the task tool to delegate exploration or subtasks.`
+    messages,
+    tools: PARENT_TOOLS,
+    stopWhen: isLoopFinished(),
+    onStepFinish: ({ toolCalls, toolResults }) => {
+      const usedTodo = toolCalls.some((tc) => tc.toolName === "todo") ?? false;
+      stepsSinceTodo = usedTodo ? 0 : stepsSinceTodo + 1;
+      if (stepsSinceTodo >= 3) {
+        messages.push({
+          role: "user",
+          content: "<reminder>Updated your todos.</reminder>",
+        });
+      }
+    },
+  });
+  return text;
+};
+```
+
+## Try it out
+
+```bash
+bun run index.ts
+input » Create a file called hello.ts (add types, JSDOC comments, and guards), then create greet.ts (add types, JSDOC comments, and guards) that uses hello.ts along with a node readLine to accept a name for the hello function
+```
