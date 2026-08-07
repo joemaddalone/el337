@@ -2,11 +2,13 @@
 title: "Application Toolbars with Selector & IconButton"
 date: 2026-08-06
 tags: ["astryx", "toolbar", "components"]
-excerpt: "Build the top application control toolbar using Astryx Toolbar, Selector, Divider, IconButton, and Button."
+excerpt: "Build the top application toolbar with a sprint selector, action icon buttons, and the theme and language toggles."
 courseOrder: 10
 ---
 
-In this lesson, we build `BoardToolbar.tsx`—the top application bar containing board headers, metrics, sprint controls, action buttons, and primary actions.
+The header is still inline in `KanbanBoard` — title, task counter, and the two toggle buttons. In this lesson we consolidate everything into `BoardToolbar`, the top application bar: board title, total badge, sprint selector, action buttons, and the theme + language toggles.
+
+**Files this lesson:** `src/app/components/BoardToolbar.tsx` (new), `src/app/messages.ts` (extended), `src/app/components/KanbanBoard.tsx` (rewritten). `page.tsx` stays untouched.
 
 **Astryx this lesson:** `Toolbar`, `Heading`, `Badge`, `Selector`, `Divider` (vertical), `IconButton`, `Icon`, `Button`. Concepts: application action bars, single-select dropdowns, divider separation, and primary action buttons.
 
@@ -14,15 +16,35 @@ In this lesson, we build `BoardToolbar.tsx`—the top application bar containing
 
 - **`Toolbar`**: Container providing flex layout slotting via `startContent` and `endContent`.
 - **`Selector`**: Single-select dropdown control for switching active sprints.
-- **`Divider`**: Vertical divider (`orientation="vertical"`) with custom height styling.
-- **`IconButton` & `Icon`**: Icon-only action triggers for sorting, filtering, and searching.
+- **`Divider`**: Vertical divider (`orientation="vertical"`) with custom height styling (`styles.toolbarDivider`).
+- **`IconButton` & `Icon`**: Icon-only action triggers — now including the theme and language toggles.
 - **`Button`**: Primary CTA button with an integrated leading icon.
 
 ## Implementation: `BoardToolbar.tsx`
 
-Create `BoardToolbar.tsx`:
+First extend the catalogs with the "Add task" string so it localizes:
 
-```tsx title="src/app/BoardToolbar.tsx"
+```ts title="src/app/messages.ts"
+export const en: Catalog = {
+  '@app.board.title': { defaultMessage: 'Sprint Board' },
+  '@app.switchLanguage': { defaultMessage: 'En français' },
+  '@app.tasks': { defaultMessage: 'tasks' },
+  '@app.addTask': { defaultMessage: 'Add task' },
+};
+
+export const fr: Catalog = {
+  '@app.board.title': { defaultMessage: 'Tableau de sprint' },
+  '@app.switchLanguage': { defaultMessage: 'In English' },
+  '@app.tasks': { defaultMessage: 'tâches' },
+  '@app.addTask': { defaultMessage: 'Ajouter une tâche' },
+};
+```
+
+Create `src/app/components/BoardToolbar.tsx`:
+
+```tsx title="src/app/components/BoardToolbar.tsx"
+'use client';
+
 import { Toolbar } from '@astryxdesign/core/Toolbar';
 import { Heading } from '@astryxdesign/core/Text';
 import { Badge } from '@astryxdesign/core/Badge';
@@ -32,13 +54,18 @@ import { IconButton } from '@astryxdesign/core/IconButton';
 import { Button } from '@astryxdesign/core/Button';
 import { Icon } from '@astryxdesign/core/Icon';
 import { HStack } from '@astryxdesign/core/Layout';
+import { useTranslator } from '@astryxdesign/core/i18n';
 import {
   ArrowsUpDownIcon,
   FunnelIcon,
   MagnifyingGlassIcon,
+  MoonIcon,
+  SunIcon,
+  LanguageIcon,
   PlusIcon,
 } from '@heroicons/react/24/outline';
-import { styles } from './styles';
+import { styles } from '../styles';
+import { usePreferences } from '../providers';
 
 interface BoardToolbarProps {
   totalTasks: number;
@@ -51,13 +78,16 @@ export function BoardToolbar({
   sprint,
   onSprintChange,
 }: BoardToolbarProps) {
+  const t = useTranslator();
+  const { mode, setMode, locale, setLocale } = usePreferences();
+
   return (
     <Toolbar
       label="Board actions"
       gap={2}
       startContent={
         <>
-          <Heading level={3}>Sprint Board</Heading>
+          <Heading level={3}>{t('@app.board.title')}</Heading>
           <Badge label={totalTasks} variant="neutral" />
         </>
       }
@@ -94,8 +124,33 @@ export function BoardToolbar({
               label="Search"
             />
           </HStack>
+          <Divider
+            variant="strong"
+            orientation="vertical"
+            xstyle={styles.toolbarDivider}
+          />
+          {/* Dark / light toggle — cycles system → light → dark → system */}
+          <IconButton
+            icon={<Icon icon={mode === 'dark' ? SunIcon : MoonIcon} size="sm" />}
+            label={mode === 'dark' ? 'Light mode' : 'Dark mode'}
+            onClick={() =>
+              setMode(
+                mode === 'system'
+                  ? 'light'
+                  : mode === 'light'
+                    ? 'dark'
+                    : 'system',
+              )
+            }
+          />
+          {/* Language toggle */}
+          <IconButton
+            icon={<Icon icon={LanguageIcon} size="sm" />}
+            label={t('@app.switchLanguage')}
+            onClick={() => setLocale(locale === 'en' ? 'fr' : 'en')}
+          />
           <Button
-            label="Add task"
+            label={t('@app.addTask')}
             variant="primary"
             icon={<Icon icon={PlusIcon} size="sm" />}
           />
@@ -106,34 +161,137 @@ export function BoardToolbar({
 }
 ```
 
----
+The two toggles you built in lessons 3 and 5 now live in the toolbar as icon buttons, reading the same `usePreferences()` context — the app-level controls are all in one place. The moon/sun icon reflects the current mode, and the language button keeps its localized label.
 
-## See It in Action
+## Using It: `KanbanBoard.tsx`
 
-Update `src/app/page.tsx` to preview the top action toolbar in your browser. Keep `BoardToolbar.tsx` (above) and `styles.ts` (lesson 8) in `src/app/`:
+Rewrite `src/app/components/KanbanBoard.tsx` to lift `sprint` into state and hand the whole header to `BoardToolbar`:
 
-```tsx title="src/app/page.tsx"
+```tsx title="src/app/components/KanbanBoard.tsx" del={12-15, 25-26, 39-70} ins={3, 19, 24, 71-75}
 'use client';
 
 import { useState } from 'react';
-import { Card } from '@astryxdesign/core/Card';
+import { Section } from '@astryxdesign/core/Section';
+import {
+  Layout,
+  LayoutHeader,
+  LayoutContent,
+  HStack,
+  VStack,
+} from '@astryxdesign/core/Layout';
+import { Heading, Text } from '@astryxdesign/core/Text';
+import { Button } from '@astryxdesign/core/Button';
+import { useTranslator } from '@astryxdesign/core/i18n';
+import { usePreferences } from '../providers';
+import { styles } from '../styles';
+import { BoardCard } from './BoardCard';
+import { BoardColumn } from './BoardColumn';
 import { BoardToolbar } from './BoardToolbar';
+import { COLUMNS, INITIAL_ITEMS } from '../data';
+import type { ColumnId } from '../types';
 
-export default function Page() {
+export default function KanbanBoard() {
+  const t = useTranslator();
+  const { mode, setMode, locale, setLocale } = usePreferences();
   const [sprint, setSprint] = useState('003');
 
+  // Temporary — real moves arrive with the drag hook in lesson 11.
+  const moveItem = (id: string, to: ColumnId) => {
+    alert(`Move task ${id} to ${to}`);
+  };
+
   return (
-    <Card padding={4}>
-      <BoardToolbar
-        totalTasks={7}
-        sprint={sprint}
-        onSprintChange={setSprint}
+    <Section height="100dvh">
+      <Layout
+        height="fill"
+        header={
+          <LayoutHeader hasDivider padding={4}>
+            <HStack hAlign="between" vAlign="center">
+              <Heading level={3}>{t('@app.board.title')}</Heading>
+              <HStack gap={2} vAlign="center">
+                <Text type="supporting" color="secondary" hasTabularNumbers>
+                  {INITIAL_ITEMS.length} {t('@app.tasks')}
+                </Text>
+                <Button
+                  label={t('@app.switchLanguage')}
+                  variant="secondary"
+                  onClick={() => setLocale(locale === 'en' ? 'fr' : 'en')}
+                />
+                <Button
+                  label={
+                    mode === 'system'
+                      ? 'Light mode'
+                      : mode === 'light'
+                        ? 'Dark mode'
+                        : 'System mode'
+                  }
+                  variant="secondary"
+                  onClick={() =>
+                    setMode(
+                      mode === 'system'
+                        ? 'light'
+                        : mode === 'light'
+                          ? 'dark'
+                          : 'system',
+                    )
+                  }
+                />
+              </HStack>
+            </HStack>
+            <BoardToolbar
+              totalTasks={INITIAL_ITEMS.length}
+              sprint={sprint}
+              onSprintChange={setSprint}
+            />
+          </LayoutHeader>
+        }
+        content={
+          <LayoutContent padding={0}>
+            <HStack gap={4} xstyle={styles.boardColumns}>
+              {COLUMNS.map(col => {
+                const items = INITIAL_ITEMS.filter(it => it.column === col.id);
+                return (
+                  <BoardColumn
+                    key={col.id}
+                    meta={col}
+                    count={items.length}
+                    contentRef={() => {}}
+                  >
+                    {/* null children trigger BoardColumn's EmptyState fallback */}
+                    {items.length > 0 ? (
+                      <VStack gap={2}>
+                        {items.map(item => (
+                          <BoardCard
+                            key={item.id}
+                            item={item}
+                            cardRef={() => {}}
+                            onPointerDown={() => {}}
+                            onMove={moveItem}
+                          />
+                        ))}
+                      </VStack>
+                    ) : null}
+                  </BoardColumn>
+                );
+              })}
+            </HStack>
+          </LayoutContent>
+        }
       />
-    </Card>
+    </Section>
   );
 }
 ```
 
-Run `npm run dev` and open `http://localhost:3000` to interact with the sprint selector, icon buttons, and action toolbar live.
+`KanbanBoard` now owns the sprint state and passes it down; the header, title, counters, and toggles all moved into `BoardToolbar`. Note the header no longer needs `Heading`/`Text`/`Button` imports — the toolbar owns that rendering now.
 
-In the next lesson, we will extract the pointer interaction engine into a custom React hook: `useKanbanDrag`.
+## See It in Action
+
+Run `npm run dev`. The header is now a single `Toolbar`: title + total badge on the left; sprint selector, action icons, theme toggle, language toggle, and the **Add task** primary button on the right. Change the sprint — the selector reflects it. Flip the theme (moon/sun icon swaps) and the language — both still work, now as compact icon buttons in the toolbar.
+
+## What You Built
+
+- `BoardToolbar.tsx` — the consolidated top bar with sprint selection, action buttons, and the app-level theme + language toggles.
+- A board whose header is fully delegated to a dedicated component.
+
+In the next lesson, we will extract the drag-and-drop interaction engine into a custom hook.

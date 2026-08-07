@@ -2,35 +2,35 @@
 title: "Presenting Work Items: Card, Badge & MoreMenu"
 date: 2026-08-06
 tags: ["astryx", "components", "react"]
-excerpt: "Build the presentation component for Kanban work items using Card, Badge, Heading, Text, and MoreMenu."
+excerpt: "Extract the work-item presentation into BoardCardBody using Card, Badge, Heading, Text, and MoreMenu."
 courseOrder: 7
 ---
 
-In this lesson, we build `BoardCardBody.tsx`—the presentation component responsible for rendering a work item's details.
+The board renders tasks inline right now. In this lesson we extract the presentation into its own component — `BoardCardBody` — the reusable body shown both inside columns and, later, inside the floating drag clone.
+
+**Files this lesson:** `src/app/components/BoardCardBody.tsx` (new), `src/app/components/KanbanBoard.tsx` (rewritten). `page.tsx` stays untouched.
 
 **Astryx this lesson:** `Card`, `Badge`, `Heading`, `Text`, `MoreMenu`. Concepts: content hierarchy (heading levels, `type="supporting"`/`color="secondary"`), line clamping (`maxLines`), and the `MoreMenu` items contract (actions + dividers).
-
-By decoupling `BoardCardBody` from the draggable container, we can render the exact same body UI both inside column lists and inside the floating drag preview clone.
 
 ## Component Features
 
 1. **Header Row**: Task reference badge (`Badge variant="neutral"`), priority badge (`Badge variant={priority.variant}`), and contextual actions dropdown (`MoreMenu`).
-2. **Title & Description**: `Heading level={4}` and clamped description `Text maxLines={2}`.
+2. **Title & Description**: `Heading level={5}` and clamped description `Text maxLines={2}`.
 3. **Metadata Footer**: Secondary text displaying last edited time and due date.
 4. **Move Actions**: Dynamically generates `"Move to [Column]"` menu items for non-current columns.
 5. **`MoreMenu` items contract**: each item is either an action (`{ label, onClick }`) or a separator (`{ type: 'divider' }`) — the same contract Astryx's menu system uses across the design system.
 
 ## Implementation: `BoardCardBody.tsx`
 
-Create `BoardCardBody.tsx`:
+Create `src/app/components/BoardCardBody.tsx`:
 
-```tsx title="src/app/BoardCardBody.tsx"
+```tsx title="src/app/components/BoardCardBody.tsx"
 import { HStack, VStack } from '@astryxdesign/core/Layout';
 import { Heading, Text } from '@astryxdesign/core/Text';
 import { Badge } from '@astryxdesign/core/Badge';
 import { MoreMenu } from '@astryxdesign/core/MoreMenu';
-import { COLUMNS, PRIORITY_META } from './data';
-import type { ColumnId, WorkItem } from './types';
+import { COLUMNS, PRIORITY_META } from '../data';
+import type { ColumnId, WorkItem } from '../types';
 
 interface BoardCardBodyProps {
   item: WorkItem;
@@ -68,7 +68,7 @@ export function BoardCardBody({ item, onMove }: BoardCardBodyProps) {
       </HStack>
 
       <VStack gap={1}>
-        <Heading level={4}>{item.title}</Heading>
+        <Heading level={5}>{item.title}</Heading>
         <Text type="supporting" color="secondary" maxLines={2}>
           {item.description}
         </Text>
@@ -82,33 +82,150 @@ export function BoardCardBody({ item, onMove }: BoardCardBodyProps) {
 }
 ```
 
----
+Read the pieces:
 
-## See It in Action
+- `PRIORITY_META[item.priority]` resolves the priority badge's label and variant — the data model from lesson 6 mapping straight into design-system variants.
+- `moveTargets` filters out the item's own column and builds one `MoreMenu` action per remaining column, calling `onMove` with the target `ColumnId`.
+- The `MoreMenu` `items` array mixes actions and a `{ type: 'divider' }` separator.
 
-Update `src/app/page.tsx` to view your rendered `BoardCardBody` with task actions in your browser. Keep `BoardCardBody.tsx` (above) and `data.ts` + `types.ts` (lesson 6) in `src/app/`:
+By decoupling the body from the draggable container, we can render the exact same UI inside column lists and inside the floating drag preview clone (lesson 12).
 
-```tsx title="src/app/page.tsx"
+## Using It: `KanbanBoard.tsx`
+
+Rewrite `src/app/components/KanbanBoard.tsx` so the task card in each column renders a `BoardCardBody` (and a temporary `alert` stub for moves — real state-driven moves arrive with the drag hook in lesson 11):
+
+```tsx title="src/app/components/KanbanBoard.tsx" del={98-105} ins={17, 19, 25-29, 106}
 'use client';
 
+import { Section } from '@astryxdesign/core/Section';
+import {
+  Layout,
+  LayoutHeader,
+  LayoutContent,
+  HStack,
+  VStack,
+} from '@astryxdesign/core/Layout';
+import { Heading, Text } from '@astryxdesign/core/Text';
 import { Card } from '@astryxdesign/core/Card';
+import { Button } from '@astryxdesign/core/Button';
+import { useTranslator } from '@astryxdesign/core/i18n';
+import { usePreferences } from '../providers';
+import { styles } from '../styles';
 import { BoardCardBody } from './BoardCardBody';
-import { INITIAL_ITEMS } from './data';
+import { COLUMNS, INITIAL_ITEMS } from '../data';
+import type { ColumnId } from '../types';
 
-export default function Page() {
-  const sampleTask = INITIAL_ITEMS[0];
+export default function KanbanBoard() {
+  const t = useTranslator();
+  const { mode, setMode, locale, setLocale } = usePreferences();
+
+  // Temporary — real moves arrive with the drag hook in lesson 11.
+  const moveItem = (id: string, to: ColumnId) => {
+    alert(`Move task ${id} to ${to}`);
+  };
 
   return (
-    <Card padding={4} width={340}>
-      <BoardCardBody
-        item={sampleTask}
-        onMove={(id, to) => alert(`Move task ${id} to column ${to}`)}
+    <Section height="100dvh">
+      <Layout
+        height="fill"
+        header={
+          <LayoutHeader hasDivider padding={4}>
+            <HStack hAlign="between" vAlign="center">
+              <Heading level={3}>{t('@app.board.title')}</Heading>
+              <HStack gap={2} vAlign="center">
+                <Text type="supporting" color="secondary" hasTabularNumbers>
+                  {INITIAL_ITEMS.length} {t('@app.tasks')}
+                </Text>
+                <Button
+                  label={t('@app.switchLanguage')}
+                  variant="secondary"
+                  onClick={() => setLocale(locale === 'en' ? 'fr' : 'en')}
+                />
+                <Button
+                  label={
+                    mode === 'system'
+                      ? 'Light mode'
+                      : mode === 'light'
+                        ? 'Dark mode'
+                        : 'System mode'
+                  }
+                  variant="secondary"
+                  onClick={() =>
+                    setMode(
+                      mode === 'system'
+                        ? 'light'
+                        : mode === 'light'
+                          ? 'dark'
+                          : 'system',
+                    )
+                  }
+                />
+              </HStack>
+            </HStack>
+          </LayoutHeader>
+        }
+        content={
+          <LayoutContent padding={0}>
+            <HStack gap={4} xstyle={styles.boardColumns}>
+              {COLUMNS.map(col => {
+                const items = INITIAL_ITEMS.filter(it => it.column === col.id);
+                return (
+                  <Card
+                    key={col.id}
+                    variant="muted"
+                    padding={0}
+                    xstyle={styles.columnShell}
+                  >
+                    <VStack gap={3} padding={3}>
+                      <Heading level={4}>{col.title}</Heading>
+                      <Text
+                        type="supporting"
+                        color="secondary"
+                        hasTabularNumbers
+                      >
+                        {items.length} {t('@app.tasks')}
+                      </Text>
+                      <VStack gap={2}>
+                        {items.map(item => (
+                          <Card
+                            key={item.id}
+                            padding={3}
+                            xstyle={styles.card}
+                          >
+                            <Heading level={5}>{item.title}</Heading>
+                            <Text
+                              type="supporting"
+                              color="secondary"
+                              maxLines={2}
+                            >
+                              {item.description}
+                            </Text>
+                            <BoardCardBody item={item} onMove={moveItem} />
+                          </Card>
+                        ))}
+                      </VStack>
+                    </VStack>
+                  </Card>
+                );
+              })}
+            </HStack>
+          </LayoutContent>
+        }
       />
-    </Card>
+    </Section>
   );
 }
 ```
 
-Run `npm run dev` and open `http://localhost:3000` to test the work item body and contextual action menu live.
+Each task card is now a `Card` shell (hoverable via `styles.card`) wrapping a `BoardCardBody`. The body carries the badges, title, description, metadata footer, and the actions menu.
 
-In the next lesson, we will wrap this body inside `BoardCard.tsx` with custom StyleX elevation and pointer drag listeners.
+## See It in Action
+
+Run `npm run dev`. Task cards now show the reference badge, the priority badge (colored per `PRIORITY_META`), a clamped description, the *Edited/Due* footer, and a **⋮** menu. Open a card's menu and pick **Move to …** — you get an `alert` stub for now. Flip the theme toggle: the priority badge colors adapt to the dark token set automatically.
+
+## What You Built
+
+- `BoardCardBody.tsx` — the reusable work-item presentation, fed by the type-safe data model.
+- The board's task cards now use the full Astryx presentation vocabulary (Badge, MoreMenu, clamped Text).
+
+In the next lesson, we will wrap this body in `BoardCard.tsx` with pointer drag listeners.

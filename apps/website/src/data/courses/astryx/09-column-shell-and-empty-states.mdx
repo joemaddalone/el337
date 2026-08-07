@@ -2,40 +2,47 @@
 title: "Column Shells with StatusDot, Tooltip & EmptyState"
 date: 2026-08-06
 tags: ["astryx", "components", "layout"]
-excerpt: "Build column shells with status dots, tooltips, tabular task counters, and compact empty state fallbacks."
+excerpt: "Extract the board column into BoardColumn with status dots, tooltips, tabular task counters, and compact empty state fallbacks."
 courseOrder: 9
 ---
 
-In this lesson, we create `BoardColumn.tsx`—the container component for board columns. Each column utilizes a muted Astryx `Card` shell hosting an internal full-height `Layout`.
+The columns are inline in `KanbanBoard` right now. In this lesson we extract them into `BoardColumn` — the container component that gives each column its status dot, tooltip, live counter, and empty-state fallback.
+
+**Files this lesson:** `src/app/components/BoardColumn.tsx` (new), `src/app/components/KanbanBoard.tsx` (rewritten). `page.tsx` stays untouched.
 
 **Astryx this lesson:** `Card` (muted variant), nested `Layout`/`LayoutHeader`/`LayoutContent`, `StatusDot`, `Heading`, `Tooltip`, `Icon`, `Text`, `EmptyState`. Concepts: status dots, tooltip overlays, tabular counters (`hasTabularNumbers`), and compact empty states.
 
 ## Component Design
 
 1. **Header**:
-   - `StatusDot`: Visual variant indicator (`neutral`, `accent`, `warning`, `success`).
+   - `StatusDot`: Visual variant indicator (`neutral`, `accent`, `warning`, `success`) — fed straight from `ColumnMeta.variant`.
    - `Heading level={4}`: Column title.
-   - `Tooltip` & `Icon`: Informational tooltip describing column purpose.
+   - `Tooltip` & `Icon`: Informational tooltip describing column purpose (`meta.tooltip`).
    - `Text hasTabularNumbers`: Live item counter.
 2. **Content Area**:
-   - Scrollable container hosting task cards or a compact `EmptyState` fallback when no items are present.
+   - A padded container hosting task cards — or a compact `EmptyState` fallback when no items are present (using the column's `meta.emptyIcon`).
 
 ## Implementation: `BoardColumn.tsx`
 
-Create `BoardColumn.tsx`:
+Create `src/app/components/BoardColumn.tsx`:
 
-```tsx title="src/app/BoardColumn.tsx"
+```tsx title="src/app/components/BoardColumn.tsx"
 import type { ReactNode } from 'react';
 import { Card } from '@astryxdesign/core/Card';
-import { Layout, LayoutHeader, LayoutContent, HStack } from '@astryxdesign/core/Layout';
+import {
+  Layout,
+  LayoutHeader,
+  LayoutContent,
+  HStack,
+} from '@astryxdesign/core/Layout';
 import { StatusDot } from '@astryxdesign/core/StatusDot';
 import { Heading, Text } from '@astryxdesign/core/Text';
 import { Tooltip } from '@astryxdesign/core/Tooltip';
 import { Icon } from '@astryxdesign/core/Icon';
 import { EmptyState } from '@astryxdesign/core/EmptyState';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
-import { styles } from './styles';
-import type { ColumnMeta } from './types';
+import { styles } from '../styles';
+import type { ColumnMeta } from '../types';
 
 interface BoardColumnProps {
   meta: ColumnMeta;
@@ -58,10 +65,7 @@ export function BoardColumn({
           <LayoutHeader hasDivider padding={3}>
             <HStack hAlign="between" vAlign="center">
               <HStack gap={2} vAlign="center">
-                <StatusDot
-                  variant={meta.variant}
-                  label={`${meta.title} status`}
-                />
+                <StatusDot variant={meta.variant} label={`${meta.title} status`} />
                 <Heading level={4}>{meta.title}</Heading>
                 <Tooltip content={meta.tooltip}>
                   <Icon
@@ -98,61 +102,165 @@ export function BoardColumn({
 }
 ```
 
----
+Notes:
 
-## See It in Action
+- `StatusDot variant={meta.variant}` flows the typed variant straight from the data model — `accent`, `warning`, `success`, `neutral`.
+- `Tooltip content={meta.tooltip}` wraps the info icon; hover it for the column's purpose.
+- `Text hasTabularNumbers` keeps the live counter aligned as it changes.
+- `LayoutContent ref={contentRef}` forwards the scrollable node — the drag hook in lesson 11 registers it for hit-testing.
+- `children ?? <EmptyState …/>` — when a column has no cards, the compact empty state (with the column's own icon and copy) appears instead.
+- The muted `Card` shell reuses `styles.columnShell` for the fixed-width, full-height sizing from lesson 4.
 
-Update `src/app/page.tsx` to view columns with tasks and empty state fallbacks in your browser. Keep `BoardColumn.tsx` (above), `BoardCard.tsx` + `styles.ts` (lesson 8), and `data.ts` + `types.ts` (lesson 6) in `src/app/`:
+## Using It: `KanbanBoard.tsx`
 
-```tsx title="src/app/page.tsx"
+Rewrite `src/app/components/KanbanBoard.tsx` to render `BoardColumn` per `COLUMNS` entry, passing the column's `BoardCard` list as children:
+
+```tsx title="src/app/components/KanbanBoard.tsx" del={12, 77-104} ins={18, 105-125}
 'use client';
 
-import { HStack } from '@astryxdesign/core/Layout';
 import { Section } from '@astryxdesign/core/Section';
-import { BoardColumn } from './BoardColumn';
+import {
+  Layout,
+  LayoutHeader,
+  LayoutContent,
+  HStack,
+  VStack,
+} from '@astryxdesign/core/Layout';
+import { Heading, Text } from '@astryxdesign/core/Text';
+import { Card } from '@astryxdesign/core/Card';
+import { Button } from '@astryxdesign/core/Button';
+import { useTranslator } from '@astryxdesign/core/i18n';
+import { usePreferences } from '../providers';
+import { styles } from '../styles';
 import { BoardCard } from './BoardCard';
-import { COLUMNS, INITIAL_ITEMS } from './data';
-import { styles } from './styles';
+import { BoardColumn } from './BoardColumn';
+import { COLUMNS, INITIAL_ITEMS } from '../data';
+import type { ColumnId } from '../types';
 
-export default function Page() {
-  const todoCol = COLUMNS[0];
-  const inReviewCol = COLUMNS[2];
-  const todoItems = INITIAL_ITEMS.filter(it => it.column === 'todo');
+export default function KanbanBoard() {
+  const t = useTranslator();
+  const { mode, setMode, locale, setLocale } = usePreferences();
+
+  // Temporary — real moves arrive with the drag hook in lesson 11.
+  const moveItem = (id: string, to: ColumnId) => {
+    alert(`Move task ${id} to ${to}`);
+  };
 
   return (
-    <Section height="100dvh" padding={4}>
-      <HStack gap={4} xstyle={styles.boardColumns}>
-        {/* Populated Column */}
-        <BoardColumn
-          meta={todoCol}
-          count={todoItems.length}
-          contentRef={el => {}}
-        >
-          {todoItems.map(item => (
-            <BoardCard
-              key={item.id}
-              item={item}
-              cardRef={() => {}}
-              onPointerDown={() => {}}
-              onMove={() => {}}
-            />
-          ))}
-        </BoardColumn>
-
-        {/* Empty Column */}
-        <BoardColumn
-          meta={inReviewCol}
-          count={0}
-          contentRef={el => {}}
-        >
-          {null}
-        </BoardColumn>
-      </HStack>
+    <Section height="100dvh">
+      <Layout
+        height="fill"
+        header={
+          <LayoutHeader hasDivider padding={4}>
+            <HStack hAlign="between" vAlign="center">
+              <Heading level={3}>{t('@app.board.title')}</Heading>
+              <HStack gap={2} vAlign="center">
+                <Text type="supporting" color="secondary" hasTabularNumbers>
+                  {INITIAL_ITEMS.length} {t('@app.tasks')}
+                </Text>
+                <Button
+                  label={t('@app.switchLanguage')}
+                  variant="secondary"
+                  onClick={() => setLocale(locale === 'en' ? 'fr' : 'en')}
+                />
+                <Button
+                  label={
+                    mode === 'system'
+                      ? 'Light mode'
+                      : mode === 'light'
+                        ? 'Dark mode'
+                        : 'System mode'
+                  }
+                  variant="secondary"
+                  onClick={() =>
+                    setMode(
+                      mode === 'system'
+                        ? 'light'
+                        : mode === 'light'
+                          ? 'dark'
+                          : 'system',
+                    )
+                  }
+                />
+              </HStack>
+            </HStack>
+          </LayoutHeader>
+        }
+        content={
+          <LayoutContent padding={0}>
+            <HStack gap={4} xstyle={styles.boardColumns}>
+              {COLUMNS.map(col => {
+                const items = INITIAL_ITEMS.filter(it => it.column === col.id);
+                return (
+                  <Card
+                    key={col.id}
+                    variant="muted"
+                    padding={0}
+                    xstyle={styles.columnShell}
+                  >
+                    <VStack gap={3} padding={3}>
+                      <Heading level={4}>{col.title}</Heading>
+                      <Text
+                        type="supporting"
+                        color="secondary"
+                        hasTabularNumbers
+                      >
+                        {items.length} {t('@app.tasks')}
+                      </Text>
+                      <VStack gap={2}>
+                        {items.map(item => (
+                          <BoardCard
+                            key={item.id}
+                            item={item}
+                            cardRef={() => {}}
+                            onPointerDown={() => {}}
+                            onMove={moveItem}
+                          />
+                        ))}
+                      </VStack>
+                    </VStack>
+                  </Card>
+                  <BoardColumn
+                    key={col.id}
+                    meta={col}
+                    count={items.length}
+                    contentRef={() => {}}
+                  >
+                    {/* null children trigger BoardColumn's EmptyState fallback */}
+                    {items.length > 0 ? (
+                      <VStack gap={2}>
+                        {items.map(item => (
+                          <BoardCard
+                            key={item.id}
+                            item={item}
+                            cardRef={() => {}}
+                            onPointerDown={() => {}}
+                            onMove={moveItem}
+                          />
+                        ))}
+                      </VStack>
+                    ) : null}
+                  </BoardColumn>
+                );
+              })}
+            </HStack>
+          </LayoutContent>
+        }
+      />
     </Section>
   );
 }
 ```
 
-Run `npm run dev` and open `http://localhost:3000` to preview populated column shells and compact empty states live.
+The column header, counter, tooltip, and empty-state logic now all live in `BoardColumn`. The "In review" column — which has no tasks — renders its compact `EmptyState` automatically.
 
-In the next lesson, we will construct the top application action toolbar (`BoardToolbar.tsx`).
+## See It in Action
+
+Run `npm run dev`. Each column now has a colored status dot, a hoverable info tooltip, and an aligned counter. The empty **In review** column shows its compact empty state with the clipboard icon. Hover a column title's info icon to see the tooltip; the counters use tabular numbers so they stay aligned.
+
+## What You Built
+
+- `BoardColumn.tsx` — the full column shell: status dot, tooltip, tabular counter, scrollable content, and empty-state fallback.
+- A board that delegates column rendering to a dedicated component with `contentRef` ready for the drag hook.
+
+In the next lesson, we will build the top application action toolbar — and move the theme and language toggles into it.

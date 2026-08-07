@@ -2,28 +2,49 @@
 title: "Introduction, Setup & Architecture"
 date: 2026-08-06
 tags: ["astryx", "react", "nextjs"]
-excerpt: "Get started with Astryx: installation, Next.js setup, CSS layer imports, and client provider configuration."
+excerpt: "Get started with Astryx: installation, Next.js setup, CSS layer imports, client provider boundaries, and the first stub of our Kanban board."
 courseOrder: 1
 ---
 
 Welcome to **Mastering Astryx**! Astryx is a modern, open-source design system built on top of StyleX. It combines zero-runtime performance with a fully customizable, type-safe suite of React primitives.
 
-In this introductory lesson, we will set up an Astryx project using Next.js, configure CSS import layers, and wrap our application in the client provider boundaries.
+In this lesson, we will set up an Astryx project using Next.js, configure CSS import layers, wrap the app in client providers — including a theme provider with light/dark support — and create the first stub of the **Kanban board** we will build together across this entire course.
 
-## Why Next.js + Astryx?
+## The Course Build: One App, Built in Place
 
-Astryx ships with pre-compiled CSS and JS bundles, allowing you to consume `@astryxdesign/core` seamlessly in Next.js applications without setting up custom StyleX compiler plugins on day 1.
+This course has a simple philosophy: **we build the actual Kanban app, not throwaway demos.** From this lesson on, `page.tsx` stays untouched — it simply renders `KanbanBoard`, and every lesson grows the board itself (or one of its components). No more overwriting `page.tsx` with a one-off demo page.
 
-Key highlights include:
-- **Zero-Config CSS**: Pre-compiled CSS layer imports handle resets, component bases, and theme variables.
-- **Client Boundaries**: Full compatibility with Next.js App Router using `'use client'` provider boundaries.
-- **Composable Primitives**: Structural elements like `HStack`, `VStack`, and `Layout` streamline spatial arrangement.
+By the end of the course, your project will look like this:
+
+```
+src/
+└── app/
+    ├── globals.css                  # CSS layer imports
+    ├── layout.tsx                   # Root layout (written once)
+    ├── page.tsx                     # <KanbanBoard /> (written once)
+    ├── providers.tsx                # Theme + i18n providers + usePreferences()
+    ├── messages.ts                  # en/fr translation catalogs
+    ├── types.ts                     # Domain contracts
+    ├── data.ts                      # Column configs, priorities, initial items
+    ├── styles.ts                    # Centralized StyleX stylesheet
+    ├── hooks/
+    │   └── useKanbanDrag.ts         # Drag-and-drop interaction hook
+    └── components/
+        ├── BoardCardBody.tsx        # Work item presentation
+        ├── BoardCard.tsx            # Interactive card shell
+        ├── BoardColumn.tsx          # Column shell & empty state
+        ├── BoardToolbar.tsx         # Top bar: sprint, actions, theme & language toggles
+        ├── FloatingCard.tsx         # Fixed drag overlay clone
+        └── KanbanBoard.tsx          # The board — grows every lesson
+```
+
+Keep this tree in mind — every lesson maps to a file or two in it.
 
 ## Setup Steps
 
 ### 1. Initialize Next.js Application
 
-First, create a new Next.js project using `create-next-app` with TypeScript and the App Router enabled:
+Create a new Next.js project with TypeScript and the App Router enabled:
 
 ```bash
 npx create-next-app@latest my-astryx-app --typescript --app --src-dir --no-tailwind --no-eslint
@@ -37,6 +58,8 @@ Install `@astryxdesign/core`, `@astryxdesign/theme-neutral`, `@heroicons/react`,
 ```bash
 npm install @astryxdesign/core @astryxdesign/theme-neutral @heroicons/react @stylexjs/stylex
 ```
+
+`@astryxdesign/core` is the design system itself. `@astryxdesign/theme-neutral` is the theme package we will use (light and dark token sets included). `@heroicons/react` provides the icons Astryx components render. `@stylexjs/stylex` is the styling engine — we write our first `stylex.create` styles in lesson 4.
 
 ### 3. Configure CSS Layer Imports
 
@@ -53,7 +76,7 @@ The CSS import order is critical for CSS layer precedence:
 2. `astryx.css`: All component styles (`@layer astryx-base`)
 3. `theme.css`: Theme token overrides (`@layer astryx-theme`)
 
-Import `globals.css` inside your root layout:
+Import `globals.css` inside your root layout and mount the client `Providers` boundary:
 
 ```tsx title="src/app/layout.tsx"
 import './globals.css';
@@ -74,41 +97,93 @@ export default function RootLayout({
 }
 ```
 
-### 4. Create Client Providers Boundary
+### 4. Create the Client Providers Boundary
 
-Because interactive components and themes run on the client side in Next.js App Router, create a `providers.tsx` component marked with `'use client'`:
+Interactive state — themes, locale — runs on the client in Next.js App Router, so the provider boundary must be marked `'use client'`. From day one we wrap the app in Astryx's `<Theme>` provider so light/dark token resolution is in place before we ever toggle it (lesson 5 adds the toggle button):
 
 ```tsx title="src/app/providers.tsx"
 'use client';
 
 import type { ReactNode } from 'react';
+import { Theme } from '@astryxdesign/core';
+import { neutralTheme } from '@astryxdesign/theme-neutral/built';
 
 export function Providers({ children }: { children: ReactNode }) {
-  return <>{children}</>;
+  return (
+    <Theme theme={neutralTheme} mode="system">
+      {children}
+    </Theme>
+  );
 }
 ```
 
-### 5. Verification: Rendering Your First Component
+- `<Theme theme={neutralTheme}>` activates the neutral theme's token set.
+- `mode="system"` (the default) follows the OS color scheme — light or dark — automatically.
+- We import `neutralTheme` from `@astryxdesign/theme-neutral/built` because `globals.css` already loads the pre-compiled `theme.css`. The `/built` subpath pairs with that CSS and skips runtime style injection (the correct setup for Next.js SSR). The plain `@astryxdesign/theme-neutral` import injects styles at runtime instead — pick one and stay consistent with how the CSS is loaded.
 
-Test your setup by importing Astryx primitives in a page component:
+### 5. Create the Kanban Board Stub
 
-```tsx title="src/app/page.tsx"
+Create the folder `src/app/components/` and a first stub of the board. It will be replaced by the real shell in lesson 2 — but the file location is permanent:
+
+```tsx title="src/app/components/KanbanBoard.tsx"
 'use client';
 
 import { Card } from '@astryxdesign/core/Card';
 import { Heading, Text } from '@astryxdesign/core/Text';
 
-export default function HomePage() {
+export default function KanbanBoard() {
   return (
     <Card padding={4}>
-      <Heading level={2}>Hello Astryx</Heading>
-      <Text color="secondary">Welcome to the design system.</Text>
+      <Heading level={2}>Sprint Board</Heading>
+      <Text color="secondary">
+        The Kanban board is under construction — we will build it together
+        over the coming lessons.
+      </Text>
     </Card>
   );
 }
 ```
 
-Open `http://localhost:3000` — you should see a card titled **Hello Astryx** with supporting secondary text. If it renders with correct spacing, typography, and shadows, your Astryx baseline is live and demo-able.
+`KanbanBoard` declares `'use client'` because it will own interactive state later. That makes it the App Router client boundary — the page itself can stay a server component.
 
-In the next lesson, we will explore Astryx's spatial layout engine primitives.
+### 6. Mount the Board in `page.tsx` (Written Once)
 
+Replace the generated page with a single render of the board:
+
+```tsx title="src/app/page.tsx"
+import KanbanBoard from './components/KanbanBoard';
+
+export default function Page() {
+  return <KanbanBoard />;
+}
+```
+
+Note: no `'use client'` here. `page.tsx` stays a server component; `KanbanBoard` is the client boundary. **We will never touch `page.tsx` again.**
+
+### 7. Clean Up Boilerplate
+
+`create-next-app` leaves scaffolding we don't need. Delete:
+
+```bash
+rm src/app/page.module.css
+```
+
+`page.tsx`, `globals.css`, and `layout.tsx` are already replaced above. The rest of `src/app/` (favicon, etc.) can stay.
+
+## See It in Action
+
+Run the dev server:
+
+```bash
+npm run dev
+```
+
+Open `http://localhost:3000` — you should see a card titled **Sprint Board** with supporting secondary text, centered on the default page. If it renders with correct spacing and typography, your Astryx baseline is live.
+
+## What You Built
+
+- A Next.js + Astryx project with the correct CSS layer import order.
+- A client `Providers` boundary with the `<Theme>` provider already active (`mode="system"` — flip your OS to dark and the page re-themes instantly).
+- A `KanbanBoard` stub mounted in `page.tsx`, which you will never rewrite again.
+
+In the next lesson, we will shape that stub into the real board shell using Astryx layout primitives.

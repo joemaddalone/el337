@@ -2,20 +2,123 @@
 title: "Styling Components & StyleX Integration"
 date: 2026-08-06
 tags: ["astryx", "stylex", "css"]
-excerpt: "Learn how Astryx leverages StyleX for zero-runtime CSS-in-JS and custom component overrides via xstyle."
+excerpt: "Configure the StyleX compiler, write the board's centralized stylesheet, and apply custom styles to Astryx components via the xstyle prop."
 courseOrder: 4
 ---
 
-Astryx relies on Meta's **StyleX** (`@stylexjs/stylex`) for styling. StyleX compiles styles down to atomic, collision-free CSS classes at build time.
+Astryx relies on Meta's **StyleX** (`@stylexjs/stylex`) for styling. StyleX compiles styles down to atomic, collision-free CSS classes at build time. In this lesson we configure the compiler once, write the board's centralized stylesheet (`src/app/styles.ts`), and apply it to the shell and placeholder columns via the `xstyle` prop.
 
-In this lesson, we will explore how to create custom stylesheets using `stylex.create`, apply pseudo-classes, write dynamic style functions, and pass style overrides to Astryx components using the `xstyle` prop.
+**Files this lesson:** `babel.config.js` (new), `postcss.config.js` (new), `src/app/globals.css` (extended), `src/app/styles.ts` (new), `src/app/components/KanbanBoard.tsx` (rewritten). `page.tsx` stays untouched.
 
-## Defining Styles with `stylex.create`
+## Prerequisite: Configure the StyleX Compiler (Next.js 16 + Turbopack)
 
-Use `stylex.create` to define type-safe style rules:
+Astryx ships pre-compiled, so consuming its components needs no StyleX compiler setup (see lesson 1). But `stylex.create` is compile-time-only: when a call reaches the runtime un-compiled, `@stylexjs/stylex` throws:
 
-```tsx title="src/app/styles.ts"
+```
+Unexpected 'stylex.create' call at runtime. Styles must be compiled by '@stylexjs/babel-plugin'.
+```
+
+Configure the compiler once per project before writing the styles below. The same setup covers the custom StyleX you'll write in lessons 8 and 12, so you only pay this cost once.
+
+### 1. Install the Compiler Plugins
+
+```bash
+npm install -D @stylexjs/babel-plugin @stylexjs/postcss-plugin autoprefixer
+```
+
+> Keep `@stylexjs/babel-plugin` and `@stylexjs/postcss-plugin` in sync with the `@stylexjs/stylex` version installed in lesson 1 (check with `npm list @stylexjs/stylex`).
+
+### 2. Babel Configuration
+
+Create `babel.config.js` in the project root. The StyleX Babel plugin transforms every `stylex.create` call into compiled, atomic CSS references at build time:
+
+```js title="babel.config.js"
+const path = require('path');
+const dev = process.env.NODE_ENV !== 'production';
+
+module.exports = {
+  presets: ['next/babel'],
+  plugins: [
+    [
+      '@stylexjs/babel-plugin',
+      {
+        dev,
+        runtimeInjection: false,
+        enableInlinedConditionalMerge: true,
+        treeshakeCompensation: true,
+        aliases: { '@/*': [path.join(__dirname, 'src/*')] },
+        unstable_moduleResolution: { type: 'commonJS' },
+      },
+    ],
+  ],
+};
+```
+
+> The `aliases` mapping assumes the `--src-dir` layout from lesson 1 (`@/*` → `./src/*`). The board's own imports are all relative, so this mainly future-proofs alias usage.
+
+### 3. PostCSS Configuration
+
+Create `postcss.config.js`. The PostCSS plugin generates the compiled CSS rules and reuses the same Babel plugin config so both halves of the pipeline agree on the transformation:
+
+```js title="postcss.config.js"
+const babelConfig = require('./babel.config');
+
+module.exports = {
+  plugins: {
+    '@stylexjs/postcss-plugin': {
+      include: [
+        'src/**/*.{js,jsx,ts,tsx}',
+        'app/**/*.{js,jsx,ts,tsx}',
+        'components/**/*.{js,jsx,ts,tsx}',
+      ],
+      babelConfig: {
+        babelrc: false,
+        parserOpts: { plugins: ['typescript', 'jsx'] },
+        plugins: babelConfig.plugins,
+      },
+      useCSSLayers: true,
+    },
+    autoprefixer: {},
+  },
+};
+```
+
+The `include` globs tell the plugin which files may contain StyleX styles — make sure they cover `src/` (and therefore `src/app/components/` and `src/app/hooks/`) when using the src directory layout.
+
+### 4. Add the `@stylex` Directive
+
+The PostCSS plugin injects the compiled atomic CSS where the `@stylex` directive appears. Append it to `src/app/globals.css`, after the Astryx imports:
+
+```css title="src/app/globals.css"
+@import '@astryxdesign/core/reset.css';
+@import '@astryxdesign/core/astryx.css';
+@import '@astryxdesign/theme-neutral/theme.css';
+
+@stylex;
+```
+
+### 5. Restart the Dev Server
+
+Clear the Next.js cache and restart. Assuming you're on the Next.js 16 template that `create-next-app@latest` installs today, no `next.config` changes are needed — since Next.js 16.0.3 this setup runs under Turbopack, the default bundler:
+
+```bash
+rm -rf .next
+npm run dev
+```
+
+> Turbopack giving you trouble? `next dev --webpack` opts out on Next.js 16, but the setup above is the tested Turbopack path.
+
+## The Board's Centralized Stylesheet: `styles.ts`
+
+Create `src/app/styles.ts`. This file holds every custom StyleX rule the board needs — layout, elevation, drag feedback. One stylesheet, imported by every component:
+
+```ts title="src/app/styles.ts"
 import * as stylex from '@stylexjs/stylex';
+
+// StyleX inlines every value inside stylex.create at build time, so the
+// compiler needs the width defined here rather than imported from './data'
+// (see the note below).
+const COLUMN_WIDTH = 300;
 
 export const styles = stylex.create({
   boardColumns: {
@@ -26,7 +129,7 @@ export const styles = stylex.create({
   },
   columnShell: {
     flexShrink: 0,
-    flexBasis: 300,
+    flexBasis: COLUMN_WIDTH,
     height: '100%',
   },
   card: {
@@ -37,99 +140,170 @@ export const styles = stylex.create({
     ':hover': {
       boxShadow: 'var(--shadow-med)',
     },
+    // Black shadows vanish on dark surfaces, so strengthen the hover state
+    // with a subtle light ring and a deeper drop shadow in dark mode.
+    '@media (prefers-color-scheme: dark)': {
+      ':hover': {
+        boxShadow:
+          '0 0 0 1px rgba(255, 255, 255, 0.14), 0 8px 24px rgba(0, 0, 0, 0.55)',
+      },
+    },
   },
-});
-```
-
-> **Note**: This stylesheet seeds the Kanban app's centralized styles — lesson 8 recreates the same `src/app/styles.ts` for the modular board (identical content, no conflict).
-
-## The `xstyle` Prop
-
-Every core Astryx component accepts an `xstyle` prop. This allows you to apply custom StyleX rules directly onto Astryx elements without breaking their design system encapsulations.
-
-```tsx title="src/app/CustomCard.tsx"
-import { Card } from '@astryxdesign/core/Card';
-import { styles } from './styles';
-
-export function CustomCard({ children }: { children: React.ReactNode }) {
-  return (
-    <Card padding={3} xstyle={styles.card}>
-      {children}
-    </Card>
-  );
-}
-```
-
-### Passing Array of Styles
-
-You can pass multiple StyleX objects or dynamic outputs in an array:
-
-```tsx
-<Card xstyle={[styles.floating, styles.floatingAt(x, y, width)]}>
-  {children}
-</Card>
-```
-
-## Dynamic Style Functions in StyleX
-
-StyleX allows functions that receive runtime arguments and return style objects. This is useful for positioning overlays, drag feedback, or dynamic dimensions.
-
-```tsx title="src/app/DynamicStyles.ts"
-import * as stylex from '@stylexjs/stylex';
-
-export const styles = stylex.create({
-  // Dynamic floating element position
+  floating: {
+    position: 'fixed',
+    insetBlockStart: 0,
+    insetInlineStart: 0,
+    pointerEvents: 'none',
+    cursor: 'grabbing',
+    boxShadow: 'var(--shadow-high)',
+    zIndex: 1000,
+    '@media (prefers-color-scheme: dark)': {
+      boxShadow:
+        '0 0 0 1px rgba(255, 255, 255, 0.16), 0 12px 32px rgba(0, 0, 0, 0.6)',
+    },
+  },
   floatingAt: (x: number, y: number, width: number) => ({
     width,
     transform: `translate(${x}px, ${y}px)`,
   }),
-
-  // Dynamic ghost container height matching target slot
   ghost: (height: number) => ({
     height,
     borderRadius: 'var(--radius-container)',
     backgroundColor: 'var(--color-background-muted)',
+    '@media (prefers-color-scheme: dark)': {
+      outline: '1px dashed rgba(148, 163, 184, 0.5)',
+    },
   }),
+  toolbarDivider: {
+    height: 'auto',
+    marginBlock: 'var(--spacing-1)',
+    alignSelf: 'stretch',
+  },
+  columnEmptyState: {
+    paddingBlock: 'var(--spacing-10)',
+  },
 });
 ```
 
-### Usage in Components
+### What's in here
+
+- **`boardColumns`** — the horizontal strip: it scrolls on the x-axis when columns overflow, never on y.
+- **`columnShell`** — a fixed-width, full-height column. `flexBasis: COLUMN_WIDTH` sizes it; `flexShrink: 0` keeps it from squishing.
+- **`card`** — the interactive card base: grab cursor, no text selection, and a hover elevation that transitions in over 120ms. The `@media (prefers-color-scheme: dark)` conditional swaps the near-invisible black shadow for a light ring + deep shadow — StyleX nests media queries and pseudo-classes exactly like CSS.
+- **`floating`**, **`floatingAt`, `ghost`** — the drag feedback styles. `floating` pins a clone to the viewport with high elevation; `floatingAt(x, y, width)` is a dynamic function that positions it via `transform`; `ghost(height)` renders the drop-slot placeholder. These get used in lessons 11–12 — defined now, so `styles.ts` is the single source for the whole app.
+- **`toolbarDivider`, `columnEmptyState`** — vertical divider sizing for the toolbar (lesson 10) and vertical padding for the compact empty state (lesson 9).
+
+> **Why the local `COLUMN_WIDTH` instead of `import { COLUMN_WIDTH } from './data'`?** StyleX evaluates every value inside `stylex.create` at build time. The PostCSS plugin processes `styles.ts` on its own, and its CommonJS resolver can't load `./data` — a `.ts` module that also imports icons and types — so the import fails with *"Could not resolve the path to the imported file."* Values used inside `stylex.create` must be defined in the same file — or in a `.stylex.ts` file, StyleX's dedicated constant/theme module format, which the compiler *can* resolve. When `data.ts` arrives in lesson 6 it keeps its own `COLUMN_WIDTH` export for reference; it just can't feed a StyleX file.
+
+## The `xstyle` Prop
+
+Every core Astryx component accepts an `xstyle` prop. This applies custom StyleX rules directly onto Astryx elements without breaking their design-system encapsulations. You can pass a single style object, or an array of them:
 
 ```tsx
-// Applying dynamic ghost slot
-<VStack xstyle={styles.ghost(120)} />
+<Card xstyle={[styles.card, styles.floatingAt(x, y, width)]}>
+  {children}
+</Card>
 ```
 
----
+## Applying the Styles: `KanbanBoard.tsx`
 
-## See It in Action
+Rewrite `src/app/components/KanbanBoard.tsx` to use the stylesheet — the column strip gets `boardColumns`, each column gets `columnShell`, and each placeholder task card gets `card` (so it lifts on hover):
 
-Update `src/app/page.tsx` to view custom StyleX overrides in your browser. Keep `styles.ts`, `CustomCard.tsx`, and `DynamicStyles.ts` from the examples above in `src/app/`:
-
-```tsx title="src/app/page.tsx"
+```tsx title="src/app/components/KanbanBoard.tsx" del={31, 45, 47, 53-55, 59-62} ins={9, 16, 46, 48, 56-57, 63-71}
 'use client';
 
-import { Card } from '@astryxdesign/core/Card';
+import { Section } from '@astryxdesign/core/Section';
+import {
+  Layout,
+  LayoutHeader,
+  LayoutContent,
+  HStack,
+  VStack,
+} from '@astryxdesign/core/Layout';
 import { Heading, Text } from '@astryxdesign/core/Text';
-import { VStack } from '@astryxdesign/core/Layout';
-import { CustomCard } from './CustomCard';
-import { styles } from './DynamicStyles';
+import { Card } from '@astryxdesign/core/Card';
+import { Button } from '@astryxdesign/core/Button';
+import { useTranslator } from '@astryxdesign/core/i18n';
+import { usePreferences } from '../providers';
+import { styles } from '../styles';
 
-export default function Page() {
+export default function KanbanBoard() {
+  const t = useTranslator();
+  const { locale, setLocale } = usePreferences();
+
   return (
-    <VStack gap={4} padding={4}>
-      <CustomCard>
-        <Heading level={4}>Hover Over Me</Heading>
-        <Text color="secondary">This card uses xstyle to apply elevation on hover.</Text>
-      </CustomCard>
-
-      <Heading level={4}>Dynamic StyleX Ghost Slot (Height 100px):</Heading>
-      <VStack xstyle={styles.ghost(100)} />
-    </VStack>
+    <Section height="100dvh">
+      <Layout
+        height="fill"
+        header={
+          <LayoutHeader hasDivider padding={4}>
+            <HStack hAlign="between" vAlign="center">
+              <Heading level={3}>{t('@app.board.title')}</Heading>
+              <HStack gap={2} vAlign="center">
+                {/* Tabular numbers keep digits from jittering as counts change */}
+                <Text type="supporting" color="secondary" hasTabularNumbers>
+                  4 {t('@app.tasks')}
+                </Text>
+                <Button
+                  label={t('@app.switchLanguage')}
+                  variant="secondary"
+                  onClick={() => setLocale(locale === 'en' ? 'fr' : 'en')}
+                />
+              </HStack>
+            </HStack>
+          </LayoutHeader>
+        }
+        content={
+          <LayoutContent padding={4}>
+          <LayoutContent padding={0}>
+            <HStack gap={4}>
+            <HStack gap={4} xstyle={styles.boardColumns}>
+              {[0, 1, 2, 3].map(i => (
+                <Card
+                  key={i}
+                  variant="muted"
+                  padding={3}
+                  width={300}
+                  style={{ flexShrink: 0 }}
+                  padding={0}
+                  xstyle={styles.columnShell}
+                >
+                  <Heading level={4}>Column {i + 1}</Heading>
+                  <Text type="supporting" color="secondary">
+                    Placeholder — data arrives in lesson 6.
+                  </Text>
+                  <VStack gap={3} padding={3}>
+                    <Heading level={4}>Column {i + 1}</Heading>
+                    <Card padding={3} xstyle={styles.card}>
+                      <Heading level={5}>Placeholder task</Heading>
+                      <Text type="supporting" color="secondary" maxLines={2}>
+                        A placeholder card inside the styled column shell.
+                      </Text>
+                    </Card>
+                  </VStack>
+                </Card>
+              ))}
+            </HStack>
+          </LayoutContent>
+        }
+      />
+    </Section>
   );
 }
 ```
 
-Run `npm run dev` and open `http://localhost:3000` to test hover shadows and dynamic StyleX slots live.
+Note `LayoutContent padding={0}` — the column strip owns its own padding via `styles.boardColumns`, so the content body adds none.
 
-In the next lesson, we will examine the Astryx theme system and design tokens.
+## See It in Action
+
+Run `npm run dev` (after clearing `.next` once). Hover any placeholder task card — it lifts with the `--shadow-med` elevation. In dark mode (`mode="system"` follows your OS), the hover picks up the light ring instead. The columns keep their fixed 300px width and the strip scrolls horizontally if the window is too narrow.
+
+The `floating` and `ghost` rules are compiled but not yet visible — they come alive with drag-and-drop in lessons 11–12.
+
+## What You Built
+
+- The one-time StyleX compiler setup (Babel + PostCSS + `@stylex` directive).
+- `src/app/styles.ts` — the single stylesheet for the whole board, including dark-mode-aware hover and the drag feedback functions.
+- The `xstyle` prop wired into the real board: strip, column shells, and hoverable cards.
+
+In the next lesson, we will break down the theme system and design tokens — and add a light/dark toggle to the board.

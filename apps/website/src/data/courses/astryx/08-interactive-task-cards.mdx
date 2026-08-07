@@ -2,84 +2,36 @@
 title: "Interactive Cards & the xstyle Prop"
 date: 2026-08-06
 tags: ["astryx", "components", "stylex"]
-excerpt: "Wrap work items in interactive Card elements with custom StyleX elevation and pointer listeners."
+excerpt: "Wrap work items in an interactive BoardCard component with custom StyleX elevation and pointer press listeners."
 courseOrder: 8
 ---
 
-In this lesson, we create our centralized application stylesheet (`styles.ts`) and construct `BoardCard.tsx`—the interactive wrapper that applies custom hover elevation through the `xstyle` prop and forwards pointer press events.
+The `BoardCardBody` from lesson 7 is the presentation. Now we give it a draggable shell: `BoardCard` — the interactive wrapper that applies custom hover elevation through the `xstyle` prop and forwards pointer press events for the drag engine in lesson 11.
+
+**Files this lesson:** `src/app/components/BoardCard.tsx` (new), `src/app/components/KanbanBoard.tsx` (rewritten). `page.tsx` stays untouched.
 
 **Astryx this lesson:** `Card` deep-dive — the `xstyle` prop for safe style overrides, StyleX pseudo-classes (`:hover`), and how `Card` forwards its DOM node and `onPointerDown` for custom interactions.
 
-## 1. Centralized Application Stylesheet (`styles.ts`)
+## The Card Contract
 
-Create `styles.ts` to manage StyleX rules across all Kanban components:
+Astryx `Card` gives us three things we need:
 
-```typescript title="src/app/styles.ts"
-import * as stylex from '@stylexjs/stylex';
-import { COLUMN_WIDTH } from './data';
+1. **`xstyle`** — merges our custom StyleX rules (from `styles.card` in lesson 4) into the card without breaking its design-system styles.
+2. **Forwarded ref** — `ref` exposes the underlying `div`, which the drag hook will use for hit-testing geometry.
+3. **`onPointerDown`** — a pointer event hook the drag engine will listen to.
 
-export const styles = stylex.create({
-  boardColumns: {
-    overflowX: 'auto',
-    overflowY: 'hidden',
-    height: '100%',
-    padding: 'var(--spacing-4)',
-  },
-  columnShell: {
-    flexShrink: 0,
-    flexBasis: COLUMN_WIDTH,
-    height: '100%',
-  },
-  card: {
-    cursor: 'grab',
-    userSelect: 'none',
-    touchAction: 'none',
-    transition: 'box-shadow 120ms ease',
-    ':hover': {
-      boxShadow: 'var(--shadow-med)',
-    },
-  },
-  floating: {
-    position: 'fixed',
-    insetBlockStart: 0,
-    insetInlineStart: 0,
-    pointerEvents: 'none',
-    cursor: 'grabbing',
-    boxShadow: 'var(--shadow-high)',
-    zIndex: 1000,
-  },
-  floatingAt: (x: number, y: number, width: number) => ({
-    width,
-    transform: `translate(${x}px, ${y}px)`,
-  }),
-  ghost: (height: number) => ({
-    height,
-    borderRadius: 'var(--radius-container)',
-    backgroundColor: 'var(--color-background-muted)',
-  }),
-  toolbarDivider: {
-    height: 'auto',
-    marginBlock: 'var(--spacing-1)',
-    alignSelf: 'stretch',
-  },
-  columnEmptyState: {
-    paddingBlock: 'var(--spacing-10)',
-  },
-});
-```
+The elevation rules live in `styles.card` (lesson 4): a grab cursor, `userSelect: 'none'`, `touchAction: 'none'`, a 120ms `box-shadow` transition, and the `--shadow-med` hover elevation — with the dark-mode light-ring override on top. The component itself stays thin.
 
-## 2. Interactive Card Component (`BoardCard.tsx`)
+## Implementation: `BoardCard.tsx`
 
-`BoardCard` wraps `BoardCardBody` with an Astryx `Card` container. It binds `onPointerDown` to initiate drags and forwards its underlying DOM element via `cardRef`.
+Create `src/app/components/BoardCard.tsx`:
 
-Create `BoardCard.tsx`:
-
-```tsx title="src/app/BoardCard.tsx"
+```tsx title="src/app/components/BoardCard.tsx"
 import type { PointerEvent as ReactPointerEvent } from 'react';
 import { Card } from '@astryxdesign/core/Card';
 import { BoardCardBody } from './BoardCardBody';
-import { styles } from './styles';
-import type { ColumnId, WorkItem } from './types';
+import { styles } from '../styles';
+import type { ColumnId, WorkItem } from '../types';
 
 interface BoardCardProps {
   item: WorkItem;
@@ -99,43 +51,155 @@ export function BoardCard({
       ref={cardRef}
       padding={3}
       xstyle={styles.card}
-      onPointerDown={e => onPointerDown(e, item.id)}>
+      onPointerDown={e => onPointerDown(e, item.id)}
+    >
       <BoardCardBody item={item} onMove={onMove} />
     </Card>
   );
 }
 ```
 
----
+- `xstyle={styles.card}` applies the hover elevation and interaction flags.
+- `ref={cardRef}` forwards the DOM node upward — lesson 11 registers it for hit-testing.
+- `onPointerDown={e => onPointerDown(e, item.id)}` forwards the press event with the item id, so the drag engine knows *which* card the pointer grabbed.
+- Everything visual is delegated to `BoardCardBody`, so the floating drag clone (lesson 12) can render a pixel-identical copy.
 
-## See It in Action
+## Using It: `KanbanBoard.tsx`
 
-Update `src/app/page.tsx` to test interactive task cards in your browser. Keep `styles.ts` (above) and `BoardCardBody.tsx` (lesson 7) in `src/app/`:
+Rewrite `src/app/components/KanbanBoard.tsx` to render `BoardCard` per item instead of the inline `Card` + `BoardCardBody` combo. The `cardRef` and `onPointerDown` props are stubbed until the drag hook in lesson 11:
 
-```tsx title="src/app/page.tsx"
+```tsx title="src/app/components/KanbanBoard.tsx" del={17, 94-100} ins={18, 101-107}
 'use client';
 
-import { VStack } from '@astryxdesign/core/Layout';
+import { Section } from '@astryxdesign/core/Section';
+import {
+  Layout,
+  LayoutHeader,
+  LayoutContent,
+  HStack,
+  VStack,
+} from '@astryxdesign/core/Layout';
+import { Heading, Text } from '@astryxdesign/core/Text';
+import { Card } from '@astryxdesign/core/Card';
+import { Button } from '@astryxdesign/core/Button';
+import { useTranslator } from '@astryxdesign/core/i18n';
+import { usePreferences } from '../providers';
+import { styles } from '../styles';
+import { BoardCardBody } from './BoardCardBody';
 import { BoardCard } from './BoardCard';
-import { INITIAL_ITEMS } from './data';
+import { COLUMNS, INITIAL_ITEMS } from '../data';
+import type { ColumnId } from '../types';
 
-export default function Page() {
+export default function KanbanBoard() {
+  const t = useTranslator();
+  const { mode, setMode, locale, setLocale } = usePreferences();
+
+  // Temporary — real moves arrive with the drag hook in lesson 11.
+  const moveItem = (id: string, to: ColumnId) => {
+    alert(`Move task ${id} to ${to}`);
+  };
+
   return (
-    <VStack gap={3} padding={4} width={320}>
-      {INITIAL_ITEMS.slice(0, 2).map(item => (
-        <BoardCard
-          key={item.id}
-          item={item}
-          cardRef={el => console.log('Card registered DOM element:', el)}
-          onPointerDown={(e, id) => console.log('Pointer down on card:', id)}
-          onMove={(id, to) => alert(`Moved ${id} to ${to}`)}
-        />
-      ))}
-    </VStack>
+    <Section height="100dvh">
+      <Layout
+        height="fill"
+        header={
+          <LayoutHeader hasDivider padding={4}>
+            <HStack hAlign="between" vAlign="center">
+              <Heading level={3}>{t('@app.board.title')}</Heading>
+              <HStack gap={2} vAlign="center">
+                <Text type="supporting" color="secondary" hasTabularNumbers>
+                  {INITIAL_ITEMS.length} {t('@app.tasks')}
+                </Text>
+                <Button
+                  label={t('@app.switchLanguage')}
+                  variant="secondary"
+                  onClick={() => setLocale(locale === 'en' ? 'fr' : 'en')}
+                />
+                <Button
+                  label={
+                    mode === 'system'
+                      ? 'Light mode'
+                      : mode === 'light'
+                        ? 'Dark mode'
+                        : 'System mode'
+                  }
+                  variant="secondary"
+                  onClick={() =>
+                    setMode(
+                      mode === 'system'
+                        ? 'light'
+                        : mode === 'light'
+                          ? 'dark'
+                          : 'system',
+                    )
+                  }
+                />
+              </HStack>
+            </HStack>
+          </LayoutHeader>
+        }
+        content={
+          <LayoutContent padding={0}>
+            <HStack gap={4} xstyle={styles.boardColumns}>
+              {COLUMNS.map(col => {
+                const items = INITIAL_ITEMS.filter(it => it.column === col.id);
+                return (
+                  <Card
+                    key={col.id}
+                    variant="muted"
+                    padding={0}
+                    xstyle={styles.columnShell}
+                  >
+                    <VStack gap={3} padding={3}>
+                      <Heading level={4}>{col.title}</Heading>
+                      <Text
+                        type="supporting"
+                        color="secondary"
+                        hasTabularNumbers
+                      >
+                        {items.length} {t('@app.tasks')}
+                      </Text>
+                      <VStack gap={2}>
+                        {items.map(item => (
+                          <Card
+                            key={item.id}
+                            padding={3}
+                            xstyle={styles.card}
+                          >
+                            <BoardCardBody item={item} onMove={moveItem} />
+                          </Card>
+                          <BoardCard
+                            key={item.id}
+                            item={item}
+                            cardRef={() => {}}
+                            onPointerDown={() => {}}
+                            onMove={moveItem}
+                          />
+                        ))}
+                      </VStack>
+                    </VStack>
+                  </Card>
+                );
+              })}
+            </HStack>
+          </LayoutContent>
+        }
+      />
+    </Section>
   );
 }
 ```
 
-Run `npm run dev` and open `http://localhost:3000` to test card hover elevation and pointer press triggers live.
+Note we no longer import `Card` for task cards (only for column shells) — `BoardCard` owns the card rendering.
 
-In the next lesson, we will build the column container shell with Astryx headers, counts, and empty states.
+## See It in Action
+
+Run `npm run dev`. The board looks the same as lesson 7 — but now every task is a dedicated `BoardCard`: hover elevation, grab cursor, no text selection on drag-attempt presses, and the MoreMenu still works inside (the `onPointerDown` stub does nothing yet). In lesson 11, these stubbed props come alive.
+
+## What You Built
+
+- `BoardCard.tsx` — a thin, reusable interactive card shell that forwards its DOM node and pointer events.
+- A board where every task card is a component ready for drag-and-drop wiring.
+
+In the next lesson, we will build the column shell with `StatusDot`, `Tooltip`, and `EmptyState`.

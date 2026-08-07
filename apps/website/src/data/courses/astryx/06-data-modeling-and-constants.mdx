@@ -2,23 +2,17 @@
 title: "Data Modeling with Astryx Icons & Semantic Variants"
 date: 2026-08-06
 tags: ["astryx", "typescript", "kanban"]
-excerpt: "Define the TypeScript domain models, column metadata, priority mappings, and initial state for our modular Kanban app."
+excerpt: "Define the TypeScript domain models, column metadata, priority mappings, and initial state — and watch the board render real data."
 courseOrder: 6
 ---
 
-Starting with this lesson, we begin building our modular Kanban application. In this step, we establish our TypeScript contracts, data models, column metadata configurations, and initial state objects.
+The shell, styling, i18n, and theming are in place. Now we give the board a real data model: TypeScript contracts, column metadata, priority mappings, and initial tasks. This is where the placeholder columns become the actual Kanban columns.
 
-**Astryx this lesson:** Heroicons integration (`InboxIcon`, `ArrowPathIcon`, `ClipboardDocumentCheckIcon`, `CheckCircleIcon`), the semantic variant vocabulary (`neutral`/`accent`/`warning`/`success` for columns, `error`/`warning`/`teal` for priorities) that flows straight into `StatusDot` and `Badge`, and design-system-aware data modeling.
-
-We will create two modular files inside `src/app/` (next to `page.tsx`):
-1. `types.ts`: TypeScript interfaces and type aliases.
-2. `data.ts`: Data arrays, column configurations, and constants.
-
-Every Kanban module file from this lesson through lesson 13 lives in `src/app/`, right next to `page.tsx` — that keeps the demo imports (`./data`, `./BoardCard`, …) working exactly as shown.
+**Files this lesson:** `src/app/types.ts` (new), `src/app/data.ts` (new), `src/app/components/KanbanBoard.tsx` (rewritten). `page.tsx` stays untouched.
 
 ## 1. Domain Types (`types.ts`)
 
-Create `types.ts` to define the domain contracts for tasks, columns, priorities, and drag states:
+Create `src/app/types.ts` to define the domain contracts for tasks, columns, priorities, and drag state:
 
 ```typescript title="src/app/types.ts"
 import type { ComponentType } from 'react';
@@ -64,9 +58,11 @@ export interface DragState {
 }
 ```
 
+Note how `ColumnMeta.variant` is typed to exactly the variants `StatusDot` accepts (`neutral`, `accent`, `warning`, `success`) — an invalid combination is a compile error instead of a runtime surprise. `DragState` and `DropTarget` are defined now and used by the drag hook in lesson 11.
+
 ## 2. Columns Metadata & Initial Data (`data.ts`)
 
-Create `data.ts` to export static configuration metadata and sample data:
+Create `src/app/data.ts` to export static configuration metadata and sample data:
 
 ```typescript title="src/app/data.ts"
 import {
@@ -162,74 +158,166 @@ export const INITIAL_ITEMS: WorkItem[] = [
 ];
 ```
 
+> **`COLUMN_WIDTH` lives in two places on purpose.** `data.ts` exports it as the domain-level source of truth for components that need the number. `styles.ts` (lesson 4) keeps its own local copy because StyleX inlines every value inside `stylex.create` at build time and can't resolve the `./data` import — see the gotcha note in lesson 4.
+
 ## Astryx Concepts: Icons & Semantic Variants
 
 This lesson's data layer is deliberately *design-system-aware* — the models are shaped by Astryx's vocabulary so they flow straight into components without translation:
 
 - **Heroicons integration**: Astryx components accept Heroicons icons out of the box. `ColumnMeta.emptyIcon` stores the icon *component* (typed as `ComponentType<{ className?: string }>`), so each column can render its own empty-state icon later (lesson 9). The four icons introduced here — `InboxIcon`, `ArrowPathIcon`, `ClipboardDocumentCheckIcon`, `CheckCircleIcon` — each describe a column's state.
-- **Semantic variant vocabulary**: `ColumnMeta.variant` is typed to exactly the variants `StatusDot` accepts (`neutral`, `accent`, `warning`, `success`), and `PRIORITY_META` maps priorities to badge variants (`error`, `warning`, `teal`). Because the types match the design system's variants, an invalid combination is a compile error instead of a runtime surprise.
-- **One nuance**: `Badge` and `StatusDot` share `neutral`, `warning`, and `success`, but `accent` exists only on `StatusDot` — the accent-colored badge is `info`. That's why the demo below maps `accent → info` when rendering columns as badges; the column shell in lesson 9 passes `meta.variant` straight to `StatusDot`, where `accent` is valid.
+- **Semantic variant vocabulary**: `ColumnMeta.variant` is typed to exactly the variants `StatusDot` accepts (`neutral`, `accent`, `warning`, `success`), and `PRIORITY_META` maps priorities to badge variants (`error`, `warning`, `teal`).
+- **One nuance**: `Badge` and `StatusDot` share `neutral`, `warning`, and `success`, but `accent` exists only on `StatusDot` — the accent-colored badge is `info`. The column shell in lesson 9 passes `meta.variant` straight to `StatusDot`, where `accent` is valid.
 
 This is the Astryx way to model domain data: define your contracts against the design system's tokens and variants, not against ad-hoc strings.
 
----
+## Rendering the Data: `KanbanBoard.tsx`
 
-## See It in Action
+Rewrite `src/app/components/KanbanBoard.tsx` to map `COLUMNS` into the styled column shells and `INITIAL_ITEMS` into task cards. Every style rule comes from `styles.ts`; every string that is user-facing goes through the translator:
 
-Update `src/app/page.tsx` to verify your domain models and column metadata in your browser:
-
-```tsx title="src/app/page.tsx"
+```tsx title="src/app/components/KanbanBoard.tsx" del={33, 67-84} ins={17, 34, 85-124}
 'use client';
 
-import { Card } from '@astryxdesign/core/Card';
+import { Section } from '@astryxdesign/core/Section';
+import {
+  Layout,
+  LayoutHeader,
+  LayoutContent,
+  HStack,
+  VStack,
+} from '@astryxdesign/core/Layout';
 import { Heading, Text } from '@astryxdesign/core/Text';
-import { VStack, HStack } from '@astryxdesign/core/Layout';
-import { Badge } from '@astryxdesign/core/Badge';
-import { COLUMNS, INITIAL_ITEMS } from './data';
+import { Card } from '@astryxdesign/core/Card';
+import { Button } from '@astryxdesign/core/Button';
+import { useTranslator } from '@astryxdesign/core/i18n';
+import { usePreferences } from '../providers';
+import { styles } from '../styles';
+import { COLUMNS, INITIAL_ITEMS } from '../data';
 
-export default function Page() {
+export default function KanbanBoard() {
+  const t = useTranslator();
+  const { mode, setMode, locale, setLocale } = usePreferences();
+
   return (
-    <Card padding={4}>
-      <VStack gap={4}>
-        <Heading level={3}>Kanban Domain Data Model Inspector</Heading>
-        
-        <Heading level={4}>Configured Columns ({COLUMNS.length}):</Heading>
-        <HStack gap={2}>
-          {COLUMNS.map(colMeta => (
-            <Badge
-              key={colMeta.id}
-              label={colMeta.title}
-              variant={colMeta.variant === 'accent' ? 'info' : colMeta.variant}
-            />
-          ))}
-        </HStack>
-
-        <Heading level={4}>Column Icons ({COLUMNS.length}):</Heading>
-        <HStack gap={2} vAlign="center">
-          {COLUMNS.map(colMeta => {
-            // A capitalized local variable — JSX treats it as a component.
-            const ColIcon = colMeta.emptyIcon;
-            return <ColIcon key={colMeta.id} />;
-          })}
-        </HStack>
-
-        <Heading level={4}>Initial Sprint Tasks ({INITIAL_ITEMS.length}):</Heading>
-        <VStack gap={2}>
-          {INITIAL_ITEMS.map(item => (
-            <Card key={item.id} padding={2} variant="muted">
-              <HStack hAlign="between" vAlign="center">
-                <Text><strong>[{item.ref}]</strong> {item.title}</Text>
-                <Badge label={item.column} variant="neutral" />
+    <Section height="100dvh">
+      <Layout
+        height="fill"
+        header={
+          <LayoutHeader hasDivider padding={4}>
+            <HStack hAlign="between" vAlign="center">
+              <Heading level={3}>{t('@app.board.title')}</Heading>
+              <HStack gap={2} vAlign="center">
+                <Text type="supporting" color="secondary" hasTabularNumbers>
+                  4 {t('@app.tasks')}
+                  {INITIAL_ITEMS.length} {t('@app.tasks')}
+                </Text>
+                <Button
+                  label={t('@app.switchLanguage')}
+                  variant="secondary"
+                  onClick={() => setLocale(locale === 'en' ? 'fr' : 'en')}
+                />
+                <Button
+                  label={
+                    mode === 'system'
+                      ? 'Light mode'
+                      : mode === 'light'
+                        ? 'Dark mode'
+                        : 'System mode'
+                  }
+                  variant="secondary"
+                  onClick={() =>
+                    setMode(
+                      mode === 'system'
+                        ? 'light'
+                        : mode === 'light'
+                          ? 'dark'
+                          : 'system',
+                    )
+                  }
+                />
               </HStack>
-            </Card>
-          ))}
-        </VStack>
-      </VStack>
-    </Card>
+            </HStack>
+          </LayoutHeader>
+        }
+        content={
+          <LayoutContent padding={0}>
+            <HStack gap={4} xstyle={styles.boardColumns}>
+              {[0, 1, 2, 3].map(i => (
+                <Card
+                  key={i}
+                  variant="muted"
+                  padding={0}
+                  xstyle={styles.columnShell}
+                >
+                  <VStack gap={3} padding={3}>
+                    <Heading level={4}>Column {i + 1}</Heading>
+                    <Card padding={3} xstyle={styles.card}>
+                      <Heading level={5}>Placeholder task</Heading>
+                      <Text type="supporting" color="secondary" maxLines={2}>
+                        A placeholder card inside the styled column shell.
+                      </Text>
+                    </Card>
+                  </VStack>
+                </Card>
+              ))}
+              {COLUMNS.map(col => {
+                const items = INITIAL_ITEMS.filter(it => it.column === col.id);
+                return (
+                  <Card
+                    key={col.id}
+                    variant="muted"
+                    padding={0}
+                    xstyle={styles.columnShell}
+                  >
+                    <VStack gap={3} padding={3}>
+                      <Heading level={4}>{col.title}</Heading>
+                      <Text
+                        type="supporting"
+                        color="secondary"
+                        hasTabularNumbers
+                      >
+                        {items.length} {t('@app.tasks')}
+                      </Text>
+                      <VStack gap={2}>
+                        {items.map(item => (
+                          <Card
+                            key={item.id}
+                            padding={3}
+                            xstyle={styles.card}
+                          >
+                            <Heading level={5}>{item.title}</Heading>
+                            <Text
+                              type="supporting"
+                              color="secondary"
+                              maxLines={2}
+                            >
+                              {item.description}
+                            </Text>
+                          </Card>
+                        ))}
+                      </VStack>
+                    </VStack>
+                  </Card>
+                );
+              })}
+            </HStack>
+          </LayoutContent>
+        }
+      />
+    </Section>
   );
 }
 ```
 
-Run `npm run dev` and open `http://localhost:3000` to inspect your data models live.
+The columns now come from `COLUMNS` (title, variant, and — soon — status dot and empty state), and the tasks come from `INITIAL_ITEMS`. Columns with no tasks render with just their header — the empty state arrives in lesson 9.
 
-In the next lesson, we will construct our task presentation component: `BoardCardBody`.
+## See It in Action
+
+Run `npm run dev`. The board now shows three real columns with tasks (To-do has one, In progress has one, Done has one, In review is empty), the header counter reads the real total, and hovering any task card still lifts it. Flip the language and theme toggles — data-driven rendering composes with both.
+
+## What You Built
+
+- `types.ts` — contracts typed against Astryx variant vocabularies.
+- `data.ts` — column metadata, priority mappings, and initial tasks.
+- A data-driven board: columns and cards rendered from `COLUMNS` and `INITIAL_ITEMS`.
+
+In the next lesson, we will extract the task presentation into its own component: `BoardCardBody`.

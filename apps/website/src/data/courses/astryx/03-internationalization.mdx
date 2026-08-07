@@ -2,41 +2,33 @@
 title: "Internationalization & Localization (i18n)"
 date: 2026-08-06
 tags: ["astryx", "i18n", "localization"]
-excerpt: "Localize your app with Astryx's i18n system: locale catalogs, useTranslator, runtime language swapping, and pseudo-locale testing."
+excerpt: "Localize the board with Astryx's i18n system: locale catalogs, useTranslator, runtime language swapping, and typography that stays aligned."
 courseOrder: 3
 ---
 
-Internationalization (i18n) is baked into the foundation of Astryx. The library ships a complete i18n system inside `@astryxdesign/core` — there is nothing extra to install. You wrap your app in an `InternationalizationProvider`, point it at a locale, and Astryx components pick up localized strings from that provider.
+Internationalization is baked into the foundation of Astryx. The library ships a complete i18n system inside `@astryxdesign/core` — there is nothing extra to install. You wrap your app in an `InternationalizationProvider`, point it at a locale, and Astryx components pick up localized strings from that provider.
 
-For small apps, Astryx's own docs recommend using Astryx **as your i18n library**: define your message catalogs, read strings with `useTranslator()`, and let the provider swap languages at runtime. That is exactly what this lesson does.
-
-**Astryx this lesson:** `InternationalizationProvider`, `useTranslator`, `Catalog`, and `MessagesByLocale` (all from `@astryxdesign/core/i18n`). Concepts: locale catalogs, namespaced message keys, runtime language swapping, pseudo-locale testing, plus the typography that keeps localized UI aligned (`hasTabularNumbers`, `maxLines`).
+**Files this lesson:** `src/app/messages.ts` (new), `src/app/providers.tsx` (extended), `src/app/components/KanbanBoard.tsx` (rewritten). `page.tsx` stays untouched.
 
 ## Message Catalogs & the Translator
 
 A **catalog** is a plain object mapping message keys to messages. Each entry uses the shape `{ defaultMessage, description? }`. Keys should be namespaced — keep your app keys in your own namespace (e.g. `@app.*`) so they never collide with Astryx's built-in `@astryx.*` strings.
 
-Create your catalogs in `src/app/messages.ts`:
+Create `src/app/messages.ts`:
 
 ```ts title="src/app/messages.ts"
 import type { Catalog, MessagesByLocale } from '@astryxdesign/core/i18n';
 
 export const en: Catalog = {
   '@app.board.title': { defaultMessage: 'Sprint Board' },
-  '@app.openTasks': { defaultMessage: 'Open tasks' },
-  '@app.board.description': {
-    defaultMessage: 'Track open and completed work across the sprint. Long localized text stays readable thanks to tabular numbers and line clamping.',
-  },
   '@app.switchLanguage': { defaultMessage: 'En français' },
+  '@app.tasks': { defaultMessage: 'tasks' },
 };
 
 export const fr: Catalog = {
   '@app.board.title': { defaultMessage: 'Tableau de sprint' },
-  '@app.openTasks': { defaultMessage: 'Tâches ouvertes' },
-  '@app.board.description': {
-    defaultMessage: 'Suivez le travail en cours et terminé du sprint. Le texte localisé long reste lisible grâce aux chiffres tabulaires et à la coupure de ligne.',
-  },
   '@app.switchLanguage': { defaultMessage: 'In English' },
+  '@app.tasks': { defaultMessage: 'tâches' },
 };
 
 // MessagesByLocale types the map you pass to the provider's `messages` prop.
@@ -47,7 +39,7 @@ Include your own `en` catalog even though English is the built-in fallback: that
 
 ## Reading Strings with `useTranslator`
 
-Component authors resolve strings with the `useTranslator()` hook rather than hardcoding user-facing text — Astryx enforces this for its own contributors with the `@astryx/no-hardcoded-i18n-string` ESLint rule, and it is a good discipline for app code too:
+Component authors resolve strings with the `useTranslator()` hook rather than hardcoding user-facing text:
 
 ```tsx
 import { useTranslator } from '@astryxdesign/core/i18n';
@@ -60,135 +52,159 @@ function BoardHeader() {
 
 `t()` is just a function — call it anywhere in a component rendered under the provider.
 
-## Wiring the Provider
+## The Preferences Context: State That Lives Above the Board
 
-Wrap your app in `InternationalizationProvider` and pass the active `locale` plus your catalogs via `messages`:
+The language toggle button has to live inside the board, but the locale state has to live *above* the board — inside the providers, because that is where `InternationalizationProvider` sits. Rather than drilling callbacks through every layer, we add a small context. This same context will carry the light/dark mode in lesson 5, so we build it fully now.
 
-```tsx
-<InternationalizationProvider locale="fr" messages={messages}>
-  <YourApp />
-</InternationalizationProvider>
-```
+Extend `src/app/providers.tsx`:
 
-Every Astryx component inside the provider reads localized strings from it. Your own components read theirs with `useTranslator()` — same provider, one source of truth.
+```tsx title="src/app/providers.tsx" del={3, 40} ins={4-9, 12-13, 15-34, 36-38, 41-45, 47-48}
+'use client';
 
-## Swapping Languages at Runtime
+import type { ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  type ReactNode,
+} from 'react';
+import { Theme } from '@astryxdesign/core';
+import { neutralTheme } from '@astryxdesign/theme-neutral/built';
+import { InternationalizationProvider } from '@astryxdesign/core/i18n';
+import { messages } from './messages';
 
-Re-render `InternationalizationProvider` with a new `locale` prop and every string updates live — no page reload, no API call. Persisting the user's choice (localStorage, cookie, URL segment) is up to you; Astryx reads whatever locale you pass in. This is the demo's centerpiece: a button that flips `locale` between `'en'` and `'fr'` with `useState`.
+export type ThemeMode = 'system' | 'light' | 'dark';
+export type AppLocale = 'en' | 'fr';
 
-## Pseudo-Localization for Testing
+interface AppPreferences {
+  mode: ThemeMode;
+  setMode: (mode: ThemeMode) => void;
+  locale: AppLocale;
+  setLocale: (locale: AppLocale) => void;
+}
 
-Astryx ships a **pseudo locale** that wraps every string in `⟦…⟧` and replaces letters with accented look-alikes. Switching to it in development surfaces hardcoded strings and layout breakage from longer text:
+const AppPreferencesContext = createContext<AppPreferences | null>(null);
 
-```tsx
-import pseudo from '@astryxdesign/core/locales/pseudo.json';
+export function usePreferences() {
+  const ctx = useContext(AppPreferencesContext);
+  if (!ctx) {
+    throw new Error('usePreferences must be used inside <Providers>');
+  }
+  return ctx;
+}
 
-<InternationalizationProvider locale="pseudo" messages={{ ...messages, pseudo }}>
-  <YourApp />
-</InternationalizationProvider>
-```
+export function Providers({ children }: { children: ReactNode }) {
+  const [mode, setMode] = useState<ThemeMode>('system');
+  const [locale, setLocale] = useState<AppLocale>('en');
 
-The shipped pseudo catalog covers Astryx's own strings; to pseudo-test your app's keys, add pseudo entries for them the same way you would for any locale. Astryx's own strings live in `@astryxdesign/core/locales/*.json` if you want to inspect the key inventory.
-
-> **Going further:** Astryx tracks text direction alongside locale. RTL locales like Arabic resolve to `'rtl'` automatically, and components mirror via CSS logical properties. The `getLocaleDirection(locale)` helper (also from `@astryxdesign/core/i18n`) computes the direction so you can set `<html dir>` in a Next.js root layout during SSR.
-
-## Typography That Holds Up Across Languages
-
-### Tabular Numbers (`hasTabularNumbers`)
-
-Dynamic counters, task metrics, and timestamps use proportional digits by default, which jitter horizontally as values change. `hasTabularNumbers` on `Text` enables monospace figures (`font-variant-numeric: tabular-nums`) so numbers stay perfectly aligned — essential when the same counter renders under differently worded labels in each locale:
-
-```tsx title="src/app/TabularCounter.tsx"
-import { Text } from '@astryxdesign/core/Text';
-
-export function TabularCounter({ count }: { count: number }) {
   return (
-    <Text type="supporting" color="secondary" hasTabularNumbers>
-      {count}
-    </Text>
+    <Theme theme={neutralTheme} mode="system">
+    <Theme theme={neutralTheme} mode={mode}>
+      <InternationalizationProvider locale={locale} messages={messages}>
+        <AppPreferencesContext.Provider
+          value={{ mode, setMode, locale, setLocale }}
+        >
+          {children}
+        </AppPreferencesContext.Provider>
+      </InternationalizationProvider>
+    </Theme>
   );
 }
 ```
 
-### Line Clamping (`maxLines`)
+- `mode` is already in state, wired to `<Theme mode={mode}>` — it defaults to `'system'` and is unused for now. Lesson 5 adds the toggle button that reads it.
+- `locale` feeds `InternationalizationProvider`; re-rendering with a new locale updates every string live — no reload.
+- `usePreferences()` lets any component in the tree read and change both.
 
-Localized strings vary significantly in length — German or French often needs ~30% more space than English. `Text maxLines={n}` truncates cleanly so translated descriptions never break card heights:
+## Using It: The Board Header
 
-```tsx
-<Text type="supporting" color="secondary" maxLines={2}>
-  {description}
-</Text>
+Rewrite `src/app/components/KanbanBoard.tsx` to read the localized title, show a live task counter with tabular numbers, and carry a **language toggle button**:
+
+```tsx title="src/app/components/KanbanBoard.tsx" del={27, 29-31} ins={12-14, 17-19, 28, 32-42}
+'use client';
+
+import { Section } from '@astryxdesign/core/Section';
+import {
+  Layout,
+  LayoutHeader,
+  LayoutContent,
+  HStack,
+} from '@astryxdesign/core/Layout';
+import { Heading, Text } from '@astryxdesign/core/Text';
+import { Card } from '@astryxdesign/core/Card';
+import { Button } from '@astryxdesign/core/Button';
+import { useTranslator } from '@astryxdesign/core/i18n';
+import { usePreferences } from '../providers';
+
+export default function KanbanBoard() {
+  const t = useTranslator();
+  const { locale, setLocale } = usePreferences();
+
+  return (
+    <Section height="100dvh">
+      <Layout
+        height="fill"
+        header={
+          <LayoutHeader hasDivider padding={4}>
+            <HStack hAlign="between" vAlign="center">
+              <Heading level={3}>Sprint Board</Heading>
+              <Heading level={3}>{t('@app.board.title')}</Heading>
+              <Text type="supporting" color="secondary">
+                Layout shell — real columns arrive in lesson 6
+              </Text>
+              <HStack gap={2} vAlign="center">
+                {/* Tabular numbers keep digits from jittering as counts change */}
+                <Text type="supporting" color="secondary" hasTabularNumbers>
+                  4 {t('@app.tasks')}
+                </Text>
+                <Button
+                  label={t('@app.switchLanguage')}
+                  variant="secondary"
+                  onClick={() => setLocale(locale === 'en' ? 'fr' : 'en')}
+                />
+              </HStack>
+            </HStack>
+          </LayoutHeader>
+        }
+        content={
+          <LayoutContent padding={4}>
+            <HStack gap={4}>
+              {[0, 1, 2, 3].map(i => (
+                <Card
+                  key={i}
+                  variant="muted"
+                  padding={3}
+                  width={300}
+                  style={{ flexShrink: 0 }}
+                >
+                  <Heading level={4}>Column {i + 1}</Heading>
+                  <Text type="supporting" color="secondary">
+                    Placeholder — data arrives in lesson 6.
+                  </Text>
+                </Card>
+              ))}
+            </HStack>
+          </LayoutContent>
+        }
+      />
+    </Section>
+  );
+}
 ```
 
----
+### Typography That Holds Up Across Languages
+
+- **Tabular numbers (`hasTabularNumbers`)** — `Text hasTabularNumbers` enables monospace figures (`font-variant-numeric: tabular-nums`) so counters stay perfectly aligned as values change. Essential when the same counter renders under differently worded labels in each locale.
+- **Line clamping (`maxLines`)** — localized strings vary significantly in length. `Text maxLines={n}` truncates cleanly so translated descriptions never break card heights. We will use it on task descriptions in lesson 6.
 
 ## See It in Action
 
-Update `src/app/page.tsx` to build a live language switcher. Keep `messages.ts` and `TabularCounter.tsx` (above) in `src/app/`:
+Run `npm run dev` and open `http://localhost:3000`. The header reads **Sprint Board** with a task counter. Click **En français** — the title flips to *Tableau de sprint*, the counter label to *tâches*, and the button label to *In English*, all without a reload. Because `locale` lives in the providers above the board, every component under the tree would re-localize together.
 
-```tsx title="src/app/page.tsx"
-'use client';
+## What You Built
 
-import { useState } from 'react';
-import { Card } from '@astryxdesign/core/Card';
-import { Heading, Text } from '@astryxdesign/core/Text';
-import { Badge } from '@astryxdesign/core/Badge';
-import { Button } from '@astryxdesign/core/Button';
-import { HStack, VStack } from '@astryxdesign/core/Layout';
-import { InternationalizationProvider, useTranslator } from '@astryxdesign/core/i18n';
-import { messages } from './messages';
-import { TabularCounter } from './TabularCounter';
-
-// Explicit union — `MessagesByLocale` is a general map type, so keyof would widen to string.
-type Locale = 'en' | 'fr';
-
-function BoardHeader() {
-  const t = useTranslator();
-  return (
-    <VStack gap={2}>
-      <Heading level={3}>{t('@app.board.title')}</Heading>
-      <HStack gap={2} vAlign="center">
-        <Badge label={t('@app.openTasks')} variant="info" />
-        <TabularCounter count={42} />
-      </HStack>
-    </VStack>
-  );
-}
-
-function LocaleToggle({ onToggle }: { onToggle: () => void }) {
-  const t = useTranslator();
-  // Resolves to "En français" in English, "In English" in French.
-  return <Button label={t('@app.switchLanguage')} variant="primary" onClick={onToggle} />;
-}
-
-function BoardDescription() {
-  const t = useTranslator();
-  return (
-    <Text type="supporting" color="secondary" maxLines={2}>
-      {t('@app.board.description')}
-    </Text>
-  );
-}
-
-export default function Page() {
-  const [locale, setLocale] = useState<Locale>('en');
-
-  return (
-    <InternationalizationProvider locale={locale} messages={messages}>
-      <Card padding={4}>
-        <VStack gap={3}>
-          <BoardHeader />
-          <BoardDescription />
-          <LocaleToggle onToggle={() => setLocale(l => (l === 'en' ? 'fr' : 'en'))} />
-        </VStack>
-      </Card>
-    </InternationalizationProvider>
-  );
-}
-```
-
-Flip to French and watch the title, badge, description, and button label all re-render — no reload. You can also drop `pseudo` into the `messages` map and switch to `locale="pseudo"` for a taste of layout testing.
-
-Run `npm run dev` and open `http://localhost:3000` to switch languages live in the browser.
+- `messages.ts` with namespaced `en`/`fr` catalogs.
+- A `usePreferences()` context exposing `locale` (and `mode`, for lesson 5) to the whole tree.
+- A language toggle button living in the board header — the first of the app-level controls we will consolidate into the toolbar in lesson 10.
 
 In the next lesson, we will master styling components with StyleX and the `xstyle` prop.

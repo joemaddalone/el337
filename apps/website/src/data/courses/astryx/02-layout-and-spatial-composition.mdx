@@ -2,11 +2,13 @@
 title: "Layout & Spatial Composition"
 date: 2026-08-06
 tags: ["astryx", "layout", "react"]
-excerpt: "Master layout primitives in Astryx: Section, Layout, LayoutHeader, LayoutContent, HStack, and VStack."
+excerpt: "Shape the Kanban board stub into a full application shell using Section, Layout, LayoutHeader, LayoutContent, HStack, and VStack."
 courseOrder: 2
 ---
 
-Layout management in Astryx relies on composable flex primitives that eliminate manual layout CSS. In this lesson, we cover structural containers—`Section`, `Layout`, `LayoutHeader`, `LayoutContent`—and flex direction stacks—`HStack` and `VStack`.
+Layout management in Astryx relies on composable flex primitives that eliminate manual layout CSS. In this lesson, we turn the stub from lesson 1 into the real board shell — an app-frame with a fixed header and a scrollable body holding a row of placeholder columns.
+
+**Files this lesson:** `src/app/components/KanbanBoard.tsx` (rewritten). `page.tsx` stays untouched.
 
 ## Spatial Stacks: `HStack` and `VStack`
 
@@ -19,36 +21,15 @@ Rather than applying `display: flex` and `flex-direction` across custom classes,
 - `vAlign`: Vertical alignment (`"start"`, `"center"`, `"end"`, `"between"`).
 - `wrap`: Flex wrapping mode (`"wrap"`, `"nowrap"`).
 
-### Example: Card Header with Stack Controls
-
-```tsx title="HeaderExample.tsx"
-import { HStack, VStack } from '@astryxdesign/core/Layout';
-import { Heading, Text } from '@astryxdesign/core/Text';
-import { Badge } from '@astryxdesign/core/Badge';
-
-export function HeaderExample() {
-  return (
-    <HStack hAlign="between" vAlign="center">
-      <HStack gap={2} vAlign="center">
-        <Heading level={4}>In Progress</Heading>
-        <Badge label="3 tasks" variant="info" />
-      </HStack>
-      <Text type="supporting" color="secondary">Updated 5m ago</Text>
-    </HStack>
-  );
-}
-```
-
 ## Application Shell Containers
 
 Astryx provides `Section` and `Layout` for establishing top-level viewport bounds and scrollable regions.
 
 ### `Section`
-The `<Section>` component defines top-level section boundaries. When building full-screen tools like dashboards or Kanban boards, set `height="100dvh"`:
+
+The `<Section>` component defines top-level section boundaries. For full-screen tools like our Kanban board, set `height="100dvh"` so the app always fills the viewport:
 
 ```tsx
-import { Section } from '@astryxdesign/core/Section';
-
 <Section height="100dvh">
   {/* Application content */}
 </Section>
@@ -56,79 +37,69 @@ import { Section } from '@astryxdesign/core/Section';
 
 ### `Layout`, `LayoutHeader`, and `LayoutContent`
 
-The `Layout` container partitions an application into fixed headers and scrollable content bodies.
+`Layout` partitions an application into a fixed header and a scrollable content body:
 
-```tsx title="AppShell.tsx"
-import { Layout, LayoutHeader, LayoutContent } from '@astryxdesign/core/Layout';
-import { Section } from '@astryxdesign/core/Section';
-import { Heading } from '@astryxdesign/core/Text';
+- `LayoutHeader`: The top bar. Add `hasDivider` to draw a separator under it, and `padding` to control inset spacing.
+- `LayoutContent`: The scrollable body. Its `ref` is forwarded to the underlying DOM node — we will use that in lesson 11 for drag-and-drop hit-testing.
+- `Layout` takes `header` and `content` as render props (or JSX children).
 
-export function AppShell() {
-  return (
-    <Section height="100dvh">
-      <Layout
-        height="fill"
-        header={
-          <LayoutHeader hasDivider padding={4}>
-            <Heading level={3}>Sprint Board</Heading>
-          </LayoutHeader>
-        }
-        content={
-          <LayoutContent padding={4}>
-            {/* Main scrollable body */}
-          </LayoutContent>
-        }
-      />
-    </Section>
-  );
-}
-```
+## Building the Shell: `KanbanBoard.tsx`
 
-| `LayoutContent` | `ref` | `React.Ref` | Forwarded ref to content element for hit-testing |
+Rewrite `src/app/components/KanbanBoard.tsx` as a full app frame: a header with the board title, and a content area holding four placeholder columns in a horizontal strip:
 
----
-
-The two example components above (`HeaderExample.tsx`, `AppShell.tsx`) are **reference only** — you don't need to save them. The page below is what actually runs.
-
-## See It in Action
-
-Update `src/app/page.tsx` to test your spatial layout shell live in the browser:
-
-```tsx title="src/app/page.tsx"
+```tsx title="src/app/components/KanbanBoard.tsx" del={15-21} ins={3-9, 22-56}
 'use client';
 
 import { Section } from '@astryxdesign/core/Section';
-import { Layout, LayoutHeader, LayoutContent, HStack, VStack } from '@astryxdesign/core/Layout';
+import {
+  Layout,
+  LayoutHeader,
+  LayoutContent,
+  HStack,
+} from '@astryxdesign/core/Layout';
 import { Heading, Text } from '@astryxdesign/core/Text';
-import { Badge } from '@astryxdesign/core/Badge';
 import { Card } from '@astryxdesign/core/Card';
 
-export default function Page() {
+export default function KanbanBoard() {
   return (
+    <Card padding={4}>
+      <Heading level={2}>Sprint Board</Heading>
+      <Text color="secondary">
+        The Kanban board is under construction — we will build it together
+        over the coming lessons.
+      </Text>
+    </Card>
     <Section height="100dvh">
       <Layout
         height="fill"
         header={
           <LayoutHeader hasDivider padding={4}>
             <HStack hAlign="between" vAlign="center">
-              <HStack gap={2} vAlign="center">
-                <Heading level={3}>Sprint Board Shell</Heading>
-                <Badge label="Demo" variant="info" />
-              </HStack>
-              <Text type="supporting" color="secondary">Lesson 2 Layout Test</Text>
+              <Heading level={3}>Sprint Board</Heading>
+              <Text type="supporting" color="secondary">
+                Layout shell — real columns arrive in lesson 6
+              </Text>
             </HStack>
           </LayoutHeader>
         }
         content={
           <LayoutContent padding={4}>
-            <VStack gap={3}>
-              <Card padding={3}>
-                <Text>Card 1 inside scrollable LayoutContent</Text>
-              </Card>
-              <Card padding={3}>
-                <Text>Card 2 inside scrollable LayoutContent</Text>
-              </Card>
-            </VStack>
+            <HStack gap={4}>
+              {[0, 1, 2, 3].map(i => (
+                <Card
+                  key={i}
+                  variant="muted"
+                  padding={3}
+                  width={300}
+                  style={{ flexShrink: 0 }}
+                >
+                  <Heading level={4}>Column {i + 1}</Heading>
+                  <Text type="supporting" color="secondary">
+                    Placeholder — data arrives in lesson 6.
+                  </Text>
+                </Card>
+              ))}
+            </HStack>
           </LayoutContent>
         }
       />
@@ -137,6 +108,23 @@ export default function Page() {
 }
 ```
 
-Run `npm run dev` and open `http://localhost:3000` to see your layout shell in the browser.
+Read the structure top-down:
 
-In the next lesson, we will explore internationalization and typography in Astryx.
+- `Section height="100dvh"` locks the app to the viewport height.
+- `Layout height="fill"` makes the frame fill that section.
+- `LayoutHeader` holds the title bar; `hasDivider` draws the separator line.
+- `LayoutContent padding={4}` is the scrollable body — when real columns overflow, this is what scrolls.
+- Inside, an `HStack gap={4}` lays the four placeholder columns side by side. Each is a muted `Card` at a fixed `width={300}` with `flexShrink: 0` so columns never squish.
+- `hAlign="between"` on the header stack pushes the title left and the supporting text right.
+
+## See It in Action
+
+Run `npm run dev` and open `http://localhost:3000`. You now have a full-height application frame: a fixed header with a divider, and a scrollable content area with four muted placeholder columns. Resize the window — the header stays put and the columns are side by side. If the strip overflows, the content body scrolls.
+
+## What You Built
+
+- The board's permanent frame: `Section` → `Layout` → `LayoutHeader` + `LayoutContent`.
+- A `HStack` column strip with Astryx's gap scale and alignment props.
+- The placeholder columns we will style in lesson 4 and fill with real data in lesson 6.
+
+In the next lesson, we will localize the board and add a language switcher.
